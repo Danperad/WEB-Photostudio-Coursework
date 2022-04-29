@@ -3,8 +3,8 @@ using RestPanda.Requests.Attributes;
 
 namespace WebServer.Requests;
 
-[RequestHandler]
-public class HelloHandler
+[RequestHandlerPath]
+public class HelloHandler : RequestHandler
 {
     [Get]
     public static void HelloSay(PandaRequest request, PandaResponse response)

@@ -8,7 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="RestPanda" Version="1.2.0" />
+      <PackageReference Include="RestPanda" Version="1.4.0" />
+      <PackageReference Include="Trivial" Version="6.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PhotostudioDB\PhotostudioDB.csproj" />
     </ItemGroup>
 
 </Project>
