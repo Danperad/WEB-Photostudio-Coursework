@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="RestPanda" Version="1.4.0" />
+      <PackageReference Include="RestPanda" Version="1.4.1" />
       <PackageReference Include="Trivial" Version="6.4.0" />
     </ItemGroup>
 

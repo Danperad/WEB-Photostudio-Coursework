@@ -12,8 +12,8 @@ public class RegModel
 
     public static bool Check(RegModel? model)
     {
-        return model is not null && string.IsNullOrEmpty(model.login) && string.IsNullOrEmpty(model.password) &&
-               string.IsNullOrEmpty(model.lastname) && string.IsNullOrEmpty(model.firstname) &&
-               string.IsNullOrEmpty(model.phone);
+        return model is null || string.IsNullOrEmpty(model.login) || string.IsNullOrEmpty(model.password) ||
+               string.IsNullOrEmpty(model.lastname) || string.IsNullOrEmpty(model.firstname) ||
+               string.IsNullOrEmpty(model.phone) || string.IsNullOrEmpty(model.email);
     }
 }

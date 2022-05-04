@@ -3,13 +3,14 @@ import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import {createTheme, ThemeProvider} from "@mui/material";
 import {blue, grey} from "@mui/material/colors";
-import App from "./App";
+import App from "./routes/App";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Login from "./routes/Login";
+import Auth from "./routes/Auth";
 import "./assets/css/main.css"
 import Header from "./components/Header";
-import Registration from "./routes/Registration";
-
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import Profile from "./routes/Profile";
 
 const dark = createTheme({
 	palette: {
@@ -29,14 +30,16 @@ const dark = createTheme({
 ReactDOM.render(
 	<React.StrictMode>
 		<ThemeProvider theme={dark}>
+			<LocalizationProvider dateAdapter={AdapterDateFns}>
 			<BrowserRouter>
-				<Header/>
-				<Routes>
-					<Route path={"/"} element={<App/>}/>
-					<Route path={"login"} element={<Login/>}/>
-					<Route path={"registration"} element={<Registration/>}/>
-				</Routes>
-			</BrowserRouter>
+					<Header/>
+					<Routes>
+						<Route path={"/"} element={<App/>}/>
+						<Route path={"profile"} element={<Profile/>}/>
+						<Route path={"auth"} element={<Auth/>}/>
+					</Routes>
+				</BrowserRouter>
+			</LocalizationProvider>
 		</ThemeProvider>
 	</React.StrictMode>,
 	document.getElementById('root')

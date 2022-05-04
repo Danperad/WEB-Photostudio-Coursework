@@ -85,7 +85,7 @@ internal static class EntityConfigure
     internal static void ProfileConfigure(EntityTypeBuilder<Profile> builder)
     {
         builder.ToTable("profiles");
-        builder.Property(p => p.Id).ValueGeneratedNever().HasColumnName("id");
+        builder.Property(p => p.Id).HasColumnName("id");
         builder.Property(p => p.Login).HasMaxLength(50).HasColumnName("login");
         builder.HasIndex(p => p.Login).IsUnique();
         builder.Property(p => p.IsActive).HasDefaultValue(true).HasColumnName("is_active");

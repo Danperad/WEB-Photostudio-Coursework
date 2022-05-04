@@ -1,4 +1,5 @@
-﻿using PhotostudioDB.Exceptions;
+﻿using Microsoft.EntityFrameworkCore;
+using PhotostudioDB.Exceptions;
 using PhotostudioDB.Models;
 using PhotostudioDB.Models.Services;
 
@@ -50,7 +51,7 @@ public static class DbWorker
 
         return true;
     }
-    
+
     #region Role
 
     internal static Role? GetRoleById(int id)
@@ -101,11 +102,18 @@ public static class DbWorker
         return _db!.Clients.FirstOrDefault(c => c.Phone.Contains(phone));
     }
 
+    internal static Client? GetClientLogin(string login)
+    {
+        if (!IsLoad) throw new DbNotLoadException();
+        return _db!.Clients.Include(c => c.Profile).FirstOrDefault(c => c.Profile!.Login == login);
+    }
+
     internal static Client? GetClientAuth(string login, string pass)
     {
         if (!IsLoad) throw new DbNotLoadException();
-        return _db!.Clients.FirstOrDefault(c =>
-            c.Profile != null && c.Profile.Login == login && c.Profile.Pass == pass);
+        return _db!.Clients.Include(c => c.Profile).Include(c => c.Orders)
+            .ThenInclude(o => o.Services).FirstOrDefault(
+                c => c.Profile != null && c.Profile.Login == login && c.Profile.Pass == pass);
     }
 
     internal static bool RegisterClient(Profile client)
@@ -126,7 +134,7 @@ public static class DbWorker
     #endregion
 
     #region Employee
-    
+
     internal static Employee? GetEmployeeById(int id)
     {
         if (!IsLoad) throw new DbNotLoadException();
@@ -173,6 +181,7 @@ public static class DbWorker
         {
             return false;
         }
+
         return true;
     }
 
@@ -207,7 +216,7 @@ public static class DbWorker
         if (!IsLoad) throw new DbNotLoadException();
         return _db!.Contracts.Where(c => c.ClientId == clientId);
     }
-    
+
     #endregion
 
     #region Rented
@@ -253,13 +262,13 @@ public static class DbWorker
     #endregion
 
     #region ApplicationService
-    
+
     internal static IEnumerable<ApplicationService> GetServicesOrder(int order)
     {
         if (!IsLoad) throw new DbNotLoadException();
         return GetOrderById(order) is null ? new List<ApplicationService>() : GetOrderById(order)!.Services;
     }
-    
+
     #endregion
 
     #region Status
@@ -272,12 +281,12 @@ public static class DbWorker
 
     #endregion
 
-    internal static bool AddToken(AuthToken token)
+    internal static bool AddToken(RefreshToken token)
     {
         if (!IsLoad) throw new DbNotLoadException();
         try
         {
-            _db!.AuthTokens.Add(token);
+            _db!.RefreshTokens.Add(token);
             _db.SaveChanges();
         }
         catch
@@ -288,25 +297,13 @@ public static class DbWorker
         return true;
     }
 
-    internal static bool RemoveToken(TimeSpan timeout)
+    internal static Profile? GetToken(string token)
     {
         if (!IsLoad) throw new DbNotLoadException();
-        try
-        {
-            _db!.AuthTokens.RemoveRange(_db.AuthTokens.Where(a => (DateTime.Now - timeout) > a.TokenTime));
-            _db.SaveChanges();
-        }
-        catch
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    internal static bool GetToken(string token)
-    {
-        if (!IsLoad) throw new DbNotLoadException();
-        return _db!.AuthTokens.FirstOrDefault(a => a.Token == token) is not null;
+        var strtoken = _db!.RefreshTokens.Include(r => r.Profile)
+            .ThenInclude(p => p.Client).FirstOrDefault(a => a.Token == token);
+        if (strtoken is null) return null;
+        _db.RefreshTokens.Remove(strtoken);
+        return strtoken.Profile;
     }
 }

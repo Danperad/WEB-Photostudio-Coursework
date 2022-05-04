@@ -42,6 +42,11 @@ public class Profile
         return DbWorker.GetClientAuth(login, pass);
     }
 
+    public static Client? GetClientByLogin(string login)
+    {
+        return DbWorker.GetClientLogin(login);
+    }
+    
     public bool RegClient()
     {
         if (Client is null) return false;
