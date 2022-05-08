@@ -10,9 +10,10 @@ public class ClientModel
     public string phone { get; set; }
     public string login { get; set; }
     public string? company { get; set; }
+    public string? avatar { get; set; }
 
     public ClientModel(int id, string lastName, string firstName, string? middleName, string email, string phone,
-        string login, string? company)
+        string login, string? company, string? avatar)
     {
         this.id = id;
         this.lastName = lastName;
@@ -22,5 +23,6 @@ public class ClientModel
         this.phone = phone;
         this.login = login;
         this.company = company;
+        this.avatar = avatar;
     }
 }

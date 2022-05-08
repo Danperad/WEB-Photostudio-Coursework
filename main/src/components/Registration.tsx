@@ -1,20 +1,12 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import {setCookie} from "typescript-cookie";
 import sha256 from "sha256";
-import axios from "axios";
-import {Answer} from "../Types";
+import {RegistrationModel} from '../models/RequestModels'
 import {Button, Stack, TextField, Typography} from "@mui/material";
-
-type Request = {
-	login: string,
-	password: string,
-	lastname: string,
-	firstname: string,
-	phone: string,
-	middlename: string,
-	email: string
-}
+import AuthService from "../redux/services/AuthService";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../redux/store";
+import {RegisterSuccess} from "../redux/actions/authActions";
 
 interface State {
 	login: string,
@@ -39,10 +31,11 @@ function Registration() {
 		passwordcheck: ''
 	})
 	const navigate = useNavigate();
+	const dispatch = useDispatch<AppDispatch>();
 
 	const onClick = (event: any) => {
 		if (values.mainpassword !== values.passwordcheck) return;
-		const data: Request = {
+		const data: RegistrationModel = {
 			login: values.login,
 			password: sha256(values.mainpassword),
 			lastname: values.lastname,
@@ -51,18 +44,11 @@ function Registration() {
 			middlename: values.middlename,
 			email: values.email
 		};
-		axios.post("http://localhost:8888/auth/signon", data)
-			.then((res) => {
-				const data: Answer = res.data as Answer;
-				if (data.status) {
-					setCookie("access_token", data.answer.access_token, {expires: 1, path: ''});
-					setCookie("refresh_token", data.answer.refresh_token, {path: ''});
-					navigate("/");
-				} else {
-					alert("Не успешно");
-				}
-			}).catch((err) => {
-			alert(err)
+		AuthService.register(data).then((res) => {
+			dispatch(res)
+			if (res.type === RegisterSuccess.type){
+				navigate("/");
+			}
 		});
 	};
 

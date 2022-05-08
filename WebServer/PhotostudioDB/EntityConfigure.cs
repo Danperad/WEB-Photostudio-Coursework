@@ -31,6 +31,7 @@ internal static class EntityConfigure
         builder.Property(c => c.IsActive).HasDefaultValue(true).HasColumnName("is_active");
         builder.Property(c => c.ProfileId).HasColumnName("profile_id");
         builder.Property(c => c.Company).HasColumnName("company");
+        builder.Property(c => c.Avatar).HasColumnName("avatar");
     }
 
     internal static void ContractConfigure(EntityTypeBuilder<Contract> builder)

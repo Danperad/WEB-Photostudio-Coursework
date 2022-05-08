@@ -7,7 +7,7 @@ using WebServer.Models;
 namespace WebServer.Controllers;
 
 [RequestHandlerPath("/auth")]
-public class AuthHandler : RequestHandler
+public class AuthController : RequestHandler
 {
     private (string, string) GenerateToken(Profile client)
     {
@@ -28,7 +28,7 @@ public class AuthHandler : RequestHandler
         RefreshToken.AddToken(refreshjwt.ToEncodedString(), client);
         return (jwt.ToEncodedString(), refreshjwt.ToEncodedString());
     }
-    
+
     private (string, string) RefreshTokenCheck(string token)
     {
         var client = RefreshToken.ContainsToken(token);
@@ -53,10 +53,15 @@ public class AuthHandler : RequestHandler
         }
 
         var tokens = GenerateToken(client.Profile!);
-        Send(new AnswerModel(true, new {access_token = tokens.Item1, refresh_toekn = tokens.Item2}, null, null));
+        Send(new AnswerModel(true, new
+        {
+            access_token = tokens.Item1, refresh_toekn = tokens.Item2, user = new ClientModel(client.Id,
+                client.LastName, client.FirstName, client.MiddleName, client.EMail!, client.Phone,
+                client.Profile!.Login, client.Company, client.Avatar)
+        }, null, null));
     }
 
-    [Post("/signon")]
+    [Post("/signup")]
     public void RegisterUser()
     {
         var body = Bind<RegModel>();
@@ -75,8 +80,15 @@ public class AuthHandler : RequestHandler
             Send(new AnswerModel(false, null, 401, "incorrect request"));
             return;
         }
+
         var tokens = GenerateToken(profile);
-        Send(new AnswerModel(true, new {access_token = tokens.Item1, refresh_token = tokens.Item2}, null, null));
+        Send(new AnswerModel(true, new
+        {
+            access_token = tokens.Item1, refresh_token = tokens.Item2, user = new ClientModel(profile.Client!.Id,
+                profile.Client.LastName, profile.Client.FirstName, profile.Client.MiddleName, profile.Client.EMail!,
+                profile.Client.Phone,
+                profile.Login, profile.Client.Company, profile.Client.Avatar)
+        }, null, null));
     }
 
     [Get("/reauth")]
@@ -94,6 +106,7 @@ public class AuthHandler : RequestHandler
             Send(new AnswerModel(false, null, 401, "incorrect request"));
             return;
         }
+
         Send(new AnswerModel(true, new {access_token = tokens.Item1, refresh_token = tokens.Item2}, null, null));
     }
 }

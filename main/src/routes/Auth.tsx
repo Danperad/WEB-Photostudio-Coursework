@@ -1,16 +1,18 @@
 import React, {useEffect} from 'react';
 import '../assets/css/header.css';
-import {getCookie} from "typescript-cookie";
 import {useNavigate} from "react-router-dom";
 import Login from '../components/Login';
 import Registration from "../components/Registration";
 import {Stack} from "@mui/material";
+import {useSelector} from "react-redux";
+import {RootState} from "../redux/store";
 
 function Auth() {
 	const navigate = useNavigate();
+	const user = useSelector((state: RootState) => state);
 
 	useEffect(() => {
-		if (getCookie('access_token') !== undefined) {
+		if (user.auth) {
 			navigate("/");
 		}
 	});

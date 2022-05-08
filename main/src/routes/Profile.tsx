@@ -1,52 +1,64 @@
 import React, {useEffect} from 'react';
-import {getCookie, setCookie} from "typescript-cookie";
-import axios from "axios";
-import {Answer, Client} from "../Types";
+import {Stack, Typography, Button, CardMedia} from "@mui/material";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../redux/store";
 import {useNavigate} from "react-router-dom";
-import {Stack, Typography} from "@mui/material";
+import ClientService from '../redux/services/ClientService'
 
 function Profile() {
-	const [token, setToken] = React.useState<string | undefined>(getCookie('access_token'));
+	const user = useSelector((state: RootState) => state);
+	const dispatch = useDispatch<AppDispatch>();
 	const navigate = useNavigate();
-	const [client, setClient] = React.useState<Client>({
-		id: 0,
-		lastName: '',
-		firstName: '',
-		middleName: null,
-		email: '',
-		phone: '',
-		login: '',
-		company: null
-	});
+	const [avatar, setAvatar] = React.useState<string | undefined>(undefined);
 	useEffect(() => {
-		if (token === undefined) {
-			const refrToken = getCookie('refresh_token');
-			if (refrToken === undefined) return;
-			axios.get("http://localhost:8888/auth/reauth?token=" + refrToken).then((res) => {
-				const data: Answer = res.data as Answer;
-				if (data.status) {
-					setCookie("access_token", data.answer.access_token, {expires: 1, path: ''});
-					setCookie("refresh_token", data.answer.refresh_token, {path: ''});
-					setToken(getCookie('access_token'));
-				}
-			})
+		if (!user.auth) {
+			navigate("/")
 		}
-		if (token === undefined) {
-			navigate("/auth")
-			return;
+	}, [user, navigate]);
+
+	const onChange = (event: any) => {
+		const file:File = event.target.files[0] ;
+		if (file === undefined) return;
+		let reader = new FileReader();
+		reader.onloadend = function (){
+			setAvatar(reader.result!.toString());
+			console.log(reader.result!.toString())
 		}
-		if (client.id !== 0) return;
-		axios.get("http://localhost:8888/client/get", {headers: {"Access-Token": token}})
-			.then((res) => {
-				const data: Answer = res.data as Answer;
-				if (data.status) {
-					setClient(data.answer);
-				}
-			})
-	}, [token, navigate, client])
+		reader.onerror = function (err) {
+			console.log(err);
+		}
+		reader.readAsDataURL(file);
+	}
+	const onClick = (event: any) => {
+		if (avatar === "" || avatar === undefined) return;
+		ClientService.updateAvatar(avatar!).then((res) => {
+			dispatch(res);
+		})
+	}
 	return (
 		<Stack>
-			<Typography>{client.lastName}</Typography>
+			{user.auth &&
+          <>
+              <Typography color={"white"}>Фамилия: {user.client!.lastName}</Typography>
+              <Typography color={"white"}>Имя: {user.client!.firstName}</Typography>
+						{user.client!.middleName !== null &&
+                <Typography color={"white"}>Отчество: {user.client!.middleName}</Typography>
+						}
+              <Typography color={"white"}>Почта: {user.client!.email}</Typography>
+              <Typography color={"white"}>Телефон: {user.client!.phone}</Typography>
+              <Typography color={"white"}>Логин: {user.client!.login}</Typography>
+						{user.client!.company !== null &&
+                <Typography color={"white"}>Компания: {user.client!.company}</Typography>
+						}
+						{avatar !== "" &&
+                <CardMedia component={"img"} src={avatar}/>
+						}
+              <Button variant="contained" component="label">Upload File
+                  <input type="file" accept="image/*" hidden onChange={onChange}/>
+              </Button>
+							<Button onClick={onClick}>Обновить аватар</Button>
+          </>
+			}
 		</Stack>
 	);
 }

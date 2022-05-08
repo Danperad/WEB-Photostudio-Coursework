@@ -10,6 +10,7 @@ public class Client : Human
     public string? Company { get; internal set; }
     public IEnumerable<Order> Orders { get; internal set; }
     public IEnumerable<Contract> Contracts { get; internal set; }
+    public string? Avatar { get; set; }
 
     #endregion
 
@@ -36,5 +37,10 @@ public class Client : Human
     public new bool Check()
     {
         return base.Check();
+    }
+
+    public bool SaveUpdate()
+    {
+        return DbWorker.Save();
     }
 }

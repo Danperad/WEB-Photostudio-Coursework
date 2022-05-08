@@ -8,9 +8,12 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Auth from "./routes/Auth";
 import "./assets/css/main.css"
 import Header from "./components/Header";
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers';
+import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
+import {LocalizationProvider} from '@mui/x-date-pickers';
 import Profile from "./routes/Profile";
+import {Provider} from "react-redux";
+import {store} from './redux/store';
+import Services from "./routes/Services";
 
 const dark = createTheme({
 	palette: {
@@ -26,21 +29,23 @@ const dark = createTheme({
 		},
 	},
 });
-
 ReactDOM.render(
 	<React.StrictMode>
-		<ThemeProvider theme={dark}>
-			<LocalizationProvider dateAdapter={AdapterDateFns}>
-			<BrowserRouter>
-					<Header/>
-					<Routes>
-						<Route path={"/"} element={<App/>}/>
-						<Route path={"profile"} element={<Profile/>}/>
-						<Route path={"auth"} element={<Auth/>}/>
-					</Routes>
-				</BrowserRouter>
-			</LocalizationProvider>
-		</ThemeProvider>
+		<Provider store={store}>
+			<ThemeProvider theme={dark}>
+				<LocalizationProvider dateAdapter={AdapterDateFns}>
+					<BrowserRouter>
+						<Header/>
+						<Routes>
+							<Route path={"/"} element={<App/>}/>
+							<Route path={"profile"} element={<Profile/>}/>
+							<Route path={"auth"} element={<Auth/>}/>
+							<Route path={"services"} element={<Services/>}/>
+						</Routes>
+					</BrowserRouter>
+				</LocalizationProvider>
+			</ThemeProvider>
+		</Provider>
 	</React.StrictMode>,
 	document.getElementById('root')
 );
