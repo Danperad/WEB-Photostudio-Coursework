@@ -11,11 +11,12 @@ internal static class EntityConfigure
     {
         builder.ToTable("address");
         builder.Property(a => a.Id).HasColumnName("id");
+        builder.Property(a => a.Block).HasColumnName("block");
         builder.Property(a => a.Street).HasMaxLength(50).HasColumnName("street");
-        builder.Property(a => a.Building).HasColumnName("building");
         builder.Property(a => a.HouseNumber).HasColumnName("house_number");
-        builder.Property(a => a.Entrance).HasColumnName("entrance");
         builder.Property(a => a.ApartmentNumber).HasColumnName("apartment_number");
+        builder.Property(a => a.Settlement).HasColumnName("settlement");
+        builder.Property(a => a.CityDistrict).HasColumnName("city_district");
     }
 
     internal static void ClientConfigure(EntityTypeBuilder<Client> builder)
@@ -80,6 +81,7 @@ internal static class EntityConfigure
         builder.Property(o => o.DateTime).HasColumnName("date_time");
         builder.Property(o => o.StatusId).HasColumnName("status_id");
         builder.Property(o => o.ContractId).HasColumnName("contract_id");
+        builder.Property(o => o.ServicePackageId).HasColumnName("service_package_id");
         builder.HasOne(o => o.Contract).WithOne(c => c.Order).HasForeignKey<Contract>(c => c.OrderId);
     }
 
@@ -126,6 +128,7 @@ internal static class EntityConfigure
         builder.Property(s => s.Cost).HasColumnType("money").HasColumnName("cost");
         builder.Property(s => s.Description).HasColumnName("description");
         builder.Property(s => s.Type).HasColumnName("type");
+        builder.Property(s => s.Photos).HasColumnName("photos");
     }
 
     internal static void StatusConfigure(EntityTypeBuilder<Status> builder)
@@ -140,7 +143,7 @@ internal static class EntityConfigure
 
     internal static void ApplicationServiceConfigure(EntityTypeBuilder<ApplicationService> builder)
     {
-        builder.ToTable("application_service");
+        builder.ToTable("application_services");
         builder.Property(a => a.Id).HasColumnName("id");
         builder.Property(a => a.OrderId).HasColumnName("order_id");
         builder.Property(a => a.ServiceId).HasColumnName("service_id");
@@ -150,7 +153,7 @@ internal static class EntityConfigure
 
     internal static void HallRentServiceConfigure(EntityTypeBuilder<HallRentService> builder)
     {
-        builder.ToTable("application_service");
+        builder.ToTable("application_services");
         builder.Property(h => h.Id).HasColumnName("id");
         builder.Property(h => h.OrderId).HasColumnName("order_id");
         builder.Property(h => h.ServiceId).HasColumnName("service_id");
@@ -163,7 +166,7 @@ internal static class EntityConfigure
 
     internal static void PhotoVideoServiceConfigure(EntityTypeBuilder<PhotoVideoService> builder)
     {
-        builder.ToTable("application_service");
+        builder.ToTable("application_services");
         builder.Property(p => p.Id).HasColumnName("id");
         builder.Property(p => p.OrderId).HasColumnName("order_id");
         builder.Property(p => p.ServiceId).HasColumnName("service_id");
@@ -176,7 +179,7 @@ internal static class EntityConfigure
 
     internal static void RentServiceConfigure(EntityTypeBuilder<RentService> builder)
     {
-        builder.ToTable("application_service");
+        builder.ToTable("application_services");
         builder.Property(r => r.Id).HasColumnName("id");
         builder.Property(r => r.OrderId).HasColumnName("order_id");
         builder.Property(r => r.ServiceId).HasColumnName("service_id");
@@ -190,7 +193,7 @@ internal static class EntityConfigure
 
     internal static void StyleServiceConfigure(EntityTypeBuilder<StyleService> builder)
     {
-        builder.ToTable("application_service");
+        builder.ToTable("application_services");
         builder.Property(p => p.Id).HasColumnName("id");
         builder.Property(p => p.OrderId).HasColumnName("order_id");
         builder.Property(p => p.ServiceId).HasColumnName("service_id");
@@ -200,5 +203,28 @@ internal static class EntityConfigure
         builder.Property(c => c.IsFullTime).HasDefaultValue(false).HasColumnName("is_full_time");
         builder.Property(h => h.StartDateTime).HasColumnName("start_date_time");
         builder.Property(h => h.Duration).HasColumnName("duration");
+    }
+
+    internal static void ServicePackageConfigure(EntityTypeBuilder<ServicePackage> builder)
+    {
+        builder.ToTable("service_packages");
+        builder.Property(s => s.Id).HasColumnName("id");
+        builder.Property(s => s.Title).HasMaxLength(50).HasColumnName("title");
+        builder.HasIndex(s => s.Title).IsUnique();
+        builder.Property(s => s.Description).HasColumnName("description");
+        builder.Property(s => s.Photos).HasColumnName("photos");
+        builder.Property(s => s.AddressId).HasColumnName("address_id");
+        builder.Property(s => s.HallId).HasColumnName("hall_id");
+        builder.Property(s => s.EmployeeId).HasColumnName("employee_id");
+        builder.Property(s => s.Duration).HasColumnName("duration");
+        builder.HasMany(s => s.Services).WithMany(s => s.ServicePackages)
+            .UsingEntity(j => j.ToTable("service_package_to_service"));
+    }
+
+    internal static void RefreshTokenConfigure(EntityTypeBuilder<RefreshToken> builder)
+    {
+        builder.ToTable("refresh_tokens");
+        builder.HasKey(r => r.Token);
+        builder.Property(r => r.ProfileId).HasColumnName("profile_id");
     }
 }

@@ -1,7 +1,8 @@
 import axios from 'axios';
 import authHeader from '../AuthHeader';
 import {Answer} from "../../models/RequestModels";
-import {AvatarError, AddedAvatar} from '../actions/clientActions'
+import {AvatarError} from '../actions/clientActions'
+import {clientActions} from "../slices/clientSlice";
 const API_URL = "http://localhost:8888/client/"
 
 class ClientService {
@@ -10,7 +11,7 @@ class ClientService {
 			.then((res) => {
 				const data: Answer = res.data;
 				if (data.status){
-					return AddedAvatar(data.answer.user.avatar);
+					return clientActions.addedAvatar(data.answer.user);
 				}
 				return AvatarError(data.errorText!);
 		}).catch((err) => {

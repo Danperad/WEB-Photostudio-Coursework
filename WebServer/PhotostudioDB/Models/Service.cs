@@ -14,8 +14,8 @@ public class Service
     public string Description { get;internal set; }
     public decimal? Cost { get;internal set; }
     public List<string> Photos { get; internal set; }
-
     public int Type { get;internal set; }
+    public IEnumerable<ServicePackage> ServicePackages { get; set; }
 
     #endregion
 
@@ -28,6 +28,7 @@ public class Service
         Description = "";
         Type = 0;
         Photos = new List<string>();
+        ServicePackages = new List<ServicePackage>();
     }
 
     #endregion

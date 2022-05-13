@@ -73,7 +73,7 @@ public class AuthController : RequestHandler
 
         var profile = new Profile(new Client(body!.lastname, body.firstname, body.phone)
         {
-            MiddleName = body.middlename == "" ? null : body.middlename, EMail = body.email == "" ? null : body.email,
+            MiddleName = body.middlename == "" ? null : body.middlename, EMail = body.email,
         }, body.login, body.password);
         if (!profile.RegClient())
         {

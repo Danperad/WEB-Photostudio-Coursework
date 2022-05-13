@@ -12,7 +12,7 @@ function Auth() {
 	const user = useSelector((state: RootState) => state);
 
 	useEffect(() => {
-		if (user.auth) {
+		if (user.client.isAuth) {
 			navigate("/");
 		}
 	});

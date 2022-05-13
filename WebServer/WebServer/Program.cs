@@ -6,7 +6,7 @@ namespace WebServer;
 
 internal class Program
 {
-    internal static HashSignatureProvider Sign { get; private set; }
+    internal static HashSignatureProvider Sign { get; private set; } = null!;
 
     private static void Main(string[] args)
     {

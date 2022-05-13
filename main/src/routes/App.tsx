@@ -1,6 +1,7 @@
 import React from 'react';
 import {YMaps, Map} from 'react-yandex-maps';
 import axios from "axios";
+import {Typography} from "@mui/material";
 
 function App() {
 	const API_KEY = 'c8950d58-d7e5-4bbe-996e-9981ae99ac9d';
@@ -15,10 +16,13 @@ function App() {
 	}
 
 	return (
-		<YMaps query={{apikey: API_KEY, load: "package.full"}}>
+		/*<YMaps query={{apikey: API_KEY, load: "package.full"}}>
 			<Map defaultState={{center: [58.604368690570226, 49.66600701212868], zoom: 17}} onClick={onClick}
 					 style={{height: '400px'}}/>
-		</YMaps>
+		</YMaps>*/
+		<div>
+			<Typography color={"wheat"}>Hi</Typography>
+		</div>
 	);
 }
 

@@ -5,8 +5,9 @@ namespace PhotostudioDB.Models;
 public class RefreshToken
 {
     [Key]
-    public string Token { get; set; }
-    public Profile Profile { get; set; }
+    internal string Token { get; set; }
+    internal Profile Profile { get; set; }
+    internal int ProfileId { get; set; }
 
     internal RefreshToken()
     {

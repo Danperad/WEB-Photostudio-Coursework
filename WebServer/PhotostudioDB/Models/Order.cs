@@ -13,8 +13,10 @@ public class Order
     public Client Client { get; internal set; }
     public Status Status { get; internal set; }
     public IEnumerable<ApplicationService> Services { get; internal set; }
-    public int ContractId { get; set; }
-    public Contract? Contract { get; set; }
+    public ServicePackage? ServicePackage { get; internal set; }
+    public int? ServicePackageId { get; internal set; }
+    public int ContractId { get; internal set; }
+    public Contract? Contract { get; internal set; }
 
     #endregion
 

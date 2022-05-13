@@ -10,6 +10,7 @@ public class Employee : Human
     public int ProfileId { get; internal set; }
     public Profile Profile { get; internal set; }
     public Role Role { get; internal set; }
+    public decimal? Price { get; internal set; }
 
     #endregion
 

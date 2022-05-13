@@ -12,8 +12,8 @@ public class Contract
     public DateOnly EndDate { get; set; }
     public Client Client { get; set; }
     public Employee Employee { get; set; }
-    public int OrderId { get; set; }
-    public Order Order { get; set; }
+    public int OrderId { get; internal set; }
+    public Order Order { get; internal set; }
     
     #endregion
 

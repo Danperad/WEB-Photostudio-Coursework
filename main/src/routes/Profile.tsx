@@ -11,7 +11,7 @@ function Profile() {
 	const navigate = useNavigate();
 	const [avatar, setAvatar] = React.useState<string | undefined>(undefined);
 	useEffect(() => {
-		if (!user.auth) {
+		if (!user.client.isAuth) {
 			navigate("/")
 		}
 	}, [user, navigate]);
@@ -37,18 +37,18 @@ function Profile() {
 	}
 	return (
 		<Stack>
-			{user.auth &&
+			{user.client.isAuth &&
           <>
-              <Typography color={"white"}>Фамилия: {user.client!.lastName}</Typography>
-              <Typography color={"white"}>Имя: {user.client!.firstName}</Typography>
-						{user.client!.middleName !== null &&
-                <Typography color={"white"}>Отчество: {user.client!.middleName}</Typography>
+              <Typography color={"white"}>Фамилия: {user.client.client!.lastName}</Typography>
+              <Typography color={"white"}>Имя: {user.client.client!.firstName}</Typography>
+						{user.client.client!.middleName !== null &&
+                <Typography color={"white"}>Отчество: {user.client.client!.middleName}</Typography>
 						}
-              <Typography color={"white"}>Почта: {user.client!.email}</Typography>
-              <Typography color={"white"}>Телефон: {user.client!.phone}</Typography>
-              <Typography color={"white"}>Логин: {user.client!.login}</Typography>
-						{user.client!.company !== null &&
-                <Typography color={"white"}>Компания: {user.client!.company}</Typography>
+              <Typography color={"white"}>Почта: {user.client.client!.email}</Typography>
+              <Typography color={"white"}>Телефон: {user.client.client!.phone}</Typography>
+              <Typography color={"white"}>Логин: {user.client.client!.login}</Typography>
+						{user.client.client!.company !== null &&
+                <Typography color={"white"}>Компания: {user.client.client!.company}</Typography>
 						}
 						{avatar !== "" &&
                 <CardMedia component={"img"} src={avatar}/>

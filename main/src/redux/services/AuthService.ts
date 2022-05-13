@@ -1,8 +1,10 @@
 import axios from 'axios';
 import {Answer, LoginModel, RegistrationModel} from "../../models/RequestModels";
 import {removeCookie, setCookie} from "typescript-cookie";
-import {RegisterSuccess, RegisterFail, LoginSuccess, LoginFail, Logout} from "../actions/authActions"
+import {RegisterFail, LoginFail} from "../actions/authActions"
 import {Client} from "../../models/ClientModel";
+import {clientActions, State} from '../slices/clientSlice'
+
 const API_URL = "http://localhost:8888/auth/"
 
 class AuthService {
@@ -15,7 +17,7 @@ class AuthService {
 					setCookie("refresh_token", data.answer.refresh_token, {path: ''});
 					const client: Client = data.answer.user;
 					localStorage.setItem('user', JSON.stringify(client))
-					return RegisterSuccess();
+					return clientActions.registerSuccess({isAuth: true, client: client});
 				}
 				return RegisterFail(data.errorText!);
 			}).catch((err) => {
@@ -32,18 +34,19 @@ class AuthService {
 					setCookie("refresh_token", data.answer.refresh_token, {path: ''});
 					const client: Client = data.answer.user;
 					localStorage.setItem('user', JSON.stringify(client));
-					return LoginSuccess();
+					return clientActions.loginSuccess({isAuth: true, client: client});
 				}
 				return LoginFail(data.errorText!);
 			}).catch((err) => {
 			return LoginFail(err);
 		})
 	}
-	logout(){
+
+	logout() {
 		removeCookie("access_token", {path: ''});
 		removeCookie("refresh_token", {path: ''});
 		localStorage.removeItem('user');
-		return Logout();
+		return clientActions.logout();
 	}
 }
 

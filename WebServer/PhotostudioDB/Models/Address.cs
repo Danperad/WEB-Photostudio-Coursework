@@ -5,10 +5,11 @@ public class Address
     #region Props
 
     public int Id { get; internal set; }
+    public string? CityDistrict { get; set; }
+    public string? Settlement { get; set; }
     public string Street { get; set; }
     public string HouseNumber { get; set; }
-    public string? Building { get; set; }
-    public string? Entrance { get; set; }
+    public string? Block { get; set; }
     public string? ApartmentNumber { get; set; }
 
     #endregion

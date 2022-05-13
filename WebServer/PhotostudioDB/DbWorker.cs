@@ -281,6 +281,8 @@ public static class DbWorker
 
     #endregion
 
+    #region Token
+
     internal static bool AddToken(RefreshToken token)
     {
         if (!IsLoad) throw new DbNotLoadException();
@@ -306,4 +308,16 @@ public static class DbWorker
         _db.RefreshTokens.Remove(strtoken);
         return strtoken.Profile;
     }
+
+    #endregion
+
+    #region ServicePackage
+
+    internal static IEnumerable<ServicePackage> GetServicePackages()
+    {
+        if (!IsLoad) throw new DbNotLoadException();
+        return _db!.ServicePackages;
+    }
+
+    #endregion
 }

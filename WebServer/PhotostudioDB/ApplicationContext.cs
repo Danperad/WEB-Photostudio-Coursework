@@ -57,7 +57,8 @@ public sealed class ApplicationContext : DbContext
         modelBuilder.Entity<PhotoVideoService>(EntityConfigure.PhotoVideoServiceConfigure);
         modelBuilder.Entity<RentService>(EntityConfigure.RentServiceConfigure);
         modelBuilder.Entity<StyleService>(EntityConfigure.StyleServiceConfigure);
-        modelBuilder.Entity<RefreshToken>().HasIndex(a => a.Token).IsUnique();
+        modelBuilder.Entity<RefreshToken>(EntityConfigure.RefreshTokenConfigure);
+        modelBuilder.Entity<ServicePackage>(EntityConfigure.ServicePackageConfigure);
     }
 
     public override void Dispose()
@@ -84,9 +85,8 @@ public sealed class ApplicationContext : DbContext
     internal DbSet<Role> Roles { get; set; } = null!;
     internal DbSet<Service> Services { get; set; } = null!;
     internal DbSet<Status> Statuses { get; set; } = null!;
-    
     internal DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
-    
+    internal DbSet<ServicePackage> ServicePackages { get; set; } = null!;
 
     #endregion
 }

@@ -105,11 +105,11 @@ function Header() {
 					</Box>
 
 					<Box sx={{flexGrow: 0}}>
-						{user.auth ? (
+						{user.client.isAuth ? (
 							<>
 								<Tooltip title="Откыть меню">
 									<IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-										<Avatar alt={user.client!.login.toUpperCase()} src={user.client!.avatar}/>
+										<Avatar alt={user.client.client!.login.toUpperCase()} src={user.client.client!.avatar}/>
 									</IconButton>
 								</Tooltip>
 								<Menu sx={{mt: '45px'}} id="menu-appbar" anchorEl={anchorElUser}

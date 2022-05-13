@@ -1,6 +1,4 @@
-﻿using PhotostudioDB.Exceptions;
-
-namespace PhotostudioDB.Models;
+﻿namespace PhotostudioDB.Models;
 
 public class Hall
 {
