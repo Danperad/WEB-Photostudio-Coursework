@@ -1,6 +1,4 @@
-﻿using PhotostudioDB.Models.Services;
-
-namespace PhotostudioDB.Models;
+﻿namespace PhotostudioDB.Models;
 
 public class Order
 {

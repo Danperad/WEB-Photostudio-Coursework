@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PhotostudioDB.Exceptions;
 using PhotostudioDB.Models;
-using PhotostudioDB.Models.Services;
 
 namespace PhotostudioDB;
 

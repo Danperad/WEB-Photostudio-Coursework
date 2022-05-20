@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PhotostudioDB.Models;
-using PhotostudioDB.Models.Services;
 
 namespace PhotostudioDB;
 
@@ -53,10 +52,6 @@ public sealed class ApplicationContext : DbContext
         modelBuilder.Entity<Service>(EntityConfigure.ServiceConfigure);
         modelBuilder.Entity<Status>(EntityConfigure.StatusConfigure);
         modelBuilder.Entity<ApplicationService>(EntityConfigure.ApplicationServiceConfigure);
-        modelBuilder.Entity<HallRentService>(EntityConfigure.HallRentServiceConfigure);
-        modelBuilder.Entity<PhotoVideoService>(EntityConfigure.PhotoVideoServiceConfigure);
-        modelBuilder.Entity<RentService>(EntityConfigure.RentServiceConfigure);
-        modelBuilder.Entity<StyleService>(EntityConfigure.StyleServiceConfigure);
         modelBuilder.Entity<RefreshToken>(EntityConfigure.RefreshTokenConfigure);
         modelBuilder.Entity<ServicePackage>(EntityConfigure.ServicePackageConfigure);
     }
@@ -65,10 +60,6 @@ public sealed class ApplicationContext : DbContext
 
     internal DbSet<Address> Addresses { get; set; } = null!;
     internal DbSet<ApplicationService> ApplicationServices { get; set; } = null!;
-    internal DbSet<HallRentService> HallRentServices { get; set; } = null!;
-    internal DbSet<PhotoVideoService> PhotoVideoServices { get; set; } = null!;
-    internal DbSet<RentService> RentServices { get; set; } = null!;
-    internal DbSet<StyleService> StyleServices { get; set; } = null!;
     internal DbSet<Client> Clients { get; set; } = null!;
     internal DbSet<Contract> Contracts { get; set; } = null!;
     internal DbSet<Employee> Employees { get; set; } = null!;

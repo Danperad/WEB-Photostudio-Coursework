@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PhotostudioDB.Models;
-using PhotostudioDB.Models.Services;
 
 namespace PhotostudioDB;
 
@@ -149,60 +148,14 @@ internal static class EntityConfigure
         builder.Property(a => a.ServiceId).HasColumnName("service_id");
         builder.Property(a => a.EmployeeId).HasColumnName("employee_id");
         builder.Property(a => a.StatusId).HasColumnName("status_id");
-    }
+        builder.Property(a => a.HallId).HasColumnName("hall_id");
+        builder.Property(a => a.StartDateTime).HasColumnName("start_date_time");
+        builder.Property(a => a.Duration).HasColumnName("duration");
+        builder.Property(a => a.AddressId).HasColumnName("address_id");
+        builder.Property(a => a.IsFullTime).HasColumnName("is_full_time");
+        builder.Property(a => a.RentedItemId).HasColumnName("rented_item_id");
+        builder.Property(a => a.Number).HasColumnName("number");
 
-    internal static void HallRentServiceConfigure(EntityTypeBuilder<HallRentService> builder)
-    {
-        builder.ToTable("application_services");
-        builder.Property(h => h.Id).HasColumnName("id");
-        builder.Property(h => h.OrderId).HasColumnName("order_id");
-        builder.Property(h => h.ServiceId).HasColumnName("service_id");
-        builder.Property(h => h.EmployeeId).HasColumnName("employee_id");
-        builder.Property(h => h.StatusId).HasColumnName("status_id");
-        builder.Property(h => h.HallId).HasColumnName("hall_id");
-        builder.Property(h => h.StartDateTime).HasColumnName("start_date_time");
-        builder.Property(h => h.Duration).HasColumnName("duration");
-    }
-
-    internal static void PhotoVideoServiceConfigure(EntityTypeBuilder<PhotoVideoService> builder)
-    {
-        builder.ToTable("application_services");
-        builder.Property(p => p.Id).HasColumnName("id");
-        builder.Property(p => p.OrderId).HasColumnName("order_id");
-        builder.Property(p => p.ServiceId).HasColumnName("service_id");
-        builder.Property(p => p.EmployeeId).HasColumnName("employee_id");
-        builder.Property(p => p.StatusId).HasColumnName("status_id");
-        builder.Property(p => p.AddressId).HasColumnName("address_id");
-        builder.Property(h => h.StartDateTime).HasColumnName("start_date_time");
-        builder.Property(h => h.Duration).HasColumnName("duration");
-    }
-
-    internal static void RentServiceConfigure(EntityTypeBuilder<RentService> builder)
-    {
-        builder.ToTable("application_services");
-        builder.Property(r => r.Id).HasColumnName("id");
-        builder.Property(r => r.OrderId).HasColumnName("order_id");
-        builder.Property(r => r.ServiceId).HasColumnName("service_id");
-        builder.Property(r => r.EmployeeId).HasColumnName("employee_id");
-        builder.Property(r => r.StatusId).HasColumnName("status_id");
-        builder.Property(r => r.Number).HasColumnName("number");
-        builder.Property(r => r.RentedItemId).HasColumnName("rented_item_id");
-        builder.Property(h => h.StartDateTime).HasColumnName("start_date_time");
-        builder.Property(h => h.Duration).HasColumnName("duration");
-    }
-
-    internal static void StyleServiceConfigure(EntityTypeBuilder<StyleService> builder)
-    {
-        builder.ToTable("application_services");
-        builder.Property(p => p.Id).HasColumnName("id");
-        builder.Property(p => p.OrderId).HasColumnName("order_id");
-        builder.Property(p => p.ServiceId).HasColumnName("service_id");
-        builder.Property(p => p.EmployeeId).HasColumnName("employee_id");
-        builder.Property(p => p.StatusId).HasColumnName("status_id");
-        builder.Property(p => p.AddressId).HasColumnName("address_id");
-        builder.Property(c => c.IsFullTime).HasDefaultValue(false).HasColumnName("is_full_time");
-        builder.Property(h => h.StartDateTime).HasColumnName("start_date_time");
-        builder.Property(h => h.Duration).HasColumnName("duration");
     }
 
     internal static void ServicePackageConfigure(EntityTypeBuilder<ServicePackage> builder)
