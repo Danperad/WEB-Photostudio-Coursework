@@ -1,28 +1,20 @@
 import React from 'react';
-import {YMaps, Map} from 'react-yandex-maps';
-import axios from "axios";
-import {Typography} from "@mui/material";
+import {Container} from "@mui/material";
+import Carousel from 'react-material-ui-carousel'
+import img from '../assets/images/App-1.jpg'
+import img2 from '../assets/images/App-2.jpg'
+import { Paper, CardMedia } from '@mui/material'
 
 function App() {
-	const API_KEY = 'c8950d58-d7e5-4bbe-996e-9981ae99ac9d';
-	const onClick = (e: any) => {
-		what(e.get('coords'));
-	}
-	const url = 'https://geocode-maps.yandex.ru/1.x/?apikey=' + API_KEY + '&format=json&geocode='
-	const what = (e: Array<number>) => {
-		axios.get(url + e[1] + ',' + e[0]).then((res) => {
-			console.log(res.data.response.GeoObjectCollection.featureMember[0].GeoObject.metaDataProperty.GeocoderMetaData.Address.Components)
-		})
-	}
-
+	const items = [img, img2]
 	return (
-		/*<YMaps query={{apikey: API_KEY, load: "package.full"}}>
-			<Map defaultState={{center: [58.604368690570226, 49.66600701212868], zoom: 17}} onClick={onClick}
-					 style={{height: '400px'}}/>
-		</YMaps>*/
-		<div>
-			<Typography color={"wheat"}>Hi</Typography>
-		</div>
+		<Container sx={{width: '40%'}}>
+			<Carousel animation={"fade"} indicators={false} >
+				{
+					items.map((item, i) => <CardMedia component={'img'} key={i} src={item} />)
+				}
+			</Carousel>
+		</Container>
 	);
 }
 

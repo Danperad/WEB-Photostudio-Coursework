@@ -61,12 +61,6 @@ public sealed class ApplicationContext : DbContext
         modelBuilder.Entity<ServicePackage>(EntityConfigure.ServicePackageConfigure);
     }
 
-    public override void Dispose()
-    {
-        DbWorker.UnLoad();
-        base.Dispose();
-    }
-
     #region Tables
 
     internal DbSet<Address> Addresses { get; set; } = null!;

@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {Client} from "../../models/ClientModel";
+import {Client} from "../../models/Models";
 
 export interface State {
 	isAuth: boolean,

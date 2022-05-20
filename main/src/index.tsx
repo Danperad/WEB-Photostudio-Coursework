@@ -2,11 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import reportWebVitals from './reportWebVitals';
 import {createTheme, ThemeProvider} from "@mui/material";
-import {blue, grey} from "@mui/material/colors";
+import {deepPurple, purple} from "@mui/material/colors";
 import App from "./routes/App";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Auth from "./routes/Auth";
-import "./assets/css/main.css"
 import Header from "./components/Header";
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import {LocalizationProvider} from '@mui/x-date-pickers';
@@ -14,18 +13,18 @@ import Profile from "./routes/Profile";
 import {Provider} from "react-redux";
 import {store} from './redux/store';
 import Services from "./routes/Services";
+import './assets/css/index.css';
 
 const dark = createTheme({
 	palette: {
-		mode: 'dark',
-		divider: blue[700],
-		background: {
-			default: blue[900],
-			paper: blue[900],
+		mode: 'light',
+		primary: {
+			main: purple["500"],
+			contrastText: '#ffffff'
 		},
-		text: {
-			primary: '#fff',
-			secondary: grey[500],
+		secondary: {
+			main: deepPurple["700"],
+			contrastText: '#ffffff'
 		},
 	},
 });
@@ -39,8 +38,11 @@ ReactDOM.render(
 						<Routes>
 							<Route path={"/"} element={<App/>}/>
 							<Route path={"profile"} element={<Profile/>}/>
-							<Route path={"auth"} element={<Auth/>}/>
+							<Route path={"register"} element={<Auth/>}/>
 							<Route path={"services"} element={<Services/>}/>
+							<Route path={"complects"} element={<div/>}/>
+							<Route path={"halls"} element={<div/>}/>
+							<Route path={"about"} element={<div/>}/>
 						</Routes>
 					</BrowserRouter>
 				</LocalizationProvider>

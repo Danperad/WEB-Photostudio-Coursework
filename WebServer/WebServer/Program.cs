@@ -20,5 +20,6 @@ internal class Program
         Console.WriteLine("Server started");
         Console.Read();
         server.Stop();
+        DbWorker.UnLoad();
     }
 }

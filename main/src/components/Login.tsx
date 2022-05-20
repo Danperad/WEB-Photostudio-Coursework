@@ -2,10 +2,10 @@ import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import sha256 from "sha256";
 import {Button, Stack, TextField, Typography} from "@mui/material";
-import {LoginModel} from '../models/RequestModels';
+import {LoginModel} from '../models/Models';
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../redux/store";
-import AuthService from "../redux/services/AuthService";
+import AuthService from "../services/AuthService";
 import {LoginSuccess} from "../redux/actions/authActions";
 
 interface State {
@@ -40,12 +40,12 @@ function Login() {
 
 	return (
 		<Stack spacing={1}>
-			<Typography variant={"h5"} component={"h5"} color={"white"}>Авторизация</Typography>
-			<TextField value={values.login} onChange={handleChange('login')} type={"text"} color={"primary"}
-								 variant={"outlined"} size={"small"} label={"Логин"}/>
-			<TextField value={values.password} onChange={handleChange('password')} type={"password"} color={"primary"}
-								 variant={"outlined"} size={"small"} label={"Пароль"}/>
-			<Button type={"button"} variant={"outlined"} onClick={onClick}>Авторизоваться</Button>
+			<Typography variant={"h5"} component={"h5"}>Авторизация</Typography>
+			<TextField value={values.login} onChange={handleChange('login')} type={"text"} variant={"standard"} size={"small"}
+								 label={"Логин"}/>
+			<TextField value={values.password} onChange={handleChange('password')} type={"password"} variant={"standard"}
+								 size={"small"} label={"Пароль"}/>
+			<Button type={"button"} variant={"contained"} onClick={onClick}>Авторизоваться</Button>
 		</Stack>
 	);
 }

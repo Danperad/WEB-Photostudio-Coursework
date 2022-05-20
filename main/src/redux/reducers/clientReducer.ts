@@ -1,5 +1,5 @@
 import {createReducer, PayloadAction} from "@reduxjs/toolkit";
-import {Client} from '../../models/ClientModel'
+import {Client} from '../../models/Models'
 import {AddedAvatar, AvatarError, UpdateUser} from "../actions/clientActions";
 
 const client = localStorage.getItem('user') === null ? null : JSON.parse(localStorage.getItem('user')!) as Client

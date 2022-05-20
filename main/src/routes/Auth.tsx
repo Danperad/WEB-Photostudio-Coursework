@@ -1,7 +1,5 @@
 import React, {useEffect} from 'react';
-import '../assets/css/header.css';
 import {useNavigate} from "react-router-dom";
-import Login from '../components/Login';
 import Registration from "../components/Registration";
 import {Stack} from "@mui/material";
 import {useSelector} from "react-redux";
@@ -18,7 +16,6 @@ function Auth() {
 	});
 	return (
 		<Stack direction={"row"} alignItems={"center"} justifyContent={"center"} spacing={15}>
-			<Login/>
 			<Registration/>
 		</Stack>
 	)

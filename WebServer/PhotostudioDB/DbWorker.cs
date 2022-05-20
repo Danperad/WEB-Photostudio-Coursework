@@ -32,6 +32,7 @@ public static class DbWorker
     public static bool UnLoad()
     {
         if (_db is null) return false;
+        _db.Dispose();
         _db = null;
         _isTrying = false;
         return true;

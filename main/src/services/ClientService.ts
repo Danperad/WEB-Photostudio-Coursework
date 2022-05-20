@@ -1,8 +1,8 @@
 import axios from 'axios';
-import authHeader from '../AuthHeader';
-import {Answer} from "../../models/RequestModels";
-import {AvatarError} from '../actions/clientActions'
-import {clientActions} from "../slices/clientSlice";
+import authHeader from '../redux/AuthHeader';
+import {Answer} from "../models/Models";
+import {AvatarError} from '../redux/actions/clientActions'
+import {clientActions} from "../redux/slices/clientSlice";
 const API_URL = "http://localhost:8888/client/"
 
 class ClientService {
@@ -11,6 +11,7 @@ class ClientService {
 			.then((res) => {
 				const data: Answer = res.data;
 				if (data.status){
+					localStorage.setItem('user', JSON.stringify(data.answer.user))
 					return clientActions.addedAvatar(data.answer.user);
 				}
 				return AvatarError(data.errorText!);

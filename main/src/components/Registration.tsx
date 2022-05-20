@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import sha256 from "sha256";
-import {RegistrationModel} from '../models/RequestModels'
-import {Button, Stack, TextField, Typography} from "@mui/material";
-import AuthService from "../redux/services/AuthService";
+import {RegistrationModel} from '../models/Models'
+import {Button, Stack, TextField, Typography, FormControl} from "@mui/material";
+import AuthService from "../services/AuthService";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../redux/store";
 import {RegisterSuccess} from "../redux/actions/authActions";
+import MuiPhoneNumber from "material-ui-phone-number";
 
 interface State {
 	login: string,
@@ -46,7 +47,7 @@ function Registration() {
 		};
 		AuthService.register(data).then((res) => {
 			dispatch(res)
-			if (res.type === RegisterSuccess.type){
+			if (res.type === RegisterSuccess.type) {
 				navigate("/");
 			}
 		});
@@ -56,33 +57,42 @@ function Registration() {
 		setValues({...values, [prop]: event.target.value.trim()});
 	};
 
+	const handlePhoneChange = (e: any) => {
+		console.log(e)
+		setValues({...values, phone: e})
+	};
+
 	return (
-		<Stack spacing={1}>
-			<Typography variant={"h5"} component={"h5"} color={"white"}>Регистрация</Typography>
-			<Stack direction={"row"} spacing={1}>
-				<Stack spacing={1}>
-					<TextField label={"Фамилия"} value={values.lastname} onChange={handleChange('lastname')} type={"text"}
-										 color={"primary"} variant={"outlined"} size={"small"}/>
-					<TextField label={"Отчество (если есть)"} value={values.middlename} onChange={handleChange('middlename')}
-										 type={"text"} color={"primary"} variant={"outlined"} size={"small"}/>
-					<TextField label={"Почта"} value={values.email} onChange={handleChange('email')} type={"text"}
-										 color={"primary"} variant={"outlined"} size={"small"}/>
-					<TextField label={"Пароль"} value={values.mainpassword} onChange={handleChange('mainpassword')}
-										 type={"password"} color={"primary"} variant={"outlined"} size={"small"}/>
+		<FormControl>
+			<Stack spacing={1}>
+				<Typography variant={"h5"} component={"h5"} color={"white"}>Регистрация</Typography>
+				<Stack direction={"row"} spacing={1}>
+					<Stack spacing={1}>
+						<TextField label={"Фамилия"} value={values.lastname} onChange={handleChange('lastname')} type={"text"}
+											 color={"primary"} variant={"outlined"} size={"small"} required />
+						<TextField label={"Отчество (если есть)"} value={values.middlename} onChange={handleChange('middlename')}
+											 type={"text"} color={"primary"} variant={"outlined"} size={"small"}/>
+						<TextField label={"Почта"} value={values.email} onChange={handleChange('email')} type={"email"}
+											 color={"primary"} variant={"outlined"} size={"small"} required/>
+						<TextField label={"Пароль"} value={values.mainpassword} onChange={handleChange('mainpassword')}
+											 type={"password"} color={"primary"} variant={"outlined"} size={"small"} required/>
+					</Stack>
+					<Stack spacing={1}>
+						<TextField label={"Имя"} value={values.firstname} onChange={handleChange('firstname')} type={"text"}
+											 color={"primary"} variant={"outlined"} size={"small"} required/>
+						<MuiPhoneNumber label={"Телефон"} value={values.phone} onChange={handlePhoneChange} data-cy="user-phone"
+														defaultCountry={"ru"} color={"primary"} variant={"outlined"} size={"small"} disableDropdown
+														required/>
+						<TextField label={"Логин"} value={values.login} onChange={handleChange('login')} type={"text"}
+											 color={"primary"} variant={"outlined"} size={"small"} required/>
+						<TextField label={"Повторите пароль"} value={values.passwordcheck} onChange={handleChange('passwordcheck')}
+											 type={"password"} color={"primary"} variant={"outlined"} size={"small"} required/>
+					</Stack>
 				</Stack>
-				<Stack spacing={1}>
-					<TextField label={"Имя"} value={values.firstname} onChange={handleChange('firstname')} type={"text"}
-										 color={"primary"} variant={"outlined"} size={"small"}/>
-					<TextField label={"Телефон"} value={values.phone} onChange={handleChange('phone')} type={"text"}
-										 color={"primary"} variant={"outlined"} size={"small"}/>
-					<TextField label={"Логин"} value={values.login} onChange={handleChange('login')} type={"text"}
-										 color={"primary"} variant={"outlined"} size={"small"}/>
-					<TextField label={"Повторите пароль"} value={values.passwordcheck} onChange={handleChange('passwordcheck')}
-										 type={"password"} color={"primary"} variant={"outlined"} size={"small"}/>
-				</Stack>
+				<Button type={"button"} variant={"contained"} color={"secondary"} onClick={onClick}
+								disableElevation>Регистрация</Button>
 			</Stack>
-			<Button type={"button"} variant={"outlined"} onClick={onClick}>Регистрация</Button>
-		</Stack>
+		</FormControl>
 	);
 }
 

@@ -1,9 +1,8 @@
 import axios from 'axios';
-import {Answer, LoginModel, RegistrationModel} from "../../models/RequestModels";
 import {removeCookie, setCookie} from "typescript-cookie";
-import {RegisterFail, LoginFail} from "../actions/authActions"
-import {Client} from "../../models/ClientModel";
-import {clientActions, State} from '../slices/clientSlice'
+import {RegisterFail, LoginFail} from "../redux/actions/authActions"
+import {Answer, LoginModel, RegistrationModel, Client} from "../models/Models";
+import {clientActions, State} from '../redux/slices/clientSlice'
 
 const API_URL = "http://localhost:8888/auth/"
 

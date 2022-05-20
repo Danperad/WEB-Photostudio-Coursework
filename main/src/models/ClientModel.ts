@@ -1,4 +1,4 @@
-export interface Client {
+declare type Client = {
 	id: number
 	lastName: string,
 	firstName: string,
@@ -9,3 +9,4 @@ export interface Client {
 	company: string | null,
 	avatar: string | undefined
 }
+export default Client;

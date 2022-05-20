@@ -1,4 +1,4 @@
-export interface ServiceModel{
+declare type ServiceModel = {
 	Id: Number,
 	Title: string,
 	Description: string,
@@ -6,3 +6,5 @@ export interface ServiceModel{
 	Type: Number,
 	Photos: string[]
 }
+
+export default ServiceModel;

@@ -1,6 +1,5 @@
 import axios from "axios";
-import {Answer} from "../../models/RequestModels";
-import {ServiceModel} from "../../models/ServiceModel";
+import {Answer, ServiceModel} from "../models/Models";
 
 const API_URL = "http://localhost:8888/services/"
 class ServicesService {
