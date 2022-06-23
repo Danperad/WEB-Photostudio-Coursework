@@ -1,11 +1,11 @@
 declare type RegistrationModel = {
 	login: string,
 	password: string,
-	lastname: string,
-	firstname: string,
+	lastName: string,
+	firstName: string,
 	phone: string,
-	middlename: string,
-	email: string
+	middleName: string,
+	eMail: string
 }
 
 export default RegistrationModel;

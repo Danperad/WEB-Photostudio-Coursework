@@ -2,12 +2,16 @@
 
 public class Client : Human
 {
+    public new bool Check()
+    {
+        return base.Check();
+    }
+
     #region Props
 
     public bool IsActive { get; internal set; }
     public int? ProfileId { get; internal set; }
     public Profile? Profile { get; internal set; }
-    public string? Company { get; internal set; }
     public IEnumerable<Order> Orders { get; internal set; }
     public IEnumerable<Contract> Contracts { get; internal set; }
     public string? Avatar { get; set; }
@@ -23,24 +27,17 @@ public class Client : Human
         Contracts = new List<Contract>();
     }
 
-    public Client(string lastName, string firstName, string phone, string? company = null) : base(lastName, firstName,
-        phone)
+    public Client(string lastName, string firstName, string phone) : base(lastName, firstName, phone)
     {
         IsActive = true;
-        Company = company;
         Orders = new List<Order>();
         Contracts = new List<Contract>();
     }
 
     #endregion
 
-    public new bool Check()
+    /*public bool SaveUpdate()
     {
-        return base.Check();
-    }
-
-    public bool SaveUpdate()
-    {
-        return DbWorker.Save();
-    }
+        return DbWorker.Save(this);
+    }*/
 }

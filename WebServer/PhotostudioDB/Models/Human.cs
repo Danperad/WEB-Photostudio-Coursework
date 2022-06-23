@@ -21,6 +21,9 @@ public abstract class Human
     public string EMail { get; set; }
     public string Phone { get; set; }
 
+    public string FullName => MiddleName is null ? $"{LastName} {FirstName[..1]}." 
+        : $"{LastName} {FirstName[..1]}. {MiddleName[..1]}.";
+
     #endregion
 
     #region Ctors
@@ -31,6 +34,7 @@ public abstract class Human
         LastName = "";
         FirstName = "";
         Phone = "";
+        EMail = "";
     }
 
     protected Human(string lastName, string firstName, string phone)
@@ -38,6 +42,7 @@ public abstract class Human
         LastName = lastName;
         FirstName = firstName;
         Phone = phone;
+        EMail = "";
     }
 
     #endregion

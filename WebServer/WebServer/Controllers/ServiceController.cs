@@ -1,4 +1,5 @@
-﻿using PhotostudioDB.Models;
+﻿using System.Web;
+using PhotostudioDB;
 using RestPanda.Requests;
 using RestPanda.Requests.Attributes;
 using WebServer.Models;
@@ -11,6 +12,27 @@ public class ServiceController : RequestHandler
     [Get("/get")]
     public void GetServices()
     {
-        Send(new AnswerModel(true, new {services = Service.GetServices()}, null, null));
+        var count = GetParams<int>("count");
+        var startWith = GetParams<int>("start");
+        var order = GetParams<int>("order");
+        var type = GetParams<int>("type");
+        var search = GetParams<string>("search");
+        using var db = new ApplicationContext();
+        var services = type != 0 ? db.Services.Where(s => s.Type == type).ToList() : db.Services.ToList();
+        services = order switch
+        {
+            2 => services.OrderBy(o => o.Cost).ThenBy(o => o.Title).ToList(),
+            3 => services.OrderByDescending(o => o.Rating).ThenBy(o => o.Title).ToList(),
+            _ => services.OrderBy(o => o.Title).ToList()
+        };
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            search = HttpUtility.UrlDecode(search);
+            services = services.Where(s => s.Title.ToLower().Contains(search.ToLower())).ToList();
+        }
+
+        if (startWith != 0 && count != 0)
+            services = services.Take(new Range(startWith - 1, startWith - 1 + count)).ToList();
+        Send(new AnswerModel(true, new {services = ServiceModel.ConvertList(services)}, null));
     }
 }

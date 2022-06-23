@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using PhotostudioDB.Exceptions;
 using PhotostudioDB.Models;
 
@@ -18,7 +19,7 @@ public static class DbWorker
             _isTrying = true;
             try
             {
-                _db = new ApplicationContext(ApplicationContext.GetDb());
+                _db = new ApplicationContext();
                 return true;
             }
             catch
@@ -43,6 +44,22 @@ public static class DbWorker
         try
         {
             _db!.SaveChanges();
+        }
+        catch
+        {
+            return false;
+        }
+
+        return true;
+    }
+    
+    internal static bool Save(Client client)
+    {
+        try
+        {
+            using var db = new ApplicationContext();
+            db.Attach(client).DetectChanges();
+            db.SaveChanges();
         }
         catch
         {
@@ -104,25 +121,32 @@ public static class DbWorker
 
     internal static Client? GetClientLogin(string login)
     {
-        if (!IsLoad) throw new DbNotLoadException();
-        return _db!.Clients.Include(c => c.Profile).FirstOrDefault(c => c.Profile!.Login == login);
+        /*if (!IsLoad) throw new DbNotLoadException();#1#
+        using var db = new ApplicationContext();
+        return db.Clients.Include(c => c.Profile).FirstOrDefault(c => c.Profile!.Login == login);
     }
 
     internal static Client? GetClientAuth(string login, string pass)
     {
-        if (!IsLoad) throw new DbNotLoadException();
+        /*if (!IsLoad) throw new DbNotLoadException();
         return _db!.Clients.Include(c => c.Profile).Include(c => c.Orders)
             .ThenInclude(o => o.Services).FirstOrDefault(
-                c => c.Profile != null && c.Profile.Login == login && c.Profile.Pass == pass);
+                c => c.Profile != null && c.Profile.Login == login && c.Profile.Pass == pass);#1#
+        using var db = new ApplicationContext();
+        return db.Clients.Include(c => c.Profile).FirstOrDefault(
+                c => c.Profile != null && c.Profile.IsActive && c.Profile.Login == login && c.Profile.Pass == pass);
     }
 
     internal static bool RegisterClient(Profile client)
     {
+        /*
         if (!IsLoad) throw new DbNotLoadException();
+        #1#
         try
         {
-            _db!.Profiles.Add(client);
-            _db.SaveChanges();
+            using var db = new ApplicationContext();
+            db.Profiles.Add(client);
+            db.SaveChanges();
             return true;
         }
         catch
@@ -197,8 +221,13 @@ public static class DbWorker
 
     internal static IEnumerable<Service> GetServices()
     {
-        if (!IsLoad) throw new DbNotLoadException();
-        return _db!.Services;
+        /*if (!IsLoad) throw new DbNotLoadException();
+        return _db!.Services;#1#
+        using var db = new ApplicationContext();
+        var services = db.Services.OrderBy(s => s.Title);
+        var list = new List<Service>(services.Count());
+        list.AddRange(services.Select(service => (Service) service.Clone()));
+        return list;
     }
 
     #endregion
@@ -285,7 +314,18 @@ public static class DbWorker
 
     internal static bool AddToken(RefreshToken token)
     {
-        if (!IsLoad) throw new DbNotLoadException();
+        try
+        {
+            using var db = new ApplicationContext();
+            db.RefreshTokens.Add(token);
+            db.SaveChanges();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+        /*if (!IsLoad) throw new DbNotLoadException();
         try
         {
             _db!.RefreshTokens.Add(token);
@@ -296,16 +336,23 @@ public static class DbWorker
             return false;
         }
 
-        return true;
+        return true;#1#
     }
 
     internal static Profile? GetToken(string token)
     {
-        if (!IsLoad) throw new DbNotLoadException();
+        /*if (!IsLoad) throw new DbNotLoadException();
         var strtoken = _db!.RefreshTokens.Include(r => r.Profile)
             .ThenInclude(p => p.Client).FirstOrDefault(a => a.Token == token);
         if (strtoken is null) return null;
         _db.RefreshTokens.Remove(strtoken);
+        return strtoken.Profile;#1#
+        using var db = new ApplicationContext();
+        var strtoken = db.RefreshTokens.Include(r => r.Profile)
+            .ThenInclude(p => p.Client).FirstOrDefault(a => a.Token == token);
+        if (strtoken is null) return null;
+        db.RefreshTokens.Remove(strtoken);
+        db.SaveChanges();
         return strtoken.Profile;
     }
 
@@ -320,4 +367,12 @@ public static class DbWorker
     }
 
     #endregion
-}
+
+    internal static void RemoveTokens()
+    {
+        if (!IsLoad) throw new DbNotLoadException();
+        var tokens = _db!.RefreshTokens.Where(r => r.SignDate + new TimeSpan(90, 0, 0, 0) > DateTime.Now);
+        _db.RefreshTokens.RemoveRange(tokens);
+    }
+}*/
+

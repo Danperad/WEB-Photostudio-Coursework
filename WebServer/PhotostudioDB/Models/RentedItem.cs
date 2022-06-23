@@ -16,12 +16,12 @@ public class RentedItem
     #region Props
 
     public int Id { get; internal set; }
-    public string Title { get;internal set; }
-    public string Description { get;internal set; }
-    public decimal Cost { get;internal set; }
-    public uint Number { get;internal set; }
-    public bool IsСlothes { get;internal set; }
-    public bool IsKids { get;internal set; }
+    public string Title { get; internal set; }
+    public string Description { get; internal set; }
+    public decimal Cost { get; internal set; }
+    public uint Number { get; internal set; }
+    public bool IsСlothes { get; internal set; }
+    public bool IsKids { get; internal set; }
 
     #endregion
 }

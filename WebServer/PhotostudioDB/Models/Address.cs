@@ -15,14 +15,14 @@ public class Address
     #endregion
 
     #region Ctors
-    
+
     internal Address()
     {
         Id = 0;
         Street = "";
         HouseNumber = "";
     }
-    
+
     public Address(string street, string houseNumber)
     {
         Street = street;
@@ -31,6 +31,7 @@ public class Address
 
     #endregion
 
+    /*
     #region Methods
     
     public bool AddAddress()
@@ -44,4 +45,5 @@ public class Address
     }
 
     #endregion
+*/
 }

@@ -6,7 +6,6 @@ import {Button, Stack, TextField, Typography, FormControl} from "@mui/material";
 import AuthService from "../services/AuthService";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../redux/store";
-import {RegisterSuccess} from "../redux/actions/authActions";
 import MuiPhoneNumber from "material-ui-phone-number";
 
 interface State {
@@ -39,17 +38,14 @@ function Registration() {
 		const data: RegistrationModel = {
 			login: values.login,
 			password: sha256(values.mainpassword),
-			lastname: values.lastname,
-			firstname: values.firstname,
+			lastName: values.lastname,
+			firstName: values.firstname,
 			phone: values.phone,
-			middlename: values.middlename,
-			email: values.email
+			middleName: values.middlename,
+			eMail: values.email
 		};
 		AuthService.register(data).then((res) => {
 			dispatch(res)
-			if (res.type === RegisterSuccess.type) {
-				navigate("/");
-			}
 		});
 	};
 
@@ -58,8 +54,7 @@ function Registration() {
 	};
 
 	const handlePhoneChange = (e: any) => {
-		console.log(e)
-		setValues({...values, phone: e})
+		setValues({...values, phone: e.replace(/\D/g,'')})
 	};
 
 	return (

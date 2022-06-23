@@ -1,7 +1,14 @@
-﻿namespace WebServer.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace WebServer.Models;
 
 public class AuthModel
 {
-    public string login { get; set; }
-    public string password { get; set; }
+    public AuthModel()
+    {
+        Login = Password = "";
+    }
+
+    [JsonPropertyName("login")] public string Login { get; set; }
+    [JsonPropertyName("password")] public string Password { get; set; }
 }

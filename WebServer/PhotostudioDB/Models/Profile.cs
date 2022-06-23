@@ -37,7 +37,7 @@ public class Profile
 
     #region Methods
 
-    public static Client? GetClientAuth(string login, string pass)
+    /*public static Client? GetClientAuth(string login, string pass)
     {
         return DbWorker.GetClientAuth(login, pass);
     }
@@ -51,7 +51,7 @@ public class Profile
     {
         if (Client is null) return false;
         return Client.Check() && DbWorker.RegisterClient(this);
-    }
-    
+    }*/
+
     #endregion
 }

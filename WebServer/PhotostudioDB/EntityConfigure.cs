@@ -30,7 +30,6 @@ internal static class EntityConfigure
         builder.HasIndex(c => c.Phone).IsUnique();
         builder.Property(c => c.IsActive).HasDefaultValue(true).HasColumnName("is_active");
         builder.Property(c => c.ProfileId).HasColumnName("profile_id");
-        builder.Property(c => c.Company).HasColumnName("company");
         builder.Property(c => c.Avatar).HasColumnName("avatar");
     }
 
@@ -59,6 +58,7 @@ internal static class EntityConfigure
         builder.HasIndex(e => e.Passport).IsUnique();
         builder.Property(e => e.Date).HasColumnName("date");
         builder.Property(e => e.RoleId).HasColumnName("role_id");
+        builder.Property(e => e.Price).HasColumnName("price").HasColumnType("money");
         builder.Property(e => e.ProfileId).HasColumnName("profile_id");
     }
 
@@ -70,6 +70,8 @@ internal static class EntityConfigure
         builder.HasIndex(h => h.Title).IsUnique();
         builder.Property(h => h.Description).HasColumnName("description");
         builder.Property(h => h.AddressId).HasColumnName("address_id");
+        builder.Property(h => h.PricePerHour).HasColumnName("price_per_hour").HasColumnType("money");
+        builder.Property(h => h.Photos).HasColumnName("photos");
     }
 
     internal static void OrderConfigure(EntityTypeBuilder<Order> builder)
@@ -128,6 +130,7 @@ internal static class EntityConfigure
         builder.Property(s => s.Description).HasColumnName("description");
         builder.Property(s => s.Type).HasColumnName("type");
         builder.Property(s => s.Photos).HasColumnName("photos");
+        builder.Property(s => s.Rating).HasColumnName("rating");
     }
 
     internal static void StatusConfigure(EntityTypeBuilder<Status> builder)
@@ -135,7 +138,6 @@ internal static class EntityConfigure
         builder.ToTable("statuses");
         builder.Property(s => s.Id).HasColumnName("id");
         builder.Property(s => s.Title).HasMaxLength(50).HasColumnName("title");
-        builder.HasIndex(s => s.Title).IsUnique();
         builder.Property(s => s.Type).HasColumnName("type");
         builder.Property(s => s.Description).HasColumnName("description");
     }
@@ -155,7 +157,6 @@ internal static class EntityConfigure
         builder.Property(a => a.IsFullTime).HasColumnName("is_full_time");
         builder.Property(a => a.RentedItemId).HasColumnName("rented_item_id");
         builder.Property(a => a.Number).HasColumnName("number");
-
     }
 
     internal static void ServicePackageConfigure(EntityTypeBuilder<ServicePackage> builder)
@@ -172,6 +173,7 @@ internal static class EntityConfigure
         builder.Property(s => s.Duration).HasColumnName("duration");
         builder.HasMany(s => s.Services).WithMany(s => s.ServicePackages)
             .UsingEntity(j => j.ToTable("service_package_to_service"));
+        builder.Property(s => s.Price).HasColumnName("price").HasColumnType("money");
     }
 
     internal static void RefreshTokenConfigure(EntityTypeBuilder<RefreshToken> builder)
@@ -179,5 +181,7 @@ internal static class EntityConfigure
         builder.ToTable("refresh_tokens");
         builder.HasKey(r => r.Token);
         builder.Property(r => r.ProfileId).HasColumnName("profile_id");
+        builder.Property(r => r.Token).HasColumnName("token");
+        builder.Property(r => r.SignDate).HasColumnName("sign_date");
     }
 }

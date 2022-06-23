@@ -1,28 +1,42 @@
-﻿namespace WebServer.Models;
+﻿using System.Text.Json.Serialization;
+using PhotostudioDB.Models;
+
+namespace WebServer.Models;
 
 public class ClientModel
 {
-    public int id { get; set; }
-    public string lastName { get; set; }
-    public string firstName { get; set; }
-    public string? middleName { get; set; }
-    public string email { get; set; }
-    public string phone { get; set; }
-    public string login { get; set; }
-    public string? company { get; set; }
-    public string? avatar { get; set; }
-
-    public ClientModel(int id, string lastName, string firstName, string? middleName, string email, string phone,
-        string login, string? company, string? avatar)
+    public ClientModel()
     {
-        this.id = id;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.email = email;
-        this.phone = phone;
-        this.login = login;
-        this.company = company;
-        this.avatar = avatar;
+        Id = 0;
+        LastName = FirstName = EMail = Phone = Login = "";
+        MiddleName = Avatar = "";
+    }
+
+    private ClientModel(int id, string lastName, string firstName, string? middleName, string eMail, string phone,
+        string login, string? avatar)
+    {
+        Id = id;
+        LastName = lastName;
+        FirstName = firstName;
+        MiddleName = middleName;
+        EMail = eMail;
+        Phone = phone;
+        Login = login;
+        Avatar = avatar;
+    }
+
+    [JsonPropertyName("id")] public int Id { get; set; }
+    [JsonPropertyName("lastName")] public string LastName { get; set; }
+    [JsonPropertyName("firstName")] public string FirstName { get; set; }
+    [JsonPropertyName("middleName")] public string? MiddleName { get; set; }
+    [JsonPropertyName("email")] public string EMail { get; set; }
+    [JsonPropertyName("phone")] public string Phone { get; set; }
+    [JsonPropertyName("login")] public string Login { get; set; }
+    [JsonPropertyName("avatar")] public string? Avatar { get; set; }
+
+    public static ClientModel GetClientModel(Client client)
+    {
+        return new ClientModel(client.Id, client.LastName, client.FirstName, client.MiddleName, client.EMail!,
+            client.Phone, client.Profile!.Login, client.Avatar);
     }
 }

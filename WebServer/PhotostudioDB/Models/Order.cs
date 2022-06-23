@@ -2,6 +2,30 @@
 
 public class Order
 {
+    #region Methods
+
+    public bool Check()
+    {
+        try
+        {
+            var c = Client;
+            var s = Status;
+        }
+        catch
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /*public bool AddOrder(IList<ApplicationService> services)
+    {
+        return Check() && DbWorker.AddOrder(this);
+    }*/
+
+    #endregion
+
     #region Props
 
     public int Id { get; internal set; }
@@ -29,37 +53,14 @@ public class Order
         Services = new List<ApplicationService>();
     }
 
-    public Order(Client client, DateTime dateTime, IEnumerable<ApplicationService> services)
+    public Order(Client client, DateTime dateTime, IEnumerable<ApplicationService> services, ServicePackage? package = null)
     {
         DateTime = DateTime.Now;
         Client = client;
         DateTime = dateTime;
         Status = new Status();
         Services = services;
-    }
-
-    #endregion
-
-    #region Methods
-
-    private bool Check()
-    {
-        try
-        {
-            var c = Client;
-            var s = Status;
-        }
-        catch
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public bool AddOrder(IList<ApplicationService> services)
-    {
-        return Check() && DbWorker.AddOrder(this);
+        ServicePackage = package;
     }
 
     #endregion

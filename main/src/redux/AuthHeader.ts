@@ -1,7 +1,10 @@
 import {getCookie} from "typescript-cookie";
+import AuthService from "../services/AuthService";
 
 export default function authHeader() : {} {
-	const token = getCookie('access_token');
+	let token = getCookie('access_token');
+	if (token === undefined) AuthService.reAuth();
+	token = getCookie('access_token');
 	if (token === undefined) return {};
-	return {"Access-Token": token};
+	return {"Authorization": token};
 }

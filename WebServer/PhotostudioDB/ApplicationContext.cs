@@ -9,13 +9,14 @@ public sealed class ApplicationContext : DbContext
 {
     private const string ConfigFile = "appsettings.json";
 
+    public ApplicationContext() : this(GetDb())
+    {
+    }
+
     internal ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-        Database.Migrate();
     }
-
-    internal static string? ConnectionStrings { get; private set; }
 
     internal static DbContextOptions<ApplicationContext> GetDb()
     {
@@ -30,12 +31,12 @@ public sealed class ApplicationContext : DbContext
         builder.AddJsonFile(ConfigFile);
         var config = builder.Build();
 
-        ConnectionStrings = config.GetConnectionString("DefaultConnection");
+        var connectionStrings = config.GetConnectionString("DefaultConnection");
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationContext>();
 #if DEBUG
         optionsBuilder.LogTo(Console.WriteLine);
 #endif
-        return optionsBuilder.UseNpgsql(ConnectionStrings).Options;
+        return optionsBuilder.UseNpgsql(connectionStrings).Options;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -58,20 +59,20 @@ public sealed class ApplicationContext : DbContext
 
     #region Tables
 
-    internal DbSet<Address> Addresses { get; set; } = null!;
-    internal DbSet<ApplicationService> ApplicationServices { get; set; } = null!;
-    internal DbSet<Client> Clients { get; set; } = null!;
-    internal DbSet<Contract> Contracts { get; set; } = null!;
-    internal DbSet<Employee> Employees { get; set; } = null!;
-    internal DbSet<Profile> Profiles { get; set; } = null!;
-    internal DbSet<Hall> Halls { get; set; } = null!;
-    internal DbSet<Order> Orders { get; set; } = null!;
-    internal DbSet<RentedItem> RentedItems { get; set; } = null!;
+    public DbSet<Address> Addresses { get; set; } = null!;
+    public DbSet<ApplicationService> ApplicationServices { get; set; } = null!;
+    public DbSet<Client> Clients { get; set; } = null!;
+    public DbSet<Contract> Contracts { get; set; } = null!;
+    public DbSet<Employee> Employees { get; set; } = null!;
+    public DbSet<Profile> Profiles { get; set; } = null!;
+    public DbSet<Hall> Halls { get; set; } = null!;
+    public DbSet<Order> Orders { get; set; } = null!;
+    public DbSet<RentedItem> RentedItems { get; set; } = null!;
     internal DbSet<Role> Roles { get; set; } = null!;
-    internal DbSet<Service> Services { get; set; } = null!;
+    public DbSet<Service> Services { get; set; } = null!;
     internal DbSet<Status> Statuses { get; set; } = null!;
-    internal DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
-    internal DbSet<ServicePackage> ServicePackages { get; set; } = null!;
+    public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+    public DbSet<ServicePackage> ServicePackages { get; set; } = null!;
 
     #endregion
 }

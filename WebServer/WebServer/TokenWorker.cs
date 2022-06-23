@@ -1,4 +1,6 @@
-﻿using PhotostudioDB.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PhotostudioDB;
+using PhotostudioDB.Models;
 using Trivial.Security;
 
 namespace WebServer;
@@ -15,6 +17,10 @@ public static class TokenWorker
     {
         var parser = new JsonWebToken<JsonWebTokenPayload>.Parser(token);
         var login = parser.GetPayload().Issuer;
-        return Profile.GetClientByLogin(login);
+        using var db = new ApplicationContext();
+        var client = db.Clients.FirstOrDefault(c => c.ProfileId.HasValue && c.Profile!.Login == login);
+        if (client is null) return null;
+        if (client.Profile is null) db.Profiles.Where(p => p.Id == client.ProfileId).Load();
+        return client;
     }
 }

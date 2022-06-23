@@ -5,17 +5,19 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FreeSpire.XLS" Version="12.2.0" />
-      <PackageReference Include="NPOI" Version="2.5.6" />
-      <PackageReference Include="RestPanda" Version="1.4.1" />
-      <PackageReference Include="Trivial" Version="6.4.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
+        <PackageReference Include="NPOI" Version="2.5.6" />
+        <PackageReference Include="RestPanda" Version="1.5.2" />
+        <PackageReference Include="Trivial" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PhotostudioDB\PhotostudioDB.csproj" />
+        <ProjectReference Include="..\..\..\..\..\MyProject\Rest Panda\Rest Panda\RestPanda\RestPanda.csproj" />
+        <ProjectReference Include="..\PhotostudioDB\PhotostudioDB.csproj" />
     </ItemGroup>
 
 </Project>

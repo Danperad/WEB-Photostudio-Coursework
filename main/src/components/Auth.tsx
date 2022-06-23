@@ -7,10 +7,10 @@ import {RootState} from "../redux/store";
 
 function Auth() {
 	const navigate = useNavigate();
-	const user = useSelector((state: RootState) => state);
+	const rootState = useSelector((state: RootState) => state);
 
 	useEffect(() => {
-		if (user.client.isAuth) {
+		if (rootState.client.isAuth) {
 			navigate("/");
 		}
 	});

@@ -6,7 +6,6 @@ import {LoginModel} from '../models/Models';
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../redux/store";
 import AuthService from "../services/AuthService";
-import {LoginSuccess} from "../redux/actions/authActions";
 
 interface State {
 	login: string,
@@ -32,9 +31,6 @@ function Login() {
 		};
 		AuthService.login(data).then((res) => {
 			dispatch(res)
-			if (res.type === LoginSuccess.type) {
-				navigate("/");
-			}
 		})
 	};
 

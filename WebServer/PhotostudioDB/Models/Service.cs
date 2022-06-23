@@ -1,24 +1,7 @@
 ﻿namespace PhotostudioDB.Models;
 
-public class Service
+public class Service : ICloneable
 {
-    public static IEnumerable<Service> GetServices()
-    {
-        return DbWorker.GetServices();
-    }
-
-    #region Props
-
-    public int Id { get; internal set; }
-    public string Title { get;internal set; }
-    public string Description { get;internal set; }
-    public decimal? Cost { get;internal set; }
-    public List<string> Photos { get; internal set; }
-    public int Type { get;internal set; }
-    public IEnumerable<ServicePackage> ServicePackages { get; set; }
-
-    #endregion
-
     #region Ctors
 
     internal Service()
@@ -30,6 +13,29 @@ public class Service
         Photos = new List<string>();
         ServicePackages = new List<ServicePackage>();
     }
+
+    #endregion
+
+    public object Clone()
+    {
+        return new Service
+            {Cost = Cost, Description = Description, Id = Id, Photos = Photos, Title = Title, Type = Type};
+    }
+    /*public static IEnumerable<Service> GetServices()
+    {
+        return DbWorker.GetServices();
+    }*/
+
+    #region Props
+
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public decimal Cost { get; set; }
+    public List<string> Photos { get; set; }
+    public int Type { get; set; }
+    public IEnumerable<ServicePackage> ServicePackages { get; set; }
+    public double Rating { get; set; }
 
     #endregion
 }

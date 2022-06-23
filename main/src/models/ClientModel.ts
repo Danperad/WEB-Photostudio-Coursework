@@ -3,10 +3,9 @@ declare type Client = {
 	lastName: string,
 	firstName: string,
 	middleName: string | null,
-	email: string,
+	eMail: string,
 	phone: string,
 	login: string,
-	company: string | null,
 	avatar: string | undefined
 }
 export default Client;

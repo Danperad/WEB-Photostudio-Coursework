@@ -1,24 +1,24 @@
-﻿namespace WebServer.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace WebServer.Models;
 
 public class AnswerModel
 {
-    public bool status { get; set; }
-    public object? answer { get; set; }
-    public int? error { get; set; }
-    public string? errorText { get; set; }
-
     public AnswerModel()
     {
-        status = false;
-        answer = null;
-        error = 404;
+        Status = false;
+        Answer = null;
+        Error = 404;
     }
 
-    public AnswerModel(bool status, object? answer, int? error, string? errorText)
+    public AnswerModel(bool status, object? answer, int? error)
     {
-        this.status = status;
-        this.answer = answer;
-        this.error = error;
-        this.errorText = errorText;
+        Status = status;
+        Answer = answer;
+        Error = error;
     }
+
+    [JsonPropertyName("status")] public bool Status { get; set; }
+    [JsonPropertyName("answer")] public object? Answer { get; set; }
+    [JsonPropertyName("error")] public int? Error { get; set; }
 }

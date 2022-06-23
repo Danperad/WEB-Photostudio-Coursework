@@ -36,42 +36,42 @@ public class ApplicationService
         Status = new Status();
     }
 
-    public ApplicationService(Order order, Service service, Employee employee)
+    public ApplicationService(Service service, Employee employee)
     {
-        Order = order;
         Service = service;
         Employee = employee;
         Status = new Status();
+        Order = new Order();
     }
 
-    private ApplicationService(Order order, Service service, Employee employee, DateTime startDateTime, int duration)
-        : this(order, service, employee)
+    private ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration)
+        : this(service, employee)
     {
         StartDateTime = startDateTime;
         Duration = duration;
     }
 
-    public ApplicationService(Order order, Service service, Employee employee, DateTime startDateTime, int duration,
-        Hall hall) : this(order, service, employee, startDateTime, duration)
+    public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
+        Hall hall) : this(service, employee, startDateTime, duration)
     {
         Hall = hall;
     }
 
-    public ApplicationService(Order order, Service service, Employee employee, DateTime startDateTime, int duration,
-        Address address) : this(order, service, employee, startDateTime, duration)
+    public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
+        Address address) : this(service, employee, startDateTime, duration)
     {
         Address = address;
     }
 
-    public ApplicationService(Order order, Service service, Employee employee, DateTime startDateTime, int duration,
-        int number, RentedItem rentedItem) : this(order, service, employee, startDateTime, duration)
+    public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
+        int number, RentedItem rentedItem) : this(service, employee, startDateTime, duration)
     {
         Number = number;
         RentedItem = rentedItem;
     }
 
-    public ApplicationService(Order order, Service service, Employee employee, DateTime startDateTime, int duration,
-        Address address, bool isFullTime) : this(order, service, employee, startDateTime, duration, address)
+    public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
+        Address address, bool isFullTime) : this(service, employee, startDateTime, duration, address)
     {
         IsFullTime = isFullTime;
     }
