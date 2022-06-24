@@ -4,7 +4,6 @@ import {NewService, Service} from "../models/Models";
 import AddServiceModal from "./AddServiceModal";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../redux/store";
-import CartService from "../services/CartService";
 import {cartActions} from "../redux/slices/cartSlice";
 import Carousel from 'react-material-ui-carousel'
 
@@ -51,9 +50,7 @@ export default function ServiceModal(props: ServiceModalProps) {
         }
         if (key) return;
         setKey(true);
-        CartService.checkAvailable(props.service?.id!, rootState).then((res) => {
-            setAvailable(!res);
-        })
+        setAvailable(false);
     }, [available, rootState, props, key])
     const style = {
         position: 'absolute' as 'absolute',

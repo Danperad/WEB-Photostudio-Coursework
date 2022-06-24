@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {styled} from '@mui/material/styles';
 import {
     Stack,
@@ -28,9 +28,9 @@ export default function Profile() {
     const user = useSelector((state: RootState) => state.client);
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const [key, setKey] = React.useState<boolean>(false);
+    const [key, setKey] = useState<boolean>(false);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (key) return;
         if (!user.isAuth) {
             navigate("/")
@@ -54,7 +54,7 @@ export default function Profile() {
                         <TextField label="Имя" size='small' value={user.client?.firstName!}/>
                         <TextField label="Отчество" size='small' value={user.client?.middleName!}/>
                         <TextField label="Номер телефона" size='small' value={user.client?.phone!}/>
-                        <TextField label="Email" size='small' value={user.client?.eMail!}/>
+                        <TextField label="Email" size='small' value={user.client?.email!}/>
                     </Stack>
                     <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" mt={2} ml={12}>
                         <Button variant="contained" color="secondary" size="medium" disableElevation
@@ -97,6 +97,7 @@ export default function Profile() {
                         Сформировать отчет
                     </Button>
                 </Stack>
+{/*
                 <Box sx={{flexGrow: 1}}>
                     <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
                         {Array.from(Array(2)).map((_, index) => (
@@ -123,7 +124,7 @@ export default function Profile() {
                                                 </Typography>
                                                 <Stack direction="row">
                                                     <Typography variant="subtitle1">Услуги:</Typography>
-                                                    {/* map */}
+                                                     map
                                                     <Typography>услуга1, </Typography>
                                                 </Stack>
                                                 <Stack direction="row" justifyContent="space-between"
@@ -141,6 +142,7 @@ export default function Profile() {
                         ))}
                     </Grid>
                 </Box>
+*/}
             </Box>
         </div>
     );

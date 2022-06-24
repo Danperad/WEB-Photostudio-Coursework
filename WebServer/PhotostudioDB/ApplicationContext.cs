@@ -70,7 +70,7 @@ public sealed class ApplicationContext : DbContext
     public DbSet<RentedItem> RentedItems { get; set; } = null!;
     internal DbSet<Role> Roles { get; set; } = null!;
     public DbSet<Service> Services { get; set; } = null!;
-    internal DbSet<Status> Statuses { get; set; } = null!;
+    public DbSet<Status> Statuses { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
     public DbSet<ServicePackage> ServicePackages { get; set; } = null!;
 

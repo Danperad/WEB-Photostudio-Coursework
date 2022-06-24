@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../redux/store";
 import {cartActions} from "../redux/slices/cartSlice";
 import {OpenModal} from "../redux/actions/authModalActions";
+import ClientService from "../services/ClientService";
 
 export default function ShoppingCart() {
     const [dateTime, setDateTime] = useState<string>();
@@ -29,6 +30,9 @@ export default function ShoppingCart() {
             dispatch(OpenModal(true));
             return;
         }
+        ClientService.buy(state.cart).then((res) => {
+            if (res) dispatch(cartActions.ClearCart(0));
+        })
     }
     return (
         <div className='section'

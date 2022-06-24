@@ -8,21 +8,21 @@ namespace WebServer.Models;
 
 public class NewServiceModel
 {
-    [JsonPropertyName("service")] public ServiceModel Service { get; set; } = null!;
+    [JsonPropertyName("serviceId")] public int ServiceId { get; set; }
     [JsonPropertyName("startDateTime")] public long? StartDateTime { get; set; }
     [JsonPropertyName("duration")] public int? Duration { get; set; }
     [JsonPropertyName("hallId")] public int? HallId { get; set; }
     [JsonPropertyName("employeeId")] public int? EmployeeId { get; set; }
-    [JsonPropertyName("addressId")] public int? AddressId { get; set; }
+    [JsonPropertyName("address")] public string? Address { get; set; }
     [JsonPropertyName("rentedItemId")] public int? RentedItemId { get; set; }
     [JsonPropertyName("number")] public int? Number { get; set; }
     [JsonPropertyName("isFullTime")] public bool? IsFullTime { get; set; }
 
-    public static ApplicationService GetService(NewServiceModel serviceModel)
+    public static ApplicationService GetService(NewServiceModel serviceModel, ApplicationContext db)
     {
-        using var db = new ApplicationContext();
-        var service = db.Services.FirstOrDefault(s => s.Id == serviceModel.Service.Id);
+        var service = db.Services.FirstOrDefault(s => s.Id == serviceModel.ServiceId);
         if (service is null) throw new NewServiceException();
+        var status = db.Statuses.First(st => st.Id == 7);
         switch (service.Type)
         {
             case 1:
@@ -33,7 +33,7 @@ public class NewServiceModel
                     _ => db.Employees.Single(e => e.RoleId == 7)
                 };
 
-                return new ApplicationService(service, employee);
+                return new ApplicationService(service, employee, status);
             case 2:
                 if (!serviceModel.HallId.HasValue) throw new NewServiceException();
                 var hall = db.Halls.FirstOrDefault(h => h.Id == serviceModel.HallId.Value);
@@ -41,27 +41,28 @@ public class NewServiceModel
                 if (!serviceModel.StartDateTime.HasValue) throw new NewServiceException();
                 if (!serviceModel.Duration.HasValue) throw new NewServiceException();
                 return new ApplicationService(service, db.Employees.Single(e => e.RoleId == 7),
-                    new DateTime(serviceModel.StartDateTime.Value), serviceModel.Duration.Value, hall);
+                    new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
+                    serviceModel.Duration.Value, hall, status);
             case 3:
                 if (!serviceModel.StartDateTime.HasValue) throw new NewServiceException();
                 if (!serviceModel.Duration.HasValue) throw new NewServiceException();
                 if (!serviceModel.EmployeeId.HasValue) throw new NewServiceException();
                 var employee1 = db.Employees.FirstOrDefault(e => e.Id == serviceModel.EmployeeId.Value);
                 if (employee1 is null) throw new NewServiceException();
-                if (!serviceModel.HallId.HasValue && !serviceModel.AddressId.HasValue) throw new NewServiceException();
+                if (!serviceModel.HallId.HasValue && serviceModel.Address is null) throw new NewServiceException();
                 if (serviceModel.HallId.HasValue)
                 {
                     var hall1 = db.Halls.Include(h => h.Address)
                         .FirstOrDefault(h => h.Id == serviceModel.HallId.Value);
                     if (hall1 is null) throw new NewServiceException();
                     return new ApplicationService(service, employee1, new DateTime(serviceModel.StartDateTime.Value),
-                        serviceModel.Duration.Value, hall1.Address);
+                        serviceModel.Duration.Value, hall1.Address, status);
                 }
 
-                var address = db.Addresses.FirstOrDefault(a => a.Id == serviceModel.AddressId!.Value);
-                if (address is null) throw new NewServiceException();
-                return new ApplicationService(service, employee1, new DateTime(serviceModel.StartDateTime.Value),
-                    serviceModel.Duration.Value, address);
+                var split = serviceModel.Address!.Split(" ");
+                var address = db.Addresses.FirstOrDefault(a => a.Street == split[0] && a.HouseNumber == split[1]) ?? new Address(split[0], split[1]);
+                return new ApplicationService(service, employee1, new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
+                    serviceModel.Duration.Value, address, status);
             case 4:
                 if (!serviceModel.StartDateTime.HasValue) throw new NewServiceException();
                 if (!serviceModel.Duration.HasValue) throw new NewServiceException();
@@ -70,8 +71,8 @@ public class NewServiceModel
                 if (rented is null) throw new NewServiceException();
                 if (!serviceModel.Number.HasValue) throw new NewServiceException();
                 return new ApplicationService(service, db.Employees.Single(e => e.RoleId == 7),
-                    new DateTime(serviceModel.StartDateTime.Value),
-                    serviceModel.Duration.Value, serviceModel.Number.Value, rented);
+                    new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
+                    serviceModel.Duration.Value, serviceModel.Number.Value, rented, status);
             case 5:
                 if (!serviceModel.StartDateTime.HasValue) throw new NewServiceException();
                 if (!serviceModel.Duration.HasValue) throw new NewServiceException();
@@ -79,27 +80,27 @@ public class NewServiceModel
                 if (!serviceModel.EmployeeId.HasValue) throw new NewServiceException();
                 var employee2 = db.Employees.FirstOrDefault(e => e.Id == serviceModel.EmployeeId.Value);
                 if (employee2 is null) throw new NewServiceException();
-                if (!serviceModel.HallId.HasValue && !serviceModel.AddressId.HasValue) throw new NewServiceException();
+                if (!serviceModel.HallId.HasValue && serviceModel.Address is null) throw new NewServiceException();
                 if (serviceModel.HallId.HasValue)
                 {
                     var hall1 = db.Halls.Include(h => h.Address)
                         .FirstOrDefault(h => h.Id == serviceModel.HallId.Value);
                     if (hall1 is null) throw new NewServiceException();
-                    return new ApplicationService(service, employee2, new DateTime(serviceModel.StartDateTime.Value),
-                        serviceModel.Duration.Value, hall1.Address, serviceModel.IsFullTime.Value);
+                    return new ApplicationService(service, employee2, new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
+                        serviceModel.Duration.Value, hall1.Address, serviceModel.IsFullTime.Value, status);
                 }
-
-                var address1 = db.Addresses.FirstOrDefault(a => a.Id == serviceModel.AddressId!.Value);
+                var split1 = serviceModel.Address!.Split(" ");
+                var address1 = db.Addresses.FirstOrDefault(a => a.Street == split1[0] && a.HouseNumber == split1[1]) ?? new Address(split1[0], split1[1]);
                 if (address1 is null) throw new NewServiceException();
-                return new ApplicationService(service, employee2, new DateTime(serviceModel.StartDateTime.Value),
-                    serviceModel.Duration.Value, address1, serviceModel.IsFullTime.Value);
+                return new ApplicationService(service, employee2, new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
+                    serviceModel.Duration.Value, address1, serviceModel.IsFullTime.Value, status);
         }
 
         throw new NewServiceException();
     }
 
-    public static IEnumerable<ApplicationService> GetServices(IEnumerable<NewServiceModel> serviceModels)
+    public static IEnumerable<ApplicationService> GetServices(IEnumerable<NewServiceModel> serviceModels, ApplicationContext db)
     {
-        return serviceModels.Select(GetService);
+        return serviceModels.Select(s => GetService(s, db));
     }
 }

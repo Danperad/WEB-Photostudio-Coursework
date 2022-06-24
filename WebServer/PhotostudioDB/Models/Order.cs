@@ -53,12 +53,12 @@ public class Order
         Services = new List<ApplicationService>();
     }
 
-    public Order(Client client, DateTime dateTime, IEnumerable<ApplicationService> services, ServicePackage? package = null)
+    public Order(Client client, DateTime dateTime, IEnumerable<ApplicationService> services, Status status, ServicePackage? package = null)
     {
         DateTime = DateTime.Now;
         Client = client;
         DateTime = dateTime;
-        Status = new Status();
+        Status = status;
         Services = services;
         ServicePackage = package;
     }

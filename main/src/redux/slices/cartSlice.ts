@@ -27,12 +27,15 @@ const cartSlice = createSlice({
         },
         PackageAdded: (state, action: PayloadAction<NewServicePackage>) => {
             state.servicePackage = action.payload;
+            localStorage.setItem('cart', JSON.stringify(state))
         },
         PackageRemoved: (state, action: PayloadAction<NewServicePackage>) => {
             state.servicePackage = null;
+            localStorage.setItem('cart', JSON.stringify(state))
         },
-        ClearCart: (state, action) => {
-            state = {serviceModels: [], servicePackage: null};
+        ClearCart: (state, action:PayloadAction<number>) => {
+            state.servicePackage = null;
+            state.serviceModels = [] as NewService[];
             localStorage.removeItem('cart');
         }
     }

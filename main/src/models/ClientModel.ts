@@ -3,7 +3,7 @@ declare type Client = {
 	lastName: string,
 	firstName: string,
 	middleName: string | null,
-	eMail: string,
+	email: string,
 	phone: string,
 	login: string,
 	avatar: string | undefined

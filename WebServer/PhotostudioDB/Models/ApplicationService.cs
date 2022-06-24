@@ -36,42 +36,42 @@ public class ApplicationService
         Status = new Status();
     }
 
-    public ApplicationService(Service service, Employee employee)
+    public ApplicationService(Service service, Employee employee, Status status)
     {
         Service = service;
         Employee = employee;
-        Status = new Status();
+        Status = status;
         Order = new Order();
     }
 
-    private ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration)
-        : this(service, employee)
+    private ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration, Status status)
+        : this(service, employee, status)
     {
         StartDateTime = startDateTime;
         Duration = duration;
     }
 
     public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
-        Hall hall) : this(service, employee, startDateTime, duration)
+        Hall hall, Status status) : this(service, employee, startDateTime, duration, status)
     {
         Hall = hall;
     }
 
     public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
-        Address address) : this(service, employee, startDateTime, duration)
+        Address address, Status status) : this(service, employee, startDateTime, duration, status)
     {
         Address = address;
     }
 
     public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
-        int number, RentedItem rentedItem) : this(service, employee, startDateTime, duration)
+        int number, RentedItem rentedItem, Status status) : this(service, employee, startDateTime, duration, status)
     {
         Number = number;
         RentedItem = rentedItem;
     }
 
     public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
-        Address address, bool isFullTime) : this(service, employee, startDateTime, duration, address)
+        Address address, bool isFullTime, Status status) : this(service, employee, startDateTime, duration, address, status)
     {
         IsFullTime = isFullTime;
     }

@@ -1,15 +1,6 @@
 import React, {useState} from 'react';
-import {Employee, NewServicePackage, ServicePackage} from "../models/Models";
-import {
-    Box, Button,
-    FormControl,
-    InputLabel, MenuItem, Modal, Select,
-    Stack,
-    TextField,
-    Typography, SelectChangeEvent
-} from "@mui/material";
-import ICostable from "../models/ICostable";
-import EmployeeService from "../services/EmployeeService";
+import {NewServicePackage, ServicePackage} from "../models/Models";
+import {Box, Button, Modal, Stack, TextField, Typography} from "@mui/material";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../redux/store";
 import {cartActions} from "../redux/slices/cartSlice";
@@ -24,27 +15,14 @@ export default function AddServicePackageModal(props: ServicePackageModalProps) 
     const dispatch = useDispatch<AppDispatch>();
 
     const [dateTime, setDateTime] = useState<string>('');
-    const [items, setItems] = useState<Employee[]>([]);
     const [isEnabled, setEnabled] = useState<boolean>(false);
-    const [selectedItem, setSelected] = useState<string>('');
-    const [fullEnabled, setFullEnabled] = useState<boolean>(false);
 
     const check = (date: number) => {
         if (date < +Date.now()) {
             setEnabled(false);
-            setItems([]);
-            setSelected('');
-            setFullEnabled(false);
             return;
         }
-        fillItems(date);
-    }
-    const fillItems = (date: number) => {
-        EmployeeService.getFree(date, props.service!.duration, 1).then((res) => {
-            if (res.length === 0) return;
-            setItems(res);
-            setEnabled(true);
-        });
+        setEnabled(true);
     }
     const style = {
         position: 'absolute' as 'absolute',
@@ -59,36 +37,10 @@ export default function AddServicePackageModal(props: ServicePackageModalProps) 
         p: 4,
     };
 
-    const handleSelect = (event: SelectChangeEvent) => {
-        setSelected(event.target.value as string);
-        if ((event.target.value as string) === '') {
-            setFullEnabled(false)
-            return;
-        }
-        setFullEnabled(true);
-    };
-
-    const getPrice = () => {
-        let price = props.service!.cost;
-        let item : Employee | null = null;
-        items.forEach((i) => {
-            if (i.id === +selectedItem) item = i;
-        });
-        if (item !== null) {
-            price += (item as Employee)!.cost;
-        }
-        return price;
-    }
-
     const buy = () => {
-        let empl: Employee | null = null;
-        items.forEach((i) => {
-            if (i.id === +selectedItem) empl = i;
-        });
         const newService: NewServicePackage = {
             service: props.service!,
             startTime: +new Date(dateTime),
-            employee: empl!
         }
         dispatch(cartActions.PackageAdded(newService));
         props.handlerClose();
@@ -124,33 +76,17 @@ export default function AddServicePackageModal(props: ServicePackageModalProps) 
                         />
                     </Stack>
                     <Stack spacing={2}>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label"
-                                        style={{lineHeight: '0.7em', height: '20px'}}>Фотограф</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                label="Фотограф"
-                                value={selectedItem}
-                                sx={{height: '40px'}} disabled={!isEnabled}
-                                onChange={handleSelect}
-                            >
-                                {items.map((hall, index) => (
-                                    <MenuItem key={index} value={hall.id}>{hall.title}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
                         <Stack direction="row" width={"80%"} justifyContent="space-between" alignItems="center">
                             <div style={{width: "100px"}}></div>
                             <Stack direction="row" spacing={2}>
                                 <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
-                                    Стоимость: {getPrice()} рублей
+                                    Стоимость: {props.service!.cost} рублей
                                 </Typography>
                                 <Button variant="contained" color="secondary" size="medium" disableElevation
                                         sx={{borderRadius: '10px'}}
                                         onClick={() => {
                                             buy()
-                                        }} disabled={!fullEnabled}>
+                                        }} disabled={!isEnabled}>
                                     Купить
                                 </Button>
                             </Stack>
