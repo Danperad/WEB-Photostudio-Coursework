@@ -20,6 +20,7 @@ import {AppDispatch, RootState} from "../redux/store";
 import AuthService from "../services/AuthService"
 import AuthModal from "./AuthModal";
 import ClientService from "../services/ClientService";
+import {CloseModal, OpenModal} from "../redux/actions/authModalActions";
 
 
 const settings = [{title: 'Профиль', click: 'profile'}, {title: 'Выход', click: 'logout'}];
@@ -33,7 +34,6 @@ function Header() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const [key, setKey] = React.useState<boolean>(false);
-    const [open, setOpen] = React.useState(false);
     const user = useSelector((state: RootState) => state);
     const dispatch = useDispatch<AppDispatch>();
 
@@ -172,11 +172,11 @@ function Header() {
                                 </>
                             ) : (
                                 <>
-                                    <Button name={"auth"} onClick={() => setOpen(true)} sx={{my: 2, display: 'block'}}
+                                    <Button name={"auth"} onClick={() => dispatch(OpenModal(true))} sx={{my: 2, display: 'block'}}
                                             color={"inherit"}>
                                         Авторизация
                                     </Button>
-                                    <AuthModal open={open} handlerClose={() => setOpen(false)}/>
+                                    <AuthModal open={user.authModal} handlerClose={() => dispatch(CloseModal(false))}/>
                                 </>
                             )
                             }

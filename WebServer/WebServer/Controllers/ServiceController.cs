@@ -31,8 +31,11 @@ public class ServiceController : RequestHandler
             services = services.Where(s => s.Title.ToLower().Contains(search.ToLower())).ToList();
         }
 
+        var res = services;
         if (startWith != 0 && count != 0)
-            services = services.Take(new Range(startWith - 1, startWith - 1 + count)).ToList();
-        Send(new AnswerModel(true, new {services = ServiceModel.ConvertList(services)}, null));
+            res = services.Take(new Range(startWith - 1, startWith - 1 + count)).ToList();
+        var has = res.LastOrDefault() != null && services.LastOrDefault() != null &&
+                    res.Last().Id != services.Last().Id;
+        Send(new AnswerModel(true, new {services = ServiceModel.ConvertList(res), hasMore = has }, null));
     }
 }

@@ -17,7 +17,6 @@ function Login() {
 		login: '',
 		password: ''
 	});
-	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();
 
 	const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {

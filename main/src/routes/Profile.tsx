@@ -12,7 +12,7 @@ import {
     CardContent,
     Rating
 } from '@mui/material';
-import {useNavigate, useLocation} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../redux/store";
 

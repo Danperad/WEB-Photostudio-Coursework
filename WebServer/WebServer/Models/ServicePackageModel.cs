@@ -3,40 +3,40 @@ using PhotostudioDB.Models;
 
 namespace WebServer.Models;
 
-public class ServiceModel
+public class ServicePackageModel
 {
-    public ServiceModel()
+    public ServicePackageModel()
     {
         Title = "";
         Description = "";
         Photos = new List<string>();
     }
-    private ServiceModel(int id, string title, string description, decimal cost, List<string> photos, int type, double rating)
+    private ServicePackageModel(int id, string title, string description, decimal cost, List<string> photos, double rating, int duration)
     {
         Id = id;
         Title = title;
         Description = description;
         Cost = cost;
         Photos = photos;
-        Type = type;
         Rating = rating;
+        Duration = duration;
     }
-
+    
     [JsonPropertyName("id")] public int Id { get; set; }
     [JsonPropertyName("title")] public string Title { get; internal set; }
     [JsonPropertyName("description")] public string Description { get; internal set; }
     [JsonPropertyName("cost")] public decimal Cost { get; internal set; }
     [JsonPropertyName("photos")] public List<string> Photos { get; internal set; }
-    [JsonPropertyName("serviceType")] public int Type { get; internal set; }
     [JsonPropertyName("rating")] public double Rating { get; internal set; }
+    [JsonPropertyName("duration")] public int Duration { get; set; }
 
-    public static ServiceModel GetServiceModel(Service service)
+    
+    public static ServicePackageModel GetServiceModel(ServicePackage service)
     {
-        return new ServiceModel(service.Id, service.Title, service.Description, service.Cost, service.Photos,
-            service.Type, service.Rating);
+        return new ServicePackageModel(service.Id, service.Title, service.Description, service.Price, service.Photos, service.Rating, service.Duration);
     }
 
-    public static IEnumerable<ServiceModel> ConvertList(IEnumerable<Service> services)
+    public static IEnumerable<ServicePackageModel> ConvertList(IEnumerable<ServicePackage> services)
     {
         return services.Select(GetServiceModel);
     }

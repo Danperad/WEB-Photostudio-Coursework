@@ -8,7 +8,6 @@ class CartService{
         return axios.post(API_URL + 'checkservice?id='+serviceId, cart).then((res) => {
             const data : Answer = res.data;
             if (data.status){
-                console.log(data.answer as boolean);
                 return data.answer as boolean;
             }
             return false;

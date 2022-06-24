@@ -12,7 +12,7 @@ public class PackageController : RequestHandler
     public void GetPackages()
     {
         using var db = new ApplicationContext();
-        var packages = db.ServicePackages.OrderBy(s => s.Title);
-        Send(new AnswerModel(true, new {packages}, null));
+        var packages = db.ServicePackages.OrderBy(s => s.Title).ToList();
+        Send(new AnswerModel(true, new {packages = ServicePackageModel.ConvertList(packages).ToList()}, null));
     }
 }

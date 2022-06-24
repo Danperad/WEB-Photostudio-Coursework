@@ -1,4 +1,5 @@
 import {createAction} from "@reduxjs/toolkit";
-import {ServiceModel} from "../../models/Models";
+import {Service} from "../../models/Models";
 
-export const ServicesLoaded = createAction<ServiceModel[]>("SERVICES_LOADED");
+export const ServicesLoaded = createAction<Service[]>("SERVICES_LOADED");
+export const ClearServices = createAction<Service[]>("CLEAR_SERVICES");

@@ -1,11 +1,11 @@
 import {createReducer, PayloadAction} from "@reduxjs/toolkit";
-import {HallModel} from "../../models/Models";
+import {Hall} from "../../models/Models";
 import {HallsLoaded} from "../actions/hallActions";
 
-const state : HallModel[] = []
+const state : Hall[] = []
 
 export const hallReducer = createReducer(state, (builder) => {
-    builder.addCase(HallsLoaded, (state, action: PayloadAction<HallModel[]>) => {
+    builder.addCase(HallsLoaded, (state, action: PayloadAction<Hall[]>) => {
         return action.payload;
     })
 })

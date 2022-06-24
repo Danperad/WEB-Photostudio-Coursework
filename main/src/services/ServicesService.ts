@@ -1,18 +1,21 @@
 import axios from "axios";
-import {Answer, ServiceModel} from "../models/Models";
-import {ServicesLoaded} from "../redux/actions/serviceActions";
+import {Answer, Service} from "../models/Models";
+import {serviceActions} from "../redux/slices/serviceSlice";
 import errorParser from "../errorParser";
 import {snackbarActions} from "../redux/slices/snackbarSlice";
 
 const API_URL = "http://localhost:8888/services/"
 
 class ServicesService {
-    getServices(search: string, sort: string, type: string) {
-        return axios.get(API_URL + 'get?search='+search + '&order=' + sort + '&type='+type)
+    getServices(search: string, sort: string, type: string, start: number) {
+        return axios.get(API_URL + 'get?search=' + search + '&order=' + sort + '&type=' + type + '&count=6&start=' + (start + 1))
             .then((res) => {
                 const data: Answer = res.data;
                 if (data.status) {
-                    return ServicesLoaded(data.answer.services as ServiceModel[]);
+                    return serviceActions.ServicesLoaded({
+                        services: data.answer.services as Service[],
+                        hasMore: data.answer.hasMore
+                    });
                 }
                 const error = errorParser(String(data.error!));
                 return snackbarActions.ErrorAction(error);

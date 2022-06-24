@@ -174,6 +174,7 @@ internal static class EntityConfigure
         builder.HasMany(s => s.Services).WithMany(s => s.ServicePackages)
             .UsingEntity(j => j.ToTable("service_package_to_service"));
         builder.Property(s => s.Price).HasColumnName("price").HasColumnType("money");
+        builder.Property(s => s.Rating).HasColumnName("rating");
     }
 
     internal static void RefreshTokenConfigure(EntityTypeBuilder<RefreshToken> builder)

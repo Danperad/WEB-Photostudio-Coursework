@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {styled} from '@mui/material/styles';
 import {
     Stack,
     Button,
@@ -10,26 +9,18 @@ import {
     MenuItem,
     FormControl,
     Select,
-    Grid,
-    Paper,
     Card,
     CardContent,
     CardMedia,
-    SelectChangeEvent
+    SelectChangeEvent, Rating
 } from '@mui/material';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../redux/store";
 import ServicesService from "../services/ServicesService";
 import ServiceModal from "../components/ServiceModal";
-import {ServiceModel} from "../models/Models";
-
-const Item = styled(Paper)(({theme}) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
+import {Service} from "../models/Models";
+import InfiniteScroll from "react-infinite-scroll-component";
+import {serviceActions} from '../redux/slices/serviceSlice';
 
 interface State {
     search: string,
@@ -40,13 +31,13 @@ interface State {
 export default function Services() {
     const [key, setKey] = useState<boolean>(false);
     const [filterState, setFilter] = useState<State>({search: "", sort: '1', type: '0'})
-    const [selectedService, setSelected] = useState<ServiceModel | null>(null);
+    const [selectedService, setSelected] = useState<Service | null>(null);
     const rootState = useSelector((state: RootState) => state.services);
     const dispatch = useDispatch<AppDispatch>();
 
     React.useEffect(() => {
         if (key) return;
-        ServicesService.getServices("","1","0").then((res) => {
+        ServicesService.getServices("","1","0", 0).then((res) => {
             dispatch(res);
         })
         setKey(true);
@@ -65,13 +56,19 @@ export default function Services() {
     };
 
     const filter = (prop: keyof State, value: string) => {
-        const tmp : State = {...filterState, [prop]: value}
-        ServicesService.getServices(tmp.search,tmp.sort,tmp.type).then((res) => {
+        dispatch(serviceActions.ClearService("hehe"));
+        const tmp: State = {...filterState, [prop]: value}
+        ServicesService.getServices(tmp.search, tmp.sort, tmp.type, 0).then((res) => {
             dispatch(res);
         })
     }
 
-    const handleInfoModalOpen = (service: ServiceModel) => {
+    const loadMore = () => {
+        ServicesService.getServices(filterState.search, filterState.sort, filterState.type, rootState.services.length).then((res) => {
+            dispatch(res);
+        })
+    }
+    const handleInfoModalOpen = (service: Service) => {
         setSelected(service);
         setOpenInfoModal(true);
     };
@@ -86,7 +83,8 @@ export default function Services() {
         <div style={{width: "100%"}}>
             <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2} width={"50%"} mt={1}
                    ml={2}>
-                <TextField label="Поиск" value={filterState.search} onChange={handleChange("search")} color='primary' size='small' sx={{width: '100%'}} />
+                <TextField label="Поиск" value={filterState.search} onChange={handleChange("search")} color='primary'
+                           size='small' sx={{width: '100%'}}/>
                 <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label"
                                 style={{lineHeight: '0.9em', height: '20px'}}>Тип услуги</InputLabel>
@@ -125,15 +123,15 @@ export default function Services() {
                 </FormControl>
             </Stack>
             <Box sx={{width: "90%", margin: '0 auto', marginTop: '40px'}}>
-                <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}} justifyContent="center"
-                      alignItems="center">
-                    {rootState.map((service, index) => (
-                        <Grid item xs={2} sm={4} md={4} key={index}>
-                            <Item sx={{padding: 0}}>
-                                <Card>
+                <Stack>
+                    <InfiniteScroll next={loadMore} hasMore={rootState.hasMore} loader={<Typography>Загрузка...</Typography>} dataLength={rootState.services.length}>
+                        {rootState.services.map((service, index) => (
+                            <Card key={index} sx={{mt: 2}}>
+                                <Stack direction={'row'}>
                                     <CardMedia
-                                        component="img"
-                                        height="140"
+                                        component={"img"}
+                                        height={"140"}
+                                        sx={{width: '30%'}}
                                         image={service.photos[0]}
                                         alt="photo"
                                     />
@@ -145,20 +143,24 @@ export default function Services() {
                                             {service.description}
                                         </Typography>
                                     </CardContent>
-                                    <Stack direction="row" justifyContent="space-between" alignItems="center" mr={2}
-                                           ml={2} pb={1}>
-                                        <Typography variant="subtitle1">
+                                    <Stack direction="row" justifyContent="space-between" alignItems={'flex-end'} mr={2}
+                                           ml={2}
+                                           pb={1} spacing={1}>
+                                        <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
                                             Стоимость: {service.cost} рублей
                                         </Typography>
-                                        <Button size="medium" variant="contained" color="secondary" onClick={() => {
-                                            handleInfoModalOpen(service)
-                                        }}>Подробнее</Button>
+                                        <Rating name="simple-controlled" defaultValue={service.rating} readOnly
+                                                precision={0.1}/>
+                                        <Button size="medium" variant="contained" color="secondary"
+                                                onClick={() => {
+                                                    handleInfoModalOpen(service)
+                                                }}>Подробнее</Button>
                                     </Stack>
-                                </Card>
-                            </Item>
-                        </Grid>
-                    ))}
-                </Grid>
+                                </Stack>
+                            </Card>
+                        ))}
+                    </InfiniteScroll>
+                </Stack>
             </Box>
             <ServiceModal open={openInfoModal} handlerClose={closeInfoModal} service={selectedService}/>
         </div>

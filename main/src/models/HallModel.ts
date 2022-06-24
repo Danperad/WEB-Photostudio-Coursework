@@ -1,9 +1,9 @@
 declare type HallModel = {
-    id: Number,
+    id: number,
     title: string,
     description: string,
-    addressId: Number,
-    pricePerHour: Number,
+    addressId: number,
+    cost: number,
     photos: string[]
 }
 

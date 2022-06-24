@@ -19,6 +19,7 @@ public class HallController : RequestHandler
     }
 
     [Get("/getfree")]
+    [ResponseTimeout(1200000)]
     public void GetFree()
     {
         var startDate = GetParams<long>("start");
@@ -29,20 +30,21 @@ public class HallController : RequestHandler
             return;
         }
 
+        var date = new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(startDate);
         using var db = new ApplicationContext();
-        var halls = GetFreeHalls(new DateTime(startDate), duration, db).OrderBy(h => h.Title);
+        var halls = GetFreeHalls(date, duration, db).OrderBy(h => h.Title).ToList();
         Send(new AnswerModel(true, new {halls = HallModel.GetHallModels(halls)}, null));
     }
 
     private static IEnumerable<Hall> GetFreeHalls(DateTime startDate, int duration, ApplicationContext db)
     {
-        var halls = db.Halls;
+        var halls = db.Halls.ToList();
         var services = db.ApplicationServices.Where(a =>
-            a.Service.Type == 2 && a.StartDateTime.HasValue && a.StartDateTime.Value.Date == startDate.Date);
+            a.Service.Type == 2 && a.StartDateTime.HasValue && a.StartDateTime.Value.Date == startDate.Date).ToList();
 
-        services = services.Where(a => halls.Any(h => h.Id == a.HallId!.Value));
+        services = services.Where(a => halls.Any(h => h.Id == a.HallId!.Value)).ToList();
         services = services.Where(a =>
-            !Program.GetTimed(90, startDate, duration, a.StartDateTime!.Value, a.Duration!.Value));
-        return halls.Where(h => services.All(a => a.HallId != h.Id));
+            !Program.GetTimed(90, startDate, duration, a.StartDateTime!.Value, a.Duration!.Value)).ToList();
+        return halls.Where(h => services.All(a => a.HallId != h.Id)).ToList();
     }
 }

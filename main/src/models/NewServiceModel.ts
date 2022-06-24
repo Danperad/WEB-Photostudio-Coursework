@@ -1,13 +1,14 @@
-import {ServiceModel} from "./Models";
+import {Employee, Hall, RentedItem, Service} from "./Models";
 
 declare type NewServiceModel = {
-    service: ServiceModel,
+    id: number
+    service: Service,
     startTime: number | null,
     duration: number | null,
-    hallId: number | null,
-    employeeId: number | null,
-    addressId: number | null,
-    rentedItemId: number | null,
+    hall: Hall | null,
+    employee: Employee | null,
+    address: string | null,
+    rentedItem: RentedItem | null,
     number: number | null,
     isFullTime: boolean | null,
 }

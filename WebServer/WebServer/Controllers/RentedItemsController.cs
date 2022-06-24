@@ -34,29 +34,42 @@ public class RentedItemsController : RequestHandler
     {
         var startDate = GetParams<long>("start");
         var duration = GetParams<int>("duration");
-        var id = GetParams<int>("id");
+        var type = GetParams<int>("type");
         if (startDate == 0 && duration == 0)
         {
             Send(new AnswerModel(false, null, 101));
             return;
         }
 
+        var date = new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(startDate);
         using var db = new ApplicationContext();
-        var halls = GetFreeItems(id, new DateTime(startDate), duration, db);
-        Send(new AnswerModel(true, new {count = halls}, null));
+        var halls = GetFreeItems(type,date, duration, db);
+        Send(new AnswerModel(true, new {items = halls}, null));
     }
 
-    private static uint GetFreeItems(int id, DateTime startDate, int duration, ApplicationContext db)
+    private static IEnumerable<RentedItemModel> GetFreeItems(int type, DateTime startDate, int duration, ApplicationContext db)
     {
-        var item = db.RentedItems.First(i => i.Id == id);
+        var item = db.RentedItems.ToList();
+        item = type switch
+        {
+            6 => item.Where(i => !i.IsСlothes).ToList(),
+            5 => item.Where(i => i.IsСlothes && !i.IsKids).ToList(),
+            _ => item.Where(i => i.IsKids).ToList()
+        };
         var services = db.ApplicationServices.Where(a =>
             a.Service.Type == 4 && a.StartDateTime.HasValue && a.StartDateTime.Value.Date == startDate.Date);
 
-        services = services.Where(a => a.RentedItemId == id);
+        services = services.Where(a => item.Any(i => i.Id == a.Id));
         services = services.Where(a =>
             !Program.GetTimed(60, startDate, duration, a.StartDateTime!.Value, a.Duration!.Value));
-        var sum = services.Sum(s => s.Number!.Value);
-        if (sum >= item.Number) return 0;
-        return (uint) (item.Number - sum);
+        var newItems = RentedItemModel.GetModels(item).ToList();
+        foreach (var model in newItems)
+        {
+            var count = services.Where(s => s.RentedItemId == model.Id).Sum(s => s.Number!.Value);
+            if (count > model.Number) model.Number = 0;
+            else model.Number -= (uint) count;
+        }
+
+        return newItems.Where(i => i.Number != 0);
     }
 }

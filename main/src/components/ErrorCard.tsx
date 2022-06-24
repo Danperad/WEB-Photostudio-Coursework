@@ -9,19 +9,15 @@ function ErrorCard(){
     const dispatch = useDispatch();
     const state = useSelector((state: RootState) => state.messages.state);
 
-    const close = (key: number) => {
-        dispatch(snackbarActions.RemoveAction(key));
-    }
-
     React.useEffect(() => {
         state.forEach((s) => {
             enqueueSnackbar(s.error, {
                 key: s.key,
-                onExited: () => {close(s.key)},
+                onExited: () => {dispatch(snackbarActions.RemoveAction(s.key))},
 
             })
         })
-    },[state, enqueueSnackbar, close])
+    },[state, enqueueSnackbar, dispatch])
 
     return <></>;
 }

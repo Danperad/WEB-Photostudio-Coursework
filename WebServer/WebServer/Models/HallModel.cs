@@ -20,7 +20,7 @@ public class HallModel
     [JsonPropertyName("title")] public string Title { get; internal set; }
     [JsonPropertyName("description")] public string Description { get; internal set; }
     [JsonPropertyName("addressId")] public int AddressId { get; internal set; }
-    [JsonPropertyName("pricePerHour")] public decimal PricePerHour { get; internal set; }
+    [JsonPropertyName("cost")] public decimal PricePerHour { get; internal set; }
     [JsonPropertyName("photos")] public List<string> Photos { get; internal set; }
 
     public static HallModel GetHallModel(Hall hall)

@@ -7,6 +7,7 @@ import AuthService from "../services/AuthService";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../redux/store";
 import MuiPhoneNumber from "material-ui-phone-number";
+import {clientActions} from "../redux/slices/clientSlice";
 
 interface State {
 	login: string,
@@ -46,6 +47,9 @@ function Registration() {
 		};
 		AuthService.register(data).then((res) => {
 			dispatch(res)
+			if (res.type === clientActions.registerSuccess.type){
+				navigate("/")
+			}
 		});
 	};
 

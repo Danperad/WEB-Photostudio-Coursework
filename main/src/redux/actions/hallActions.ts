@@ -1,5 +1,5 @@
 import {createAction} from "@reduxjs/toolkit";
-import {HallModel} from "../../models/Models";
+import {Hall} from "../../models/Models";
 
 
-export const HallsLoaded = createAction<HallModel[]>("HALLS_LOADED");
+export const HallsLoaded = createAction<Hall[]>("HALLS_LOADED");

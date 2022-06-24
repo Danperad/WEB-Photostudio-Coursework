@@ -1,60 +1,24 @@
 import React, {useState} from 'react';
 import {Box, Button, Modal, Rating, Stack, Typography} from "@mui/material";
-import {NewService, Service} from "../models/Models";
-import AddServiceModal from "./AddServiceModal";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "../redux/store";
-import CartService from "../services/CartService";
-import {cartActions} from "../redux/slices/cartSlice";
+import {ServicePackage} from "../models/Models";
+import AddServicePackageModal from "./AddServicePackageModal";
 import Carousel from 'react-material-ui-carousel'
 
-interface ServiceModalProps {
+interface ServicePackageModalProps {
     open: boolean,
     handlerClose: () => void,
-    service: Service | null
+    service: ServicePackage | null
 }
 
-export default function ServiceModal(props: ServiceModalProps) {
+export default function ServicePackageModal(props: ServicePackageModalProps) {
     const handlePayModalOpen = () => {
-        if (props.service!.serviceType === 1) {
-            const service: NewService = {
-                id: new Date().getTime() + Math.random(),
-                service: props.service!,
-                startTime: null,
-                duration: null,
-                hall: null,
-                employee: null,
-                address: null,
-                rentedItem: null,
-                number: null,
-                isFullTime: null,
-            }
-            dispatch(cartActions.ServiceAdded(service));
-            props.handlerClose();
-            return;
-        }
         setOpenPayModal(true);
     };
     const closePayModal = () => {
         setOpenPayModal(false);
     };
     const [openPayModal, setOpenPayModal] = useState(false);
-    const [available, setAvailable] = useState<boolean>(false);
-    const [key, setKey] = useState<boolean>(false);
-    const rootState = useSelector((state: RootState) => state.cart);
-    const dispatch = useDispatch<AppDispatch>();
 
-    React.useEffect(() => {
-        if (!props.open) {
-            setKey(false);
-            return;
-        }
-        if (key) return;
-        setKey(true);
-        CartService.checkAvailable(props.service?.id!, rootState).then((res) => {
-            setAvailable(!res);
-        })
-    }, [available, rootState, props, key])
     const style = {
         position: 'absolute' as 'absolute',
         top: '50%',
@@ -110,7 +74,7 @@ export default function ServiceModal(props: ServiceModalProps) {
                             <Typography variant="subtitle1">
                                 Стоимость: {props.service!.cost} рублей
                             </Typography>
-                            <Button variant="contained" color="secondary" disabled={available} size="medium"
+                            <Button variant="contained" color="secondary" size="medium"
                                     disableElevation
                                     sx={{borderRadius: '10px'}} onClick={() => handlePayModalOpen()}>
                                 Добавить в корзину
@@ -118,7 +82,7 @@ export default function ServiceModal(props: ServiceModalProps) {
                         </Stack>
                     </Stack>
                 </Stack>
-                <AddServiceModal open={openPayModal} handlerClose={closePayModal} service={props.service}/>
+                <AddServicePackageModal open={openPayModal} handlerClose={closePayModal} service={props.service}/>
             </Box>
         </Modal>
     );

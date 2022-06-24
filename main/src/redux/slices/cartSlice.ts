@@ -1,25 +1,39 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {NewServiceModel} from "../../models/Models";
+import {NewService, NewServicePackage} from "../../models/Models";
 
 interface State {
-    serviceModels: NewServiceModel[],
-    servicePackage: null
+    serviceModels: NewService[],
+    servicePackage: NewServicePackage | null
 }
 
-const initState : State = {
+const cart = localStorage.getItem('cart');
+
+const initState : State = cart === null ? {
     serviceModels: [],
     servicePackage: null
-};
+} : JSON.parse(cart);
 
 const cartSlice = createSlice({
     name: "cart",
     initialState: initState,
     reducers:{
-        ServiceAdded: (state, action: PayloadAction<NewServiceModel>) => {
+        ServiceAdded: (state, action: PayloadAction<NewService>) => {
             state.serviceModels.push(action.payload);
+            localStorage.setItem('cart', JSON.stringify(state))
         },
-        ServiceRemoved: (state, action: PayloadAction<NewServiceModel>) => {
-            state.serviceModels = state.serviceModels.filter(s => s===action.payload)
+        ServiceRemoved: (state, action: PayloadAction<NewService>) => {
+            state.serviceModels = state.serviceModels.filter(s => s.id!==action.payload.id);
+            localStorage.setItem('cart', JSON.stringify(state))
+        },
+        PackageAdded: (state, action: PayloadAction<NewServicePackage>) => {
+            state.servicePackage = action.payload;
+        },
+        PackageRemoved: (state, action: PayloadAction<NewServicePackage>) => {
+            state.servicePackage = null;
+        },
+        ClearCart: (state, action) => {
+            state = {serviceModels: [], servicePackage: null};
+            localStorage.removeItem('cart');
         }
     }
 })

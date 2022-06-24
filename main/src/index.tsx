@@ -17,6 +17,7 @@ import Header from "./components/Header";
 import ErrorCard from "./components/ErrorCard";
 import Halls from "./routes/Halls";
 import ServicePackages from "./routes/ServicePackages";
+import Registration from "./components/Registration";
 
 const dark = createTheme({
     palette: {
@@ -45,6 +46,7 @@ ReactDOM.render(
                                 <Route path={"/packages"} element={<ServicePackages/>}/>
                                 <Route path={"/profile"} element={<Profile/>}/>
                                 <Route path={"/cart"} element={<ShoppingCart/>}/>
+                                <Route path={"/register"} element={<Registration/>}/>
                                 <Route path={"*"} element={<Navigate to={"/"}/>}/>
                             </Routes>
                             <ErrorCard/>
