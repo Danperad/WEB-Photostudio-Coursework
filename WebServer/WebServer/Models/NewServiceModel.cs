@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using PhotostudioDB;
 using PhotostudioDB.Models;
@@ -60,8 +61,10 @@ public class NewServiceModel
                 }
 
                 var split = serviceModel.Address!.Split(" ");
-                var address = db.Addresses.FirstOrDefault(a => a.Street == split[0] && a.HouseNumber == split[1]) ?? new Address(split[0], split[1]);
-                return new ApplicationService(service, employee1, new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
+                var address = db.Addresses.FirstOrDefault(a => a.Street == split[0] && a.HouseNumber == split[1]) ??
+                              new Address(split[0], split[1]);
+                return new ApplicationService(service, employee1,
+                    new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
                     serviceModel.Duration.Value, address, status);
             case 4:
                 if (!serviceModel.StartDateTime.HasValue) throw new NewServiceException();
@@ -86,20 +89,25 @@ public class NewServiceModel
                     var hall1 = db.Halls.Include(h => h.Address)
                         .FirstOrDefault(h => h.Id == serviceModel.HallId.Value);
                     if (hall1 is null) throw new NewServiceException();
-                    return new ApplicationService(service, employee2, new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
+                    return new ApplicationService(service, employee2,
+                        new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
                         serviceModel.Duration.Value, hall1.Address, serviceModel.IsFullTime.Value, status);
                 }
+
                 var split1 = serviceModel.Address!.Split(" ");
-                var address1 = db.Addresses.FirstOrDefault(a => a.Street == split1[0] && a.HouseNumber == split1[1]) ?? new Address(split1[0], split1[1]);
+                var address1 = db.Addresses.FirstOrDefault(a => a.Street == split1[0] && a.HouseNumber == split1[1]) ??
+                               new Address(split1[0], split1[1]);
                 if (address1 is null) throw new NewServiceException();
-                return new ApplicationService(service, employee2, new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
+                return new ApplicationService(service, employee2,
+                    new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(serviceModel.StartDateTime.Value),
                     serviceModel.Duration.Value, address1, serviceModel.IsFullTime.Value, status);
         }
 
         throw new NewServiceException();
     }
 
-    public static IEnumerable<ApplicationService> GetServices(IEnumerable<NewServiceModel> serviceModels, ApplicationContext db)
+    public static IEnumerable<ApplicationService> GetServices(IEnumerable<NewServiceModel> serviceModels,
+        ApplicationContext db)
     {
         return serviceModels.Select(s => GetService(s, db));
     }

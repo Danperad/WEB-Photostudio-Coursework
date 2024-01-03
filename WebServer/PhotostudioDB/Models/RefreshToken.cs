@@ -7,31 +7,21 @@ public class RefreshToken
     internal RefreshToken()
     {
         Token = "";
-        Profile = new Profile();
+        Client = new Client();
     }
 
-    public RefreshToken(string token, Profile profile)
+    public RefreshToken(string token, Client client, int duration)
     {
         Token = token;
-        Profile = profile;
+        Client = client;
         SignDate = DateTime.Now;
+        EndDate = SignDate.AddDays(duration);
     }
 
     [Key] public string Token { get; internal set; }
 
-    public Profile Profile { get; internal set; }
-    public int ProfileId { get;internal set; }
+    public Client Client { get; internal set; }
+    public int ClientId { get;internal set; }
     public DateTime SignDate { get; internal set; }
-
-    // public static bool AddToken(string token, Profile profile)
-    // {
-    //     var jwtToken = new RefreshToken(token, profile);
-    //     return DbWorker.AddToken(jwtToken);
-    // }
-    //
-    // public static Profile? ContainsToken(string token)
-    // {
-    //     DbWorker.RemoveTokens();
-    //     return DbWorker.GetToken(token);
-    // }
+    public DateTime EndDate { get; internal set; }
 }

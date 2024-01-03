@@ -29,7 +29,7 @@ internal static class EntityConfigure
         builder.Property(c => c.Phone).HasMaxLength(16).HasColumnName("phone");
         builder.HasIndex(c => c.Phone).IsUnique();
         builder.Property(c => c.IsActive).HasDefaultValue(true).HasColumnName("is_active");
-        builder.Property(c => c.ProfileId).HasColumnName("profile_id");
+        builder.Property(c => c.Password).HasMaxLength(64).HasColumnName("password");
         builder.Property(c => c.Avatar).HasColumnName("avatar");
     }
 
@@ -59,7 +59,7 @@ internal static class EntityConfigure
         builder.Property(e => e.Date).HasColumnName("date");
         builder.Property(e => e.RoleId).HasColumnName("role_id");
         builder.Property(e => e.Price).HasColumnName("price").HasColumnType("money");
-        builder.Property(e => e.ProfileId).HasColumnName("profile_id");
+        builder.Property(c => c.Password).HasMaxLength(64).HasColumnName("password");
     }
 
     internal static void HallConfigure(EntityTypeBuilder<Hall> builder)
@@ -84,18 +84,6 @@ internal static class EntityConfigure
         builder.Property(o => o.ContractId).HasColumnName("contract_id");
         builder.Property(o => o.ServicePackageId).HasColumnName("service_package_id");
         builder.HasOne(o => o.Contract).WithOne(c => c.Order).HasForeignKey<Contract>(c => c.OrderId);
-    }
-
-    internal static void ProfileConfigure(EntityTypeBuilder<Profile> builder)
-    {
-        builder.ToTable("profiles");
-        builder.Property(p => p.Id).HasColumnName("id");
-        builder.Property(p => p.Login).HasMaxLength(50).HasColumnName("login");
-        builder.HasIndex(p => p.Login).IsUnique();
-        builder.Property(p => p.IsActive).HasDefaultValue(true).HasColumnName("is_active");
-        builder.Property(p => p.Pass).HasColumnName("pass");
-        builder.HasOne(p => p.Client).WithOne(c => c.Profile).HasForeignKey<Client>(c => c.ProfileId);
-        builder.HasOne(p => p.Employee).WithOne(e => e.Profile).HasForeignKey<Employee>(e => e.ProfileId);
     }
 
     internal static void RentedItemConfigure(EntityTypeBuilder<RentedItem> builder)
@@ -181,7 +169,7 @@ internal static class EntityConfigure
     {
         builder.ToTable("refresh_tokens");
         builder.HasKey(r => r.Token);
-        builder.Property(r => r.ProfileId).HasColumnName("profile_id");
+        builder.Property(r => r.ClientId).HasColumnName("client_id");
         builder.Property(r => r.Token).HasColumnName("token");
         builder.Property(r => r.SignDate).HasColumnName("sign_date");
     }

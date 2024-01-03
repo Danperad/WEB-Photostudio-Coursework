@@ -1,17 +1,11 @@
-﻿namespace PhotostudioDB.Models;
+namespace PhotostudioDB.Models;
 
 public class Client : Human
 {
-    public new bool Check()
-    {
-        return base.Check();
-    }
-
     #region Props
 
     public bool IsActive { get; internal set; }
-    public int? ProfileId { get; internal set; }
-    public Profile? Profile { get; internal set; }
+    public string? Password { get; internal set; }
     public IEnumerable<Order> Orders { get; internal set; }
     public IEnumerable<Contract> Contracts { get; internal set; }
     public string? Avatar { get; set; }
@@ -35,9 +29,4 @@ public class Client : Human
     }
 
     #endregion
-
-    /*public bool SaveUpdate()
-    {
-        return DbWorker.Save(this);
-    }*/
 }

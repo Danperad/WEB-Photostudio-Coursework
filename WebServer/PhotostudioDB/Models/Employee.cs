@@ -1,15 +1,16 @@
 ﻿namespace PhotostudioDB.Models;
 
-public class Employee : Human
+public class Employee : Human, IServiced
 {
     #region Ctors
 
     internal Employee()
     {
         Passport = "";
+        Password = "";
         Date = DateOnly.MinValue;
-        Profile = new Profile();
         Role = new Role();
+        Services = new List<ApplicationService>();
     }
 
     #endregion
@@ -19,24 +20,12 @@ public class Employee : Human
     public string Passport { get; internal set; }
     public DateOnly Date { get; internal set; }
     public int RoleId { get; internal set; }
-    public int ProfileId { get; internal set; }
-    public Profile Profile { get; internal set; }
     public Role Role { get; internal set; }
+    public string Password { get; internal set; }
     public decimal? Price { get; internal set; }
+    
+    public ICollection<ApplicationService> Services { get; set; }
 
     #endregion
 
-    #region Methods
-
-    /*public static Employee? GetEmployeeById(int id)
-    {
-        return DbWorker.GetEmployeeById(id);
-    }
-
-    public static IEnumerable<Employee> GetEmployeeByRole(int role)
-    {
-        return DbWorker.GetEmployeesByRole(role);
-    }*/
-
-    #endregion
 }

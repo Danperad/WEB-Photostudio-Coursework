@@ -47,7 +47,6 @@ public sealed class ApplicationContext : DbContext
         modelBuilder.Entity<Employee>(EntityConfigure.EmployeeConfigure);
         modelBuilder.Entity<Hall>(EntityConfigure.HallConfigure);
         modelBuilder.Entity<Order>(EntityConfigure.OrderConfigure);
-        modelBuilder.Entity<Profile>(EntityConfigure.ProfileConfigure);
         modelBuilder.Entity<RentedItem>(EntityConfigure.RentedItemConfigure);
         modelBuilder.Entity<Role>(EntityConfigure.RoleConfigure);
         modelBuilder.Entity<Service>(EntityConfigure.ServiceConfigure);
@@ -64,7 +63,6 @@ public sealed class ApplicationContext : DbContext
     public DbSet<Client> Clients { get; set; } = null!;
     public DbSet<Contract> Contracts { get; set; } = null!;
     public DbSet<Employee> Employees { get; set; } = null!;
-    public DbSet<Profile> Profiles { get; set; } = null!;
     public DbSet<Hall> Halls { get; set; } = null!;
     public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<RentedItem> RentedItems { get; set; } = null!;

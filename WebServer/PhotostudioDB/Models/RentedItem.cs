@@ -1,6 +1,6 @@
 ﻿namespace PhotostudioDB.Models;
 
-public class RentedItem
+public class RentedItem : IServiced
 {
     internal RentedItem()
     {
@@ -11,6 +11,7 @@ public class RentedItem
         Number = 0;
         IsСlothes = false;
         IsKids = false;
+        Services = new List<ApplicationService>();
     }
 
     #region Props
@@ -23,5 +24,7 @@ public class RentedItem
     public bool IsСlothes { get; internal set; }
     public bool IsKids { get; internal set; }
 
+    public ICollection<ApplicationService> Services { get; set; }
     #endregion
+
 }
