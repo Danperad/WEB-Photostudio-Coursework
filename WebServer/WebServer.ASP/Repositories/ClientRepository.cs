@@ -12,21 +12,6 @@ public class ClientRepository(ApplicationContext context) : IClientRepository
         return context.Clients;
     }
 
-    public Client AddClient(Client client)
-    {
-        var clients = context.Clients.Where(c => c.EMail == client.EMail || c.Phone == client.Phone).ToArray();
-        if (clients.Length == 0)
-        {
-            throw new NotImplementedException(clients.Any(c => c.EMail == client.EMail)
-                ? 402.ToString()
-                : 400.ToString());
-        }
-
-        var newClient = context.Clients.Add(client);
-        context.SaveChanges();
-        return newClient.Entity;
-    }
-
     public async Task<Client> AddClientAsync(Client client)
     {
         var clients = await context.Clients.Where(c => c.EMail == client.EMail || c.Phone == client.Phone).ToArrayAsync();
@@ -40,14 +25,6 @@ public class ClientRepository(ApplicationContext context) : IClientRepository
         var newClient = await context.Clients.AddAsync(client);
         await context.SaveChangesAsync();
         return newClient.Entity;
-    }
-
-    public Client UpdateClient(Client client)
-    {
-        var contextClient = context.Entry(client);
-        contextClient.State = EntityState.Modified;
-        context.SaveChanges();
-        return contextClient.Entity;
     }
 
     public async Task<Client> UpdateClientAsync(Client client)

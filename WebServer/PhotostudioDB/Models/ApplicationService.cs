@@ -17,8 +17,6 @@ public class ApplicationService
     public int? Duration { get; set; }
     public int? HallId { get; internal set; }
     public Hall? Hall { get; set; }
-    public int? AddressId { get; internal set; }
-    public Address? Address { get; set; }
     public int? RentedItemId { get; internal set; }
     public int? Number { get; internal set; }
     public RentedItem? RentedItem { get; internal set; }
@@ -58,12 +56,6 @@ public class ApplicationService
     }
 
     public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
-        Address address, Status status) : this(service, employee, startDateTime, duration, status)
-    {
-        Address = address;
-    }
-
-    public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
         int number, RentedItem rentedItem, Status status) : this(service, employee, startDateTime, duration, status)
     {
         Number = number;
@@ -71,7 +63,7 @@ public class ApplicationService
     }
 
     public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
-        Address address, bool isFullTime, Status status) : this(service, employee, startDateTime, duration, address, status)
+        Hall hall, bool isFullTime, Status status) : this(service, employee, startDateTime, duration, hall, status)
     {
         IsFullTime = isFullTime;
     }

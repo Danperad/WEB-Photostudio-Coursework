@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import sha256 from "sha256";
+import generateHash from '../utils/hashGenerator';
 import {RegistrationModel} from '../models/Models'
 import {Button, Stack, TextField, Typography, FormControl} from "@mui/material";
 import AuthService from "../services/AuthService";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../redux/store";
-import MuiPhoneNumber from "material-ui-phone-number";
 import {clientActions} from "../redux/slices/clientSlice";
 
 interface State {
@@ -38,7 +37,7 @@ function Registration() {
 		if (values.mainpassword !== values.passwordcheck) return;
 		const data: RegistrationModel = {
 			login: values.login,
-			password: sha256(values.mainpassword),
+			password: generateHash(values.mainpassword),
 			lastName: values.lastname,
 			firstName: values.firstname,
 			phone: values.phone,
@@ -58,7 +57,7 @@ function Registration() {
 	};
 
 	const handlePhoneChange = (e: any) => {
-		setValues({...values, phone: e.replace(/\D/g,'')})
+		setValues({...values, phone: e.target.value.replace(/\D/g,'')})
 	};
 
 	return (
@@ -79,9 +78,8 @@ function Registration() {
 					<Stack spacing={1}>
 						<TextField label={"Имя"} value={values.firstname} onChange={handleChange('firstname')} type={"text"}
 											 color={"primary"} variant={"outlined"} size={"small"} required/>
-						<MuiPhoneNumber label={"Телефон"} value={values.phone} onChange={handlePhoneChange} data-cy="user-phone"
-														defaultCountry={"ru"} color={"primary"} variant={"outlined"} size={"small"} disableDropdown
-														required/>
+						<TextField type={"tel"} label={"Телефон"} value={values.phone} onChange={handlePhoneChange}
+														color={"primary"} variant={"outlined"} size={"small"} required/>
 						<TextField label={"Логин"} value={values.login} onChange={handleChange('login')} type={"text"}
 											 color={"primary"} variant={"outlined"} size={"small"} required/>
 						<TextField label={"Повторите пароль"} value={values.passwordcheck} onChange={handleChange('passwordcheck')}

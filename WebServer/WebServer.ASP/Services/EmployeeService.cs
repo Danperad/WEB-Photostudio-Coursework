@@ -9,13 +9,6 @@ namespace WebServer.ASP.Services;
 
 public class EmployeeService(IEmployeeRepository employeeRepository) : IEmployeeService
 {
-    public IEnumerable<EmployeeDto> GetAvailableEmployees(DateTime startDate, int duration, int serviceId)
-    {
-        var employees = PrepareAvailableEmployeesByServiceId(startDate, duration, serviceId);
-        var res = employees.ToArray();
-        return res.Select(EmployeeDto.GetModel);
-    }
-
     public async Task<IEnumerable<EmployeeDto>> GetAvailableEmployeesAsync(DateTime startDate, int duration, int serviceId)
     {
         var employees = PrepareAvailableEmployeesByServiceId(startDate, duration, serviceId);

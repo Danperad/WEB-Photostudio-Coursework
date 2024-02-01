@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import sha256 from "sha256";
+import generateHash from '../utils/hashGenerator';
 import {Button, Stack, TextField, Typography} from "@mui/material";
 import {LoginModel} from '../models/Models';
 import {useDispatch} from "react-redux";
@@ -25,7 +25,7 @@ function Login() {
 	const onClick = () => {
 		const data: LoginModel = {
 			login: values.login,
-			password: sha256(values.password)
+			password: generateHash(values.password)
 		};
 		AuthService.login(data).then((res) => {
 			dispatch(res)

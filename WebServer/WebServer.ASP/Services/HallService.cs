@@ -9,23 +9,10 @@ namespace WebServer.ASP.Services;
 
 public class HallService(IHallRepository hallRepository) : IHallService
 {
-    public IEnumerable<HallDto> GetHalls()
-    {
-        var halls = GetPreparedHalls().ToArray();
-        return halls.Select(HallDto.GetHallModel);
-    }
-
     public async Task<IEnumerable<HallDto>> GetHallsAsync()
     {
         var halls = GetPreparedHalls();
         var res = await halls.ToArrayAsync();
-        return res.Select(HallDto.GetHallModel);
-    }
-
-    public IEnumerable<HallDto> GetAvailableHalls(DateTime startDate, int duration)
-    {
-        var halls = GetPreparedAvailableHalls(startDate, duration);
-        var res = halls.ToArray();
         return res.Select(HallDto.GetHallModel);
     }
 

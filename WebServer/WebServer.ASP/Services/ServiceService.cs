@@ -8,15 +8,6 @@ namespace WebServer.ASP.Services;
 
 public class ServiceService(IServiceRepository serviceRepository) : IServiceService
 {
-    public IEnumerable<ServiceDto> GetAllServices(int? count, int? start, int? order, int? type, string? search)
-    {
-        var services = GetPreparedServices(order, type, search);
-        if (count.HasValue && start.HasValue)
-            services = GetRangedServices(services, count.Value, start.Value);
-        var res = services.ToArray();
-        return res.Select(ServiceDto.GetServiceModel);
-    }
-
     public async Task<IEnumerable<ServiceDto>> GetAllServicesAsync(int? count, int? start, int? order, int? type, string? search)
     {
         var services = GetPreparedServices(order, type, search);

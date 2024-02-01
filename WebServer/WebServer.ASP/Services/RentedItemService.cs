@@ -9,24 +9,10 @@ namespace WebServer.ASP.Services;
 
 public class RentedItemService(IRentedItemRepository rentedItemRepository) : IRentedItemService
 {
-    public IEnumerable<RentedItemDto> GetItemsByServiceType(int type)
-    {
-        var items = PrepareItemsByServiceType(type);
-        var res = items.ToArray();
-        return res.Select(RentedItemDto.GetModel);
-    }
-
     public async Task<IEnumerable<RentedItemDto>> GetItemsByServiceTypeAsync(int type)
     {
         var items = PrepareItemsByServiceType(type);
         var res = await items.ToArrayAsync();
-        return res.Select(RentedItemDto.GetModel);
-    }
-
-    public IEnumerable<RentedItemDto> GetAvailableItemsByServiceType(DateTime start, int duration, int type)
-    {
-        var items = PrepareAvailableItemsByServiceType(start, duration, type);
-        var res = items.ToArray();
         return res.Select(RentedItemDto.GetModel);
     }
 

@@ -1,10 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import reportWebVitals from './reportWebVitals';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import {createTheme, ThemeProvider} from "@mui/material";
 import {deepPurple, purple} from "@mui/material/colors";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
+import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3';
 import {LocalizationProvider} from '@mui/x-date-pickers';
 import {Provider} from "react-redux";
 import {store} from './redux/store';
@@ -20,20 +19,21 @@ import ServicePackages from "./routes/ServicePackages";
 import Registration from "./components/Registration";
 
 const dark = createTheme({
-    palette: {
-        mode: 'light',
-        primary: {
-            main: purple["500"],
-            contrastText: '#ffffff'
-        },
-        secondary: {
-            main: deepPurple["700"],
-            contrastText: '#ffffff'
-        },
-    },
+  palette: {
+      mode: 'light',
+      primary: {
+          main: purple["500"],
+          contrastText: '#ffffff'
+      },
+      secondary: {
+          main: deepPurple["700"],
+          contrastText: '#ffffff'
+      },
+  },
 });
-ReactDOM.render(
-    <React.StrictMode>
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
         <Provider store={store}>
             <ThemeProvider theme={dark}>
                 <SnackbarProvider maxSnack={3}>
@@ -56,7 +56,4 @@ ReactDOM.render(
             </ThemeProvider>
         </Provider>
     </React.StrictMode>,
-    document.getElementById('root')
-);
-
-reportWebVitals();
+)
