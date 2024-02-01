@@ -17,7 +17,9 @@ jobs:
         uses: actions/setup-node@v3
 
       - name: Install dependencies
-        uses: bahmutov/npm-install@v1
+        working-directory: ./main
+        run: npm i
 
       - name: Build project
+        working-directory: ./main
         run: npm run build
