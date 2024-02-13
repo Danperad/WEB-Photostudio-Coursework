@@ -12,7 +12,7 @@ public class PackageService(IPackageRepository packageRepository) : IPackageServ
         var packages = packageRepository.GetServicePackages()
             .AsNoTracking()
             .OrderBy(p => p.Title);
-        var res = await packages.ToArrayAsync();
+        var res = await packages.ToListAsync();
         return res.Select(ServicePackageDto.GetServiceModel);
     }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import {useEffect, useState, useRef, MouseEvent} from 'react';
 import {
     AppBar,
     Button,
@@ -22,7 +22,6 @@ import AuthModal from "./AuthModal";
 import ClientService from "../services/ClientService";
 import {CloseModal, OpenModal} from "../redux/actions/authModalActions";
 
-
 const settings = [{title: 'Профиль', click: 'profile'}, {title: 'Выход', click: 'logout'}];
 const pages = [{title: 'Услуги', click: '/'}, {title: 'Комплекты', click: 'packages'}, {
     title: 'Залы',
@@ -31,24 +30,27 @@ const pages = [{title: 'Услуги', click: '/'}, {title: 'Комплекты'
 
 function Header() {
     const navigate = useNavigate();
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-    const [key, setKey] = React.useState<boolean>(false);
+    const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+    const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+    const key = useRef<boolean>(false);
     const user = useSelector((state: RootState) => state);
     const dispatch = useDispatch<AppDispatch>();
 
-    React.useEffect(() => {
-        if (key) return;
-        setKey(true);
-        ClientService.loadClient().then((res) => {
-            dispatch(res);
-        })
-    }, [key, dispatch])
+    useEffect(() => {
+        if (key.current) return;
+        key.current = true;
+        const result = ClientService.loadClient();
+        if (result){
+            result.then((res) => {
+                dispatch(res);
+            })
+        }
+    }, [])
 
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
     };
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
     };
 
@@ -154,7 +156,7 @@ function Header() {
                                 <>
                                     <Tooltip title="Откыть меню">
                                         <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                            <Avatar alt={user.client.client!.login.toUpperCase()}
+                                            <Avatar alt={user.client.client!.lastName.toUpperCase()}
                                                     src={user.client.client!.avatar}/>
                                         </IconButton>
                                     </Tooltip>

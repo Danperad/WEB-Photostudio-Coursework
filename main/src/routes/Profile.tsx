@@ -1,21 +1,11 @@
-import React, {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {styled} from '@mui/material/styles';
-import {
-    Stack,
-    Button,
-    Typography,
-    Box,
-    TextField,
-    Grid,
-    Paper,
-    Card,
-    CardContent,
-    Rating
-} from '@mui/material';
+import {Box, Button, Paper, Stack, TextField, Typography} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "../redux/store";
+import {useSelector} from "react-redux";
+import {RootState} from "../redux/store";
 
+// @ts-ignore
 const Item = styled(Paper)(({theme}) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -26,17 +16,16 @@ const Item = styled(Paper)(({theme}) => ({
 
 export default function Profile() {
     const user = useSelector((state: RootState) => state.client);
-    const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
     const [key, setKey] = useState<boolean>(false);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (key) return;
         if (!user.isAuth) {
             navigate("/")
         }
         setKey(true);
-    }, [user, navigate, dispatch, key]);
+    }, [user]);
 
     return (
         <div style={{width: "100%"}}>
@@ -50,11 +39,11 @@ export default function Profile() {
                         noValidate
                         autoComplete="off"
                     >
-                        <TextField label="Фамилия" size='small' value={user.client?.lastName!}/>
-                        <TextField label="Имя" size='small' value={user.client?.firstName!}/>
+                        <TextField label="Фамилия" variant={"outlined"} size='small' value={user.client?.lastName!} required/>
+                        <TextField label="Имя" size='small' value={user.client?.firstName!} required/>
                         <TextField label="Отчество" size='small' value={user.client?.middleName!}/>
-                        <TextField label="Номер телефона" size='small' value={user.client?.phone!}/>
-                        <TextField label="Email" size='small' value={user.client?.email!}/>
+                        <TextField label="Номер телефона" size='small' type={'phone'} value={user.client?.phone!} required/>
+                        <TextField label="Email" size='small' type={'email'} value={user.client?.eMail!} required/>
                     </Stack>
                     <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" mt={2} ml={12}>
                         <Button variant="contained" color="secondary" size="medium" disableElevation
@@ -68,7 +57,7 @@ export default function Profile() {
                     </Stack>
                 </Box>
                 <img
-                    src="../../../public/image/background.png"
+                    src={user.client?.avatar}
                     alt="avatar"
                     width="100%"
                     height="100%"
@@ -97,7 +86,7 @@ export default function Profile() {
                         Сформировать отчет
                     </Button>
                 </Stack>
-{/*
+                {/*
                 <Box sx={{flexGrow: 1}}>
                     <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
                         {Array.from(Array(2)).map((_, index) => (

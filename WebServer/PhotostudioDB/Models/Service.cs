@@ -23,13 +23,12 @@ public class Service
     public string Description { get; set; }
     public decimal Cost { get; set; }
     public List<string> Photos { get; set; }
-    public Status Type { get; set; }
+    public ServiceType Type { get; set; }
     public IEnumerable<ServicePackage> ServicePackages { get; set; }
-    public double Rating { get; set; }
 
     #endregion
 
-    public enum Status
+    public enum ServiceType
     {
         Simple = 1,
         HallRent = 2,

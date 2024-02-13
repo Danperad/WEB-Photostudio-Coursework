@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from '../utils/axiosInstance.ts';
 import {snackbarActions} from "../redux/slices/snackbarSlice";
 import {Answer, ServicePackage} from "../models/Models";
 import errorParser from "../errorParser";
 import {ServicesPackageLoaded} from "../redux/actions/packagesActions";
 
-const API_URL = "http://localhost:8888/package/"
+const API_URL = "package/"
 
 class PackageService {
     getServices(){

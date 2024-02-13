@@ -22,10 +22,10 @@ function Login() {
 		setValues({...values, [prop]: event.target.value.trim()});
 	};
 
-	const onClick = () => {
+	const onClick = async () => {
 		const data: LoginModel = {
 			login: values.login,
-			password: generateHash(values.password)
+			password: await generateHash(values.password)
 		};
 		AuthService.login(data).then((res) => {
 			dispatch(res)
@@ -35,7 +35,7 @@ function Login() {
 	return (
 		<Stack spacing={1}>
 			<Typography variant={"h5"} component={"h5"}>Авторизация</Typography>
-			<TextField value={values.login} onChange={handleChange('login')} type={"text"} variant={"standard"} size={"small"}
+			<TextField value={values.login} onChange={handleChange('login')} type={"email"} variant={"standard"} size={"small"}
 								 label={"Логин"}/>
 			<TextField value={values.password} onChange={handleChange('password')} type={"password"} variant={"standard"}
 								 size={"small"} label={"Пароль"}/>

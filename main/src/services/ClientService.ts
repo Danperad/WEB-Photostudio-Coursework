@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios from '../utils/axiosInstance.ts';
 import authHeader from '../redux/AuthHeader';
 import {Answer, NewService, NewServicePackage} from "../models/Models";
 import {clientActions} from "../redux/slices/clientSlice";
 import errorParser from "../errorParser";
 import {snackbarActions} from "../redux/slices/snackbarSlice";
 
-const API_URL = "http://localhost:8888/client/"
+const API_URL = "client/"
 
 interface State {
     serviceModels: NewService[],
@@ -26,6 +26,9 @@ interface Serv {
 
 class ClientService {
     loadClient() {
+        const header = authHeader();
+        if (!header.Authorization)
+            return undefined
         return axios.get(API_URL + "get", {headers: authHeader()})
             .then((res) => {
                 const data: Answer = res.data;
@@ -35,7 +38,8 @@ class ClientService {
                 errorParser(String(data.error!));
                 return clientActions.logout();
             }).catch((err) => {
-                return clientActions.logout();
+                console.log(err);
+                return snackbarActions.ErrorAction(err.message);
             })
     }
 
@@ -80,6 +84,7 @@ class ClientService {
             console.log(data);
             return false;
         }).catch((err) => {
+            console.log(err);
             return false;
         })
     }

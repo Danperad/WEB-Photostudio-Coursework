@@ -1,15 +1,14 @@
 import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import generateHash from '../utils/hashGenerator';
-import {RegistrationModel} from '../models/Models'
+import generateHash from '../utils/hashGenerator.ts';
+import {RegistrationModel} from '../models/Models.ts'
 import {Button, Stack, TextField, Typography, FormControl} from "@mui/material";
-import AuthService from "../services/AuthService";
+import AuthService from "../services/AuthService.ts";
 import {useDispatch} from "react-redux";
-import {AppDispatch} from "../redux/store";
-import {clientActions} from "../redux/slices/clientSlice";
+import {AppDispatch} from "../redux/store.ts";
+import {clientActions} from "../redux/slices/clientSlice.ts";
 
 interface State {
-	login: string,
 	lastname: string,
 	firstname: string,
 	phone: string,
@@ -21,7 +20,6 @@ interface State {
 
 function Registration() {
 	const [values, setValues] = useState<State>({
-		login: '',
 		lastname: '',
 		firstname: '',
 		phone: '',
@@ -33,11 +31,10 @@ function Registration() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();
 
-	const onClick = (event: any) => {
+	const onClick = async (_: any) => {
 		if (values.mainpassword !== values.passwordcheck) return;
 		const data: RegistrationModel = {
-			login: values.login,
-			password: generateHash(values.mainpassword),
+			password: await generateHash(values.mainpassword),
 			lastName: values.lastname,
 			firstName: values.firstname,
 			phone: values.phone,
@@ -80,8 +77,6 @@ function Registration() {
 											 color={"primary"} variant={"outlined"} size={"small"} required/>
 						<TextField type={"tel"} label={"Телефон"} value={values.phone} onChange={handlePhoneChange}
 														color={"primary"} variant={"outlined"} size={"small"} required/>
-						<TextField label={"Логин"} value={values.login} onChange={handleChange('login')} type={"text"}
-											 color={"primary"} variant={"outlined"} size={"small"} required/>
 						<TextField label={"Повторите пароль"} value={values.passwordcheck} onChange={handleChange('passwordcheck')}
 											 type={"password"} color={"primary"} variant={"outlined"} size={"small"} required/>
 					</Stack>

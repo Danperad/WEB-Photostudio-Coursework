@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {Box, Button, Modal, Rating, Stack, Typography} from "@mui/material";
+import {useState, useEffect} from 'react';
+import {Box, Button, Modal, Stack, Typography} from "@mui/material";
 import {NewService, Service} from "../models/Models";
 import AddServiceModal from "./AddServiceModal";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "../redux/store";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../redux/store";
 import {cartActions} from "../redux/slices/cartSlice";
 import Carousel from 'react-material-ui-carousel'
 
@@ -40,10 +40,9 @@ export default function ServiceModal(props: ServiceModalProps) {
     const [openPayModal, setOpenPayModal] = useState(false);
     const [available, setAvailable] = useState<boolean>(false);
     const [key, setKey] = useState<boolean>(false);
-    const rootState = useSelector((state: RootState) => state.cart);
     const dispatch = useDispatch<AppDispatch>();
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!props.open) {
             setKey(false);
             return;
@@ -51,7 +50,8 @@ export default function ServiceModal(props: ServiceModalProps) {
         if (key) return;
         setKey(true);
         setAvailable(false);
-    }, [available, rootState, props, key])
+    }, [props])
+
     const style = {
         position: 'absolute' as 'absolute',
         top: '50%',
@@ -103,7 +103,6 @@ export default function ServiceModal(props: ServiceModalProps) {
                     <Stack direction="row" width={"80%"} justifyContent="space-between" alignItems="center">
                         <div style={{width: "100px"}}></div>
                         <Stack direction="row" spacing={2}>
-                            <Rating defaultValue={props.service.rating} readOnly precision={0.1}/>
                             <Typography variant="subtitle1">
                                 Стоимость: {props.service!.cost} рублей
                             </Typography>

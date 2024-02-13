@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState, useEffect, ChangeEvent, useRef} from 'react';
 import {
     Stack,
     Button,
@@ -12,7 +12,7 @@ import {
     Card,
     CardContent,
     CardMedia,
-    SelectChangeEvent, Rating
+    SelectChangeEvent
 } from '@mui/material';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../redux/store";
@@ -29,23 +29,24 @@ interface State {
 }
 
 export default function Services() {
-    const [key, setKey] = useState<boolean>(false);
+    const key = useRef(false)
     const [filterState, setFilter] = useState<State>({search: "", sort: '1', type: '0'})
     const [selectedService, setSelected] = useState<Service | null>(null);
     const rootState = useSelector((state: RootState) => state.services);
     const dispatch = useDispatch<AppDispatch>();
 
-    React.useEffect(() => {
-        if (key) return;
-        ServicesService.getServices("","1","0", 0).then((res) => {
+    useEffect(() => {
+        if (key.current)
+            return;
+        key.current = true;
+        ServicesService.getServices("","1","1", 0).then((res) => {
             dispatch(res);
         })
-        setKey(true);
-    }, [key, dispatch])
+    }, [])
 
     const [openInfoModal, setOpenInfoModal] = useState(false);
 
-    const handleChange = (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
         setFilter({...filterState, [prop]: event.target.value.trim()});
         filter(prop, event.target.value.trim())
     };
@@ -125,8 +126,8 @@ export default function Services() {
             <Box sx={{width: "90%", margin: '0 auto', marginTop: '40px'}}>
                 <Stack>
                     <InfiniteScroll next={loadMore} hasMore={rootState.hasMore} loader={<Typography>Загрузка...</Typography>} dataLength={rootState.services.length}>
-                        {rootState.services.map((service, index) => (
-                            <Card key={index} sx={{mt: 2}}>
+                        {rootState.services.map((service) => (
+                            <Card key={service.id} sx={{mt: 2}}>
                                 <Stack direction={'row'}>
                                     <CardMedia
                                         component={"img"}
@@ -149,8 +150,6 @@ export default function Services() {
                                         <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
                                             Стоимость: {service.cost} рублей
                                         </Typography>
-                                        <Rating name="simple-controlled" defaultValue={service.rating} readOnly
-                                                precision={0.1}/>
                                         <Button size="medium" variant="contained" color="secondary"
                                                 onClick={() => {
                                                     handleInfoModalOpen(service)

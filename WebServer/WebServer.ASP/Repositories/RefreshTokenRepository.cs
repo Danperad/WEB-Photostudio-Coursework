@@ -16,9 +16,9 @@ public class RefreshTokenRepository(ApplicationContext context) : IRefreshTokenR
 
     public async Task<RefreshToken> AddRefreshTokenAsync(RefreshToken token)
     {
-        var newToken = await context.RefreshTokens.AddAsync(token);
         await context.RefreshTokens.Where(t => t.EndDate.CompareTo(DateTime.Now) == -1)
             .ExecuteDeleteAsync();
+        var newToken = await context.RefreshTokens.AddAsync(token);
         await context.SaveChangesAsync();
         return newToken.Entity;
     }

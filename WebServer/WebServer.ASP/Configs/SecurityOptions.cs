@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace WebServer.ASP.Utils;
+namespace WebServer.ASP.Configs;
 
 public static class SecurityOptions
 {

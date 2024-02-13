@@ -167,7 +167,7 @@ export default function AddServiceModal(props: ServiceModalProps) {
             if (i.id === +selectedItem) item = i;
         });
         if (item !== null) {
-            let itemPrice = 0
+            let itemPrice : number;
             if (props.service!.serviceType === 4 && number !== '') itemPrice = ((+number) * (item as ICostable)!.cost);
             else itemPrice = (item as ICostable)!.cost;
             price += itemPrice * ((+duration)/60);

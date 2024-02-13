@@ -118,7 +118,6 @@ internal static class EntityConfigure
         builder.Property(s => s.Description).HasColumnName("description");
         builder.Property(s => s.Type).HasColumnName("type");
         builder.Property(s => s.Photos).HasColumnName("photos");
-        builder.Property(s => s.Rating).HasColumnName("rating");
     }
 
     internal static void StatusConfigure(EntityTypeBuilder<Status> builder)
@@ -141,7 +140,20 @@ internal static class EntityConfigure
         builder.Property(a => a.HallId).HasColumnName("hall_id");
         builder.Property(a => a.StartDateTime).HasColumnName("start_date_time");
         builder.Property(a => a.Duration).HasColumnName("duration");
-        builder.Property(a => a.AddressId).HasColumnName("address_id");
+        builder.Property(a => a.IsFullTime).HasColumnName("is_full_time");
+        builder.Property(a => a.RentedItemId).HasColumnName("rented_item_id");
+        builder.Property(a => a.Number).HasColumnName("number");
+    }
+    
+    internal static void ApplicationServiceTemplateConfigure(EntityTypeBuilder<ApplicationServiceTemplate> builder)
+    {
+        builder.ToTable("application_services_templates");
+        builder.UseTpcMappingStrategy();
+        builder.Property(a => a.Id).HasColumnName("id");
+        builder.Property(a => a.ServiceId).HasColumnName("service_id");
+        builder.Property(a => a.StatusId).HasColumnName("status_id");
+        builder.Property(a => a.HallId).HasColumnName("hall_id");
+        builder.Property(a => a.Duration).HasColumnName("duration");
         builder.Property(a => a.IsFullTime).HasColumnName("is_full_time");
         builder.Property(a => a.RentedItemId).HasColumnName("rented_item_id");
         builder.Property(a => a.Number).HasColumnName("number");
@@ -155,14 +167,10 @@ internal static class EntityConfigure
         builder.HasIndex(s => s.Title).IsUnique();
         builder.Property(s => s.Description).HasColumnName("description");
         builder.Property(s => s.Photos).HasColumnName("photos");
-        builder.Property(s => s.AddressId).HasColumnName("address_id");
         builder.Property(s => s.HallId).HasColumnName("hall_id");
         builder.Property(s => s.EmployeeId).HasColumnName("employee_id");
         builder.Property(s => s.Duration).HasColumnName("duration");
-        builder.HasMany(s => s.Services).WithMany(s => s.ServicePackages)
-            .UsingEntity(j => j.ToTable("service_package_to_service"));
         builder.Property(s => s.Price).HasColumnName("price").HasColumnType("money");
-        builder.Property(s => s.Rating).HasColumnName("rating");
     }
 
     internal static void RefreshTokenConfigure(EntityTypeBuilder<RefreshToken> builder)

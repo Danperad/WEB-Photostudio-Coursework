@@ -4,8 +4,8 @@ public class Client : Human
 {
     #region Props
 
-    public bool IsActive { get; internal set; }
-    public string? Password { get; internal set; }
+    public bool IsActive { get; set; }
+    public string? Password { get; set; }
     public IEnumerable<Order> Orders { get; internal set; }
     public IEnumerable<Contract> Contracts { get; internal set; }
     public string? Avatar { get; set; }

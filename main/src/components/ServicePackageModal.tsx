@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Box, Button, Modal, Rating, Stack, Typography} from "@mui/material";
+import {useState} from 'react';
+import {Box, Button, Modal, Stack, Typography} from "@mui/material";
 import {ServicePackage} from "../models/Models";
 import AddServicePackageModal from "./AddServicePackageModal";
 import Carousel from 'react-material-ui-carousel'
@@ -70,7 +70,6 @@ export default function ServicePackageModal(props: ServicePackageModalProps) {
                     <Stack direction="row" width={"80%"} justifyContent="space-between" alignItems="center">
                         <div style={{width: "100px"}}></div>
                         <Stack direction="row" spacing={2}>
-                            <Rating defaultValue={props.service.rating} readOnly precision={0.1}/>
                             <Typography variant="subtitle1">
                                 Стоимость: {props.service!.cost} рублей
                             </Typography>

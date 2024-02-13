@@ -28,7 +28,8 @@ public class RegisterDto
         return new Client(LastName, FirstName, Phone)
         {
             MiddleName = MiddleName,
-            EMail = EMail
+            EMail = EMail,
+            Password = Password
         };
     }
 }

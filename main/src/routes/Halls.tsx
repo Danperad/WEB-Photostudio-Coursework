@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import { styled } from '@mui/material/styles';
 import {FormGroup, FormControlLabel, Checkbox, Stack, Button, Typography, Box, TextField, InputLabel, MenuItem, FormControl, Select, Grid, Paper, Card, Modal, CardContent,CardMedia} from '@mui/material';
 
@@ -42,7 +42,7 @@ export default function Halls() {
         p: 4,
     };
 
-    const [dateTime, setDateTime] = React.useState<string>();
+    const [dateTime, setDateTime] = useState<string>();
 
     return (
         <div style={{width: "100%"}}>

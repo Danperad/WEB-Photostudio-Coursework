@@ -1,5 +1,4 @@
 declare type RegistrationModel = {
-	login: string,
 	password: string,
 	lastName: string,
 	firstName: string,

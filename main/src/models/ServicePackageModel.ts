@@ -4,7 +4,6 @@ declare type ServicePackageModel = {
     description: string,
     cost: number,
     photos: string[],
-    rating: number,
     duration: number
 }
 

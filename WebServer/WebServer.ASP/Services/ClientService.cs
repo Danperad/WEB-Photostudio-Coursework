@@ -3,10 +3,10 @@ using System.Security.Claims;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PhotostudioDB.Models;
+using WebServer.ASP.Configs;
 using WebServer.ASP.Dto;
 using WebServer.ASP.Repositories.Interfaces;
 using WebServer.ASP.Services.Interfaces;
-using WebServer.ASP.Utils;
 
 namespace WebServer.ASP.Services;
 
@@ -16,10 +16,11 @@ public class ClientService(
     IRefreshTokenRepository refreshTokenRepository,
     IEmployeeRepository employeeRepository,
     IHallRepository hallRepository,
+    IStatusRepository statusRepository,
     IServiceRepository serviceRepository,
+    IRentedItemRepository rentedItemRepository,
     IMapper mapper) : IClientService
 {
-
     public async Task<AuthAnswerDto?> AuthClientAsync(AuthModel authModel)
     {
         var client = await clientRepository.GetClients()
@@ -74,93 +75,118 @@ public class ClientService(
         }
 
         var services = new List<ApplicationService>(cart.ServiceModels.Count);
-        var status = StatusStore.Statuses.First(st => st.Id == 7);
         if (cart.ServicePackage is not null)
         {
-            await AddServicesFromPackage(cart.ServicePackage, services);
+            await AddServicesFromPackageAsync(cart.ServicePackage, services);
         }
 
+        var status = await statusRepository.GetStatusById(1);
         foreach (var cartServiceModel in cart.ServiceModels)
         {
             var service = await serviceRepository.GetServices().SingleAsync(s => s.Id == cartServiceModel.ServiceId);
             switch (service.Type)
             {
-                case Service.Status.Simple:
-                    {
-                        var newService = await GetSimpleServiceAsync(service);
-                        services.Add(newService);
-                    }
+                case Service.ServiceType.Simple:
+                {
+                    var newService = new ApplicationService(service, status);
+                    services.Add(newService);
+                }
                     break;
-                case Service.Status.HallRent:
+                case Service.ServiceType.HallRent:
+                {
+                    CheckServiceModelPresent(cartServiceModel);
+                    var hall = await hallRepository.GetHalls().FirstAsync(h => h.Id == cartServiceModel.HallId);
+                    var newService = new ApplicationService(service, cartServiceModel.StartDateTime!.Value,
+                        cartServiceModel.Duration!.Value, hall, status);
+                    services.Add(newService);
+                }
                     break;
-                case Service.Status.Photo:
+                case Service.ServiceType.Photo:
+                {
+                    CheckServiceModelPresent(cartServiceModel);
+                    var employee = await employeeRepository.GetEmployees()
+                        .FirstAsync(e => e.Id == cartServiceModel.EmployeeId);
+                    var hall = await hallRepository.GetHalls().FirstAsync(h => h.Id == cartServiceModel.HallId);
+                    var newService = new ApplicationService(service, employee, cartServiceModel.StartDateTime!.Value,
+                        cartServiceModel.Duration!.Value, hall, status);
+                    services.Add(newService);
+                }
                     break;
-                case Service.Status.ItemRent:
+                case Service.ServiceType.ItemRent:
+                {
+                    CheckServiceModelPresent(cartServiceModel);
+                    if (!cartServiceModel.Number.HasValue)
+                        throw new NotImplementedException();
+                    var item = await rentedItemRepository.GetItems()
+                        .FirstAsync(i => i.Id == cartServiceModel.RentedItemId);
+                    var newService = new ApplicationService(service, cartServiceModel.StartDateTime!.Value,
+                        cartServiceModel.Duration!.Value, cartServiceModel.Number.Value, item, status);
+                    services.Add(newService);
+                }
                     break;
-                case Service.Status.Style:
+                case Service.ServiceType.Style:
+                {
+                    CheckServiceModelPresent(cartServiceModel);
+                    if (!cartServiceModel.IsFullTime.HasValue)
+                        throw new NotImplementedException();
+                    var employee = await employeeRepository.GetEmployees()
+                        .FirstAsync(e => e.Id == cartServiceModel.EmployeeId);
+                    var hall = await hallRepository.GetHalls().FirstAsync(h => h.Id == cartServiceModel.HallId);
+                    var newService = new ApplicationService(service, employee, cartServiceModel.StartDateTime!.Value,
+                        cartServiceModel.Duration!.Value, hall, cartServiceModel.IsFullTime.Value, status);
+                    services.Add(newService);
+                }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new NotImplementedException();
             }
         }
-    }
 
-    private async Task AddServicesFromPackage(NewServicePackageModel packageModel, List<ApplicationService> services)
-    {
-        var servicePackage = servicePackageRepository.GetPackages().Include(p => p.Services)
-                .First(s => s.Id == packageModel.Id);
-        foreach (var service in servicePackage.Services)
-        {
-            switch (service.Type)
-            {
-                case Service.Status.Simple:
-                    {
-                        var newService = await GetSimpleServiceAsync(service);
-                        services.Add(newService);
-                    }
-                    break;
-                case Service.Status.HallRent:
-                    {
-                        var newService = await GetHallServiceAsync(service, servicePackage.HallId, new DateTime(packageModel.StartTime));
-                        services.Add(newService);
-                    }
-                    break;
-                case Service.Status.Photo:
-                    {
-                        var employee = servicePackage.Photograph;
-                        var hall = servicePackage.Hall;
-                        var newService = new ApplicationService(service, employee,
-                            new DateTime(cart.ServicePackage.StartTime),
-                            servicePackage.Duration, hall, status);
-                        services.Add(newService);
-                    }
-                    break;
-                case Service.Status.ItemRent:
-                    break;
-                case Service.Status.Style:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(paramName: nameof(service.Type));
-            }
-        }
         return true;
     }
 
-    private async Task<ApplicationService> GetSimpleServiceAsync(Service service)
+    private async Task AddServicesFromPackageAsync(NewServicePackageModel packageModel,
+        List<ApplicationService> services)
     {
-        var employee = service.Id switch
+        var servicePackage = await servicePackageRepository.GetPackages().Include(p => p.Services)
+            .ThenInclude(s => s.Service)
+            .FirstAsync(s => s.Id == packageModel.Id);
+        foreach (var service in servicePackage.Services)
         {
-            3 => employeeRepository.GetEmployees().FirstAsync(e => e.RoleId == 3),
-            4 => employeeRepository.GetEmployees().FirstAsync(e => e.RoleId == 5),
-            _ => employeeRepository.GetEmployees().FirstAsync(e => e.RoleId == 7)
-        };
-        return new ApplicationService(service, employee, status);
+            switch (service.Service.Type)
+            {
+                case Service.ServiceType.Simple:
+                {
+                    var newService = service.MapToApplicationService();
+                    services.Add(newService);
+                }
+                    break;
+                case Service.ServiceType.HallRent:
+                case Service.ServiceType.ItemRent:
+                case Service.ServiceType.Style:
+                {
+                    var newService =
+                        service.MapToApplicationService(startDateTime: new DateTime(packageModel.StartTime));
+                    services.Add(newService);
+                }
+                    break;
+                case Service.ServiceType.Photo:
+                {
+                    var employee = servicePackage.Photograph;
+                    var newService = service.MapToApplicationService(employee, new DateTime(packageModel.StartTime));
+                    services.Add(newService);
+                }
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
     }
 
-    private async Task<ApplicationService> GetHallServiceAsync(Service services, int hallId, DateTime startDate){
-        var employee = await employeeRepository.GetEmployees().FirstAsync(e => e.RoleId == 7);
-        var hall = await hallRepository.GetHalls().FirstAsync(h => h.Id == hallId);
-        return new ApplicationService(services, employee, startDate, hall, status);
+    private static void CheckServiceModelPresent(NewServiceModel serviceModel)
+    {
+        if (!serviceModel.StartDateTime.HasValue || serviceModel.Duration.HasValue)
+            throw new NotImplementedException();
     }
 
     private void MapUpdates(ClientDto clientDto, Client client)

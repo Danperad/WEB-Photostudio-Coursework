@@ -24,7 +24,7 @@ const clientSlice = createSlice({
 			state.isAuth = true;
 			state.client = action.payload;
 		},
-		logout: (state) => state = {isAuth: false, client: null},
+		logout: (state) => {state.isAuth = false; state.client = null},
 		addedAvatar: (state, action: PayloadAction<string>) => {
 			state.client!.avatar = action.payload
 		},

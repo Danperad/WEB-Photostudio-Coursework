@@ -21,7 +21,7 @@ const serviceSlice = createSlice({
             });
             state.hasMore = action.payload.hasMore;
         },
-        ClearService: (state, action: PayloadAction<string>) => {
+        ClearService: (state, _: PayloadAction<string>) => {
             state.services.splice(0, state.services.length);
             state.hasMore = true;
         }

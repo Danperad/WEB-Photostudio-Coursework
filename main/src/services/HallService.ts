@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from '../utils/axiosInstance.ts';
 import {Answer, Hall} from "../models/Models";
 import errorParser from "../errorParser";
 import {snackbarActions} from "../redux/slices/snackbarSlice";
 import {HallsLoaded} from "../redux/actions/hallActions";
 
-const API_URL = "http://localhost:8888/hall/"
+const API_URL = "hall/"
 class HallService {
     getHalls() {
         return axios.get(API_URL + 'get')

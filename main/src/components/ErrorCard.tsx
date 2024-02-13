@@ -1,4 +1,4 @@
-import React from 'react';
+import {useEffect, useState} from 'react';
 import { useSnackbar } from 'notistack';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../redux/store";
@@ -6,20 +6,30 @@ import {snackbarActions} from "../redux/slices/snackbarSlice";
 
 function ErrorCard(){
     const { enqueueSnackbar } = useSnackbar();
+    const [viewd, setViewd] = useState<number[]>([]);
     const dispatch = useDispatch();
     const state = useSelector((state: RootState) => state.messages.state);
 
-    React.useEffect(() => {
+    useEffect(() => {
         state.forEach((s) => {
-            enqueueSnackbar(s.error, {
-                key: s.key,
-                onExited: () => {dispatch(snackbarActions.RemoveAction(s.key))},
-
-            })
+            if (viewd.indexOf(s.key) === -1){
+                enqueueSnackbar(s.error, {
+                    key: s.key,
+                    onEnter: () => {
+                        const tmp = [...viewd];
+                        tmp.push(s.key);
+                        setViewd(tmp);
+                    },
+                    onExited: () => {
+                        setViewd(viewd.filter(v => v !== s.key))
+                        dispatch(snackbarActions.RemoveAction(s.key))
+                    },
+                })
+            }
         })
-    },[state, enqueueSnackbar, dispatch])
+    },[state])
 
-    return <></>;
+    return undefined;
 }
 
 export default ErrorCard;

@@ -12,7 +12,7 @@ public class RentedItemService(IRentedItemRepository rentedItemRepository) : IRe
     public async Task<IEnumerable<RentedItemDto>> GetItemsByServiceTypeAsync(int type)
     {
         var items = PrepareItemsByServiceType(type);
-        var res = await items.ToArrayAsync();
+        var res = await items.ToListAsync();
         return res.Select(RentedItemDto.GetModel);
     }
 
@@ -20,7 +20,7 @@ public class RentedItemService(IRentedItemRepository rentedItemRepository) : IRe
         int type)
     {
         var items = PrepareAvailableItemsByServiceType(start, duration, type);
-        var res = await items.ToArrayAsync();
+        var res = await items.ToListAsync();
         return res.Select(RentedItemDto.GetModel);
     }
 

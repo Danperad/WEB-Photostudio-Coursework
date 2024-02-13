@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {
     Button,
     Stack,
@@ -25,7 +25,7 @@ export default function ShoppingCart() {
     const cartLength = () => {
         return state.cart.servicePackage !== null ? state.cart.serviceModels.length + 1 : state.cart.serviceModels.length
     }
-    const buy = (e: any) => {
+    const buy = (_: any) => {
         if (!state.client.isAuth) {
             dispatch(OpenModal(true));
             return;

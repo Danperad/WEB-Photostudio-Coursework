@@ -8,7 +8,7 @@ interface State {
 
 const cart = localStorage.getItem('cart');
 
-const initState : State = cart === null ? {
+const initState: State = cart === null ? {
     serviceModels: [],
     servicePackage: null
 } : JSON.parse(cart);
@@ -16,24 +16,24 @@ const initState : State = cart === null ? {
 const cartSlice = createSlice({
     name: "cart",
     initialState: initState,
-    reducers:{
+    reducers: {
         ServiceAdded: (state, action: PayloadAction<NewService>) => {
             state.serviceModels.push(action.payload);
             localStorage.setItem('cart', JSON.stringify(state))
         },
         ServiceRemoved: (state, action: PayloadAction<NewService>) => {
-            state.serviceModels = state.serviceModels.filter(s => s.id!==action.payload.id);
+            state.serviceModels = state.serviceModels.filter(s => s.id !== action.payload.id);
             localStorage.setItem('cart', JSON.stringify(state))
         },
         PackageAdded: (state, action: PayloadAction<NewServicePackage>) => {
             state.servicePackage = action.payload;
             localStorage.setItem('cart', JSON.stringify(state))
         },
-        PackageRemoved: (state, action: PayloadAction<NewServicePackage>) => {
+        PackageRemoved: (state, _: PayloadAction<NewServicePackage>) => {
             state.servicePackage = null;
             localStorage.setItem('cart', JSON.stringify(state))
         },
-        ClearCart: (state, action:PayloadAction<number>) => {
+        ClearCart: (state, _: PayloadAction<number>) => {
             state.servicePackage = null;
             state.serviceModels = [] as NewService[];
             localStorage.removeItem('cart');

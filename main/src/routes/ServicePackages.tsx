@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {
     Stack, Box, Card,
-    CardContent, Button, CardMedia, Rating, Typography
+    CardContent, Button, CardMedia, Typography
 } from '@mui/material';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../redux/store";
@@ -10,7 +10,7 @@ import ServicePackageModal from "../components/ServicePackageModal";
 import {ServicePackage} from "../models/Models";
 
 export default function ServicePackages() {
-    const [key, setKey] = useState<boolean>(false);
+    const key = useRef<boolean>(false);
     const [openInfoModal, setOpenInfoModal] = useState(false);
     const [selectedService, setSelected] = useState<ServicePackage | null>(null);
 
@@ -27,13 +27,13 @@ export default function ServicePackages() {
         setOpenInfoModal(true);
     };
 
-    React.useEffect(() => {
-        if (key) return;
-        setKey(true);
+    useEffect(() => {
+        if (key.current) return;
+        key.current = true;
         PackageService.getServices().then((res) => {
             dispatch(res);
         })
-    }, [key, dispatch])
+    }, [])
 
     return (
         <div style={{width: "100%"}}>
@@ -62,8 +62,6 @@ export default function ServicePackages() {
                                     <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
                                         Стоимость: {pack.cost} рублей
                                     </Typography>
-                                    <Rating name="simple-controlled" defaultValue={pack.rating} readOnly
-                                            precision={0.1}/>
                                     <Button size="medium" variant="contained" color="secondary"
                                             onClick={() => {handleInfoModalOpen(pack)}}>Подробнее</Button>
                                 </Stack>

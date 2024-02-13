@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from '../utils/axiosInstance.ts';
 import {Answer, Employee} from "../models/Models";
 
-const API_URL = "http://localhost:8888/employee/";
+const API_URL = "employee/";
 
 class EmployeeService {
     getFree(date: number, dur: number, service: number) {

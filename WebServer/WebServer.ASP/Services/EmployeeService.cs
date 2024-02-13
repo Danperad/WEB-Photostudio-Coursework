@@ -12,7 +12,7 @@ public class EmployeeService(IEmployeeRepository employeeRepository) : IEmployee
     public async Task<IEnumerable<EmployeeDto>> GetAvailableEmployeesAsync(DateTime startDate, int duration, int serviceId)
     {
         var employees = PrepareAvailableEmployeesByServiceId(startDate, duration, serviceId);
-        var res = await employees.ToArrayAsync();
+        var res = await employees.ToListAsync();
         return res.Select(EmployeeDto.GetModel);
     }
     

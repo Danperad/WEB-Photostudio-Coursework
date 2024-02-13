@@ -12,14 +12,14 @@ public class HallService(IHallRepository hallRepository) : IHallService
     public async Task<IEnumerable<HallDto>> GetHallsAsync()
     {
         var halls = GetPreparedHalls();
-        var res = await halls.ToArrayAsync();
+        var res = await halls.ToListAsync();
         return res.Select(HallDto.GetHallModel);
     }
 
     public async Task<IEnumerable<HallDto>> GetAvailableHallsAsync(DateTime startDate, int duration)
     {
         var halls = GetPreparedAvailableHalls(startDate, duration);
-        var res = await halls.ToArrayAsync();
+        var res = await halls.ToListAsync();
         return res.Select(HallDto.GetHallModel);
     }
 

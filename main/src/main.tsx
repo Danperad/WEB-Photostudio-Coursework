@@ -16,7 +16,7 @@ import Header from "./components/Header";
 import ErrorCard from "./components/ErrorCard";
 import Halls from "./routes/Halls";
 import ServicePackages from "./routes/ServicePackages";
-import Registration from "./components/Registration";
+import Registration from "./routes/Registration.tsx";
 
 const dark = createTheme({
   palette: {

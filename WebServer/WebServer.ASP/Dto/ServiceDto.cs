@@ -5,7 +5,7 @@ namespace WebServer.ASP.Dto;
 
 public class ServiceDto
 {
-    private ServiceDto(int id, string title, string description, decimal cost, List<string> photos, int type, double rating)
+    private ServiceDto(int id, string title, string description, decimal cost, List<string> photos, int type)
     {
         Id = id;
         Title = title;
@@ -13,7 +13,6 @@ public class ServiceDto
         Cost = cost;
         Photos = photos;
         Type = type;
-        Rating = rating;
     }
 
     [JsonPropertyName("id")] public int Id { get; set; }
@@ -22,11 +21,10 @@ public class ServiceDto
     [JsonPropertyName("cost")] public decimal Cost { get; internal set; }
     [JsonPropertyName("photos")] public List<string> Photos { get; internal set; }
     [JsonPropertyName("serviceType")] public int Type { get; internal set; }
-    [JsonPropertyName("rating")] public double Rating { get; internal set; }
 
     public static ServiceDto GetServiceModel(Service service)
     {
         return new ServiceDto(service.Id, service.Title, service.Description, service.Cost, service.Photos,
-            (int) service.Type, service.Rating);
+            (int) service.Type);
     }
 }

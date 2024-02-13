@@ -14,8 +14,8 @@ public class ClientRepository(ApplicationContext context) : IClientRepository
 
     public async Task<Client> AddClientAsync(Client client)
     {
-        var clients = await context.Clients.Where(c => c.EMail == client.EMail || c.Phone == client.Phone).ToArrayAsync();
-        if (clients.Length == 0)
+        var clients = await context.Clients.Where(c => c.EMail == client.EMail || c.Phone == client.Phone).ToListAsync();
+        if (clients.Count != 0)
         {
             throw new NotImplementedException(clients.Any(c => c.EMail == client.EMail)
                 ? 402.ToString()

@@ -4,8 +4,7 @@ declare type ServiceModel = {
 	description: string,
 	cost: number,
 	serviceType: number,
-	photos: string[],
-	rating: number
+	photos: string[]
 }
 
 export default ServiceModel;

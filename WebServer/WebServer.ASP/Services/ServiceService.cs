@@ -13,7 +13,7 @@ public class ServiceService(IServiceRepository serviceRepository) : IServiceServ
         var services = GetPreparedServices(order, type, search);
         if (count.HasValue && start.HasValue)
             services = GetRangedServices(services, count.Value, start.Value);
-        var res = await services.ToArrayAsync();
+        var res = await services.ToListAsync();
         return res.Select(ServiceDto.GetServiceModel);
     }
 
@@ -23,13 +23,12 @@ public class ServiceService(IServiceRepository serviceRepository) : IServiceServ
         var services = serviceRepository.GetServices().AsNoTracking();
         if (type.HasValue)
         {
-            services = services.Where(s => s.Type == (Service.Status) type);
+            services = services.Where(s => s.Type == (Service.ServiceType) type);
         }
 
         services = order switch
         {
             2 => services.OrderBy(o => o.Cost).ThenBy(o => o.Title),
-            3 => services.OrderByDescending(o => o.Rating).ThenBy(o => o.Title),
             _ => services.OrderBy(o => o.Title)
         };
         if (!string.IsNullOrWhiteSpace(search))
@@ -42,6 +41,6 @@ public class ServiceService(IServiceRepository serviceRepository) : IServiceServ
 
     private IQueryable<Service> GetRangedServices(IQueryable<Service> services, int count, int start)
     {
-        return services.Take(new Range(start - 1, start - 1 + count));
+        return services.Skip(start - 1).Take(count);
     }
 }

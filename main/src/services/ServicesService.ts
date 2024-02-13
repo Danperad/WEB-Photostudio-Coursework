@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from '../utils/axiosInstance.ts';
 import {Answer, Service} from "../models/Models";
 import {serviceActions} from "../redux/slices/serviceSlice";
 import errorParser from "../errorParser";
 import {snackbarActions} from "../redux/slices/snackbarSlice";
 
-const API_URL = "http://localhost:8888/services/"
+const API_URL = "services/"
 
 class ServicesService {
     getServices(search: string, sort: string, type: string, start: number) {
@@ -26,7 +26,7 @@ class ServicesService {
     }
 
     getServiceById(id: number) {
-        return axios.get(API_URL + 'getId?id=')
+        return axios.get(API_URL + `getId?id=${id}`)
             .then((res) => {
                 const data: Answer = res.data;
                 if (data.status) {
