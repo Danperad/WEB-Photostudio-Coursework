@@ -5,7 +5,7 @@ namespace WebServer.ASP.Dto;
 
 public class HallDto
 {
-    private HallDto(int id, string title, string description, int addressId, decimal pricePerHour,
+    public HallDto(int id, string title, string description, int addressId, decimal pricePerHour,
         ICollection<string> photos)
     {
         Id = id;

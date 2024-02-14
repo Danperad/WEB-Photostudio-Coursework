@@ -4,7 +4,7 @@ public class Service
 {
     #region Ctors
 
-    internal Service()
+    public Service()
     {
         Id = 0;
         Title = "";

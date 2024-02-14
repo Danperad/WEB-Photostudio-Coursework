@@ -16,15 +16,13 @@ public class HallController(IHallService hallService) : ControllerBase
     }
 
     [HttpGet("getfree")]
-    public async Task<IActionResult> GetFree([FromQuery] ulong start, [FromQuery] int duration)
+    public async Task<IActionResult> GetFree([FromQuery] DateTime start, [FromQuery] int duration)
     {
-        if (start == 0 || duration == 0)
+        if (start < DateTime.Now.AddDays(1) || duration <= 30)
         {
             return Ok(new AnswerDto(false, null, 101));
         }
-
-        var date = new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(start);
-        var halls = await hallService.GetAvailableHallsAsync(date, duration);
+        var halls = await hallService.GetAvailableHallsAsync(start, duration);
         return Ok(new AnswerDto(true, new { halls = halls }, null));
     }
 }

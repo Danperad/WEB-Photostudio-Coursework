@@ -15,12 +15,12 @@ public class ServiceDto
         Type = type;
     }
 
-    [JsonPropertyName("id")] public int Id { get; set; }
-    [JsonPropertyName("title")] public string Title { get; internal set; }
-    [JsonPropertyName("description")] public string Description { get; internal set; }
-    [JsonPropertyName("cost")] public decimal Cost { get; internal set; }
-    [JsonPropertyName("photos")] public List<string> Photos { get; internal set; }
-    [JsonPropertyName("serviceType")] public int Type { get; internal set; }
+    public int Id { get; set; }
+    public string Title { get; internal set; }
+    public string Description { get; internal set; }
+    public decimal Cost { get; internal set; }
+    public List<string> Photos { get; internal set; }
+    public int Type { get; internal set; }
 
     public static ServiceDto GetServiceModel(Service service)
     {
