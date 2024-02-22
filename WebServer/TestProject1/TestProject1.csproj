@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\WebServer.ASP.Employee\WebServer.ASP.Employee.csproj" />
       <ProjectReference Include="..\WebServer.ASP\WebServer.ASP.csproj" />
     </ItemGroup>
 
