@@ -8,10 +8,15 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PhotoStudio.DataBase\PhotoStudio.DataBase.csproj" />
+      <ProjectReference Include="..\PhotoStudio.WebApi.Lib\PhotoStudio.WebApi.Lib.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Repositories\Interfaces\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
     </ItemGroup>
 
 </Project>

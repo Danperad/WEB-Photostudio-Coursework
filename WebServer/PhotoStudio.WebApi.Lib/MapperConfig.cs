@@ -2,13 +2,13 @@
 using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Lib.Dto;
 
-namespace PhotoStudio.WebApi.Client.Configs;
+namespace PhotoStudio.WebApi.Lib;
 
 public class MapperConfig : Profile
 {
     public MapperConfig()
     {
-        CreateMap<DataBase.Models.Client, ClientDto>();
+        CreateMap<Client, ClientDto>();
         CreateMap<Employee, EmployeeDto>();
         CreateMap<Hall, HallDto>();
         CreateMap<ServicePackage, ServicePackageDto>();

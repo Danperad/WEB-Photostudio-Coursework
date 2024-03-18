@@ -14,6 +14,7 @@ using PhotoStudio.WebApi.Client.Repositories;
 using PhotoStudio.WebApi.Client.Repositories.Interfaces;
 using PhotoStudio.WebApi.Client.Services;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
+using PhotoStudio.WebApi.Lib;
 
 namespace PhotoStudio.Test;
 
