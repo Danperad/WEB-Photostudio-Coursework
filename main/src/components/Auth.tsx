@@ -6,19 +6,19 @@ import {useSelector} from "react-redux";
 import {RootState} from "../redux/store";
 
 function Auth() {
-    const navigate = useNavigate();
-    const rootState = useSelector((state: RootState) => state);
+  const navigate = useNavigate();
+  const rootState = useSelector((state: RootState) => state);
 
-    useEffect(() => {
-        if (rootState.client.isAuth) {
-            navigate("/");
-        }
-    });
-    return (
-        <Stack direction={"row"} alignItems={"center"} justifyContent={"center"} spacing={15}>
-            <Registration/>
-        </Stack>
-    )
+  useEffect(() => {
+    if (rootState.client.isAuth) {
+      navigate("/");
+    }
+  });
+  return (
+    <Stack direction={"row"} alignItems={"center"} justifyContent={"center"} spacing={15}>
+      <Registration/>
+    </Stack>
+  )
 }
 
 export default Auth;

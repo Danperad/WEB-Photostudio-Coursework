@@ -6,16 +6,20 @@ import {hallReducer} from "./reducers/hallReducer";
 import {cartReducer} from "./slices/cartSlice";
 import {authModalReducer} from './reducers/authModalReducer'
 import {packageReducer} from "./reducers/packageReducer";
+import {tutorialReducer} from "./reducers/tutorialReducer.ts";
+
+
 export const store = configureStore({
-	reducer: {
-		client: clientReducer,
-		services: serviceReducer,
-		halls: hallReducer,
-		messages: snackbarReducer,
-		cart: cartReducer,
-		authModal: authModalReducer,
-		packages: packageReducer
-	},
+  reducer: {
+    client: clientReducer,
+    services: serviceReducer,
+    halls: hallReducer,
+    messages: snackbarReducer,
+    cart: cartReducer,
+    authModal: authModalReducer,
+    packages: packageReducer,
+    tutorial: tutorialReducer
+  },
 })
 
 export type RootState = ReturnType<typeof store.getState>
