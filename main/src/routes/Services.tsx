@@ -88,7 +88,7 @@ export default function Services() {
 
 
   return (
-    <div style={{width: "100%"}}>
+    <div style={{width: "100%"}} id={"services-page"}>
       <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2} width={"50%"} mt={1}
              ml={2}>
         <TextField label="Поиск" value={filterState.search} onChange={handleChange("search")} color='primary'
@@ -158,7 +158,7 @@ export default function Services() {
                     <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
                       Стоимость: {service.cost} рублей
                     </Typography>
-                    <Button size="medium" variant="contained" color="secondary"
+                    <Button id={`service-buy-${i}`} size="medium" variant="contained" color="secondary"
                             onClick={() => {
                               handleInfoModalOpen(service)
                             }}>Подробнее</Button>

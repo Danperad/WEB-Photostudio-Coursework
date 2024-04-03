@@ -57,10 +57,11 @@ export default function ServiceModal(props: ServiceModalProps) {
   useEffect(() => {
     setTimeout(() => {
       if (key && tutorialState.started) {
-        const currentStep = tutorialState.instant?._currentStepNumber as number
+        const instant = tutorialState.instant
+        const currentStep = instant?._currentStep as number
         dispatch(NextStep(currentStep + 1))
       }
-    }, 1000)
+    }, 200)
   }, [key])
 
   const style = {
@@ -84,7 +85,7 @@ export default function ServiceModal(props: ServiceModalProps) {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style} id={"infoServiceModal"}>
+      <Box sx={style} id={"info-service-modal"}>
         <Stack spacing={2} width={"100%"} mt={2} alignItems="center"
                justifyContent={"center"}>
           <Stack alignItems="center" justifyContent={"center"}
@@ -118,7 +119,7 @@ export default function ServiceModal(props: ServiceModalProps) {
               <Typography variant="subtitle1">
                 Стоимость: {props.service!.cost} рублей
               </Typography>
-              <Button variant="contained" color="secondary" disabled={available} size="medium"
+              <Button id={"open-buy-modal"} variant="contained" color="secondary" disabled={available} size="medium"
                       disableElevation
                       sx={{borderRadius: '10px'}} onClick={() => handlePayModalOpen()}>
                 Добавить в корзину

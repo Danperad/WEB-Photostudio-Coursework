@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Employee, Hall, NewService, RentedItem, Service} from "../models/Models";
 import {
   Box,
@@ -20,9 +20,10 @@ import HallService from "../services/HallService";
 import ICostable from "../models/ICostable";
 import RentedItemService from "../services/RentedItemService";
 import EmployeeService from "../services/EmployeeService";
-import {useDispatch} from "react-redux";
-import {AppDispatch} from "../redux/store";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../redux/store";
 import {cartActions} from "../redux/slices/cartSlice";
+import {NextStep} from "../redux/actions/tutorialActions.ts";
 
 const style = {
   position: 'absolute' as const,
@@ -70,6 +71,16 @@ export default function AddServiceModal(props: ServiceModalProps) {
   const [fullEnabled, setFullEnabled] = useState<boolean>(false);
   const [isFullTime, setIsFullTime] = useState<boolean>(false);
 
+  const tutorialState = useSelector((state: RootState) => state.tutorial);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (props.open && tutorialState.started) {
+        const currentStep = tutorialState.instant?._currentStep as number
+        dispatch(NextStep(currentStep + 1))
+      }
+    }, 200)
+  }, [props])
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (+event.target.value < 0 || isNaN(+event.target.value)) return;
     setDuration(event.target.value);
@@ -241,7 +252,7 @@ export default function AddServiceModal(props: ServiceModalProps) {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={style} id={"add-service-modal"}>
         <Stack direction="row" ml={16} spacing={2} width={"70%"} mt={2} justifyContent="space-between"
                alignItems="center">
           <Stack spacing={2}>
