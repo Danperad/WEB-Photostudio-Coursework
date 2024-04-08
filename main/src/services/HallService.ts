@@ -21,8 +21,11 @@ class HallService {
       })
   }
 
-  getFree(date: number, dur: number) {
-    return axios.get(API_URL + 'getfree?start=' + date + '&duration=' + dur).then((res) => {
+  getFree(date: Date, dur: number) {
+    const params = new URLSearchParams();
+    params.append("start", date.toISOString())
+    params.append("duration", String(dur))
+    return axios.get(API_URL + 'getfree', {params: params}).then((res) => {
       const data: Answer = res.data;
       if (data.status) {
         return data.answer.halls as Hall[];

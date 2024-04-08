@@ -105,7 +105,7 @@ function Header() {
 
   return (
     <>
-      <AppBar>
+      <AppBar position="static">
         <Container maxWidth={false}>
           <Toolbar disableGutters>
             <Typography id={"logo"} onClick={() => {
@@ -148,7 +148,7 @@ function Header() {
               ))}
             </Box>
             <Box sx={{flexGrow: 0, display: {md: 'flex'}}}>
-              <IconButton onClick={() => onClick("cart")} sx={{mr: 1}}>
+              <IconButton onClick={() => onClick("cart")} sx={{mr: 1}} id={"open-cart-btn"}>
                 <Badge badgeContent={cartLength()} color="secondary">
                   <ShoppingCartIcon/>
                 </Badge>

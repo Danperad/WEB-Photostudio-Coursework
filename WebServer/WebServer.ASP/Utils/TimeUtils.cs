@@ -19,4 +19,11 @@ internal static class TimeUtils
         return serviceds.Where(h =>
             !h.Services.Any(a => GetTimed(@const, startDate, duration, a.StartDateTime!.Value, a.Duration!.Value)));
     }
+    
+    internal static List<T> GetAvailable<T>(IList<T> serviceds, int @const, DateTime startDate, int duration)
+        where T : IServiced
+    {
+        return serviceds.Where(h =>
+            !h.Services.Any(a => GetTimed(@const, startDate, duration, a.StartDateTime!.Value, a.Duration!.Value))).ToList();
+    }
 }

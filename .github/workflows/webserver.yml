@@ -5,9 +5,9 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "gamefication" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "gamefication" ]
 
 jobs:
   build:
@@ -26,3 +26,6 @@ jobs:
     - name: Build
       working-directory: ./WebServer/WebServer.ASP
       run: dotnet build --no-restore
+    - name: Test
+      working-directory: ./WebServer/WebServer.ASP
+      run: dotnet test --no-restore

@@ -19,7 +19,7 @@ public class HallService(IHallRepository hallRepository) : IHallService
     public async Task<IEnumerable<HallDto>> GetAvailableHallsAsync(DateTime startDate, int duration)
     {
         var halls = GetPreparedAvailableHalls(startDate, duration);
-        var res = await halls.ToListAsync();
+        var res = await halls;
         return res.Select(HallDto.GetHallModel);
     }
 
@@ -30,9 +30,9 @@ public class HallService(IHallRepository hallRepository) : IHallService
         return halls;
     }
 
-    private IQueryable<Hall> GetPreparedAvailableHalls(DateTime startDate, int duration)
+    private async Task<IList<Hall>> GetPreparedAvailableHalls(DateTime startDate, int duration)
     {
-        var halls = GetPreparedHalls();
+        var halls = await GetPreparedHalls().ToListAsync();
         halls = TimeUtils.GetAvailable(halls, 90, startDate, duration);
         return halls;
     }

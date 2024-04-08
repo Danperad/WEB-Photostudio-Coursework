@@ -1,38 +1,31 @@
 import {createReducer, PayloadAction} from "@reduxjs/toolkit";
 import {InitTutorial, StartTutorial, ExitTutorial, SkipTutorial, NextStep} from "../actions/tutorialActions.ts"
-import {IntroJs} from "intro.js/src/intro";
-import introJs from "intro.js";
 
 
 interface State {
-  instant: IntroJs | undefined,
-  started: boolean
+  currentStep: number,
+  started: boolean,
+  isInit: boolean,
+  isExit: boolean
 }
 
 const state: State = {
-  instant: undefined,
-  started: false
+  currentStep: -1,
+  started: false,
+  isInit: false,
+  isExit: false
 }
 
 export const tutorialReducer = createReducer(state, (builder) => {
-  builder.addCase(InitTutorial, (_, action: PayloadAction<IntroJs>) => {
-    return {instant: action.payload, started: false}
+  builder.addCase(InitTutorial, (_, _action: PayloadAction) => {
+    return {currentStep: -1, started: false, isInit: true, isExit: false}
   }).addCase(NextStep, (state, action: PayloadAction<number>) => {
-    state.instant?.refresh()
-    state.instant?.goToStep(action.payload).then(res => {
-      res.refresh()
-      res.start().then(res => {
-        res.refresh()
-      })
-    })
+    return {currentStep: action.payload, started: state.started, isInit: state.isInit, isExit: state.isExit}
   }).addCase(StartTutorial, (state, _: PayloadAction) => {
-    state.instant?.start().then(res => {
-      res._introItems[1].element = document.getElementById("info-service-modal")
-    })
-    return {instant: state.instant, started: true}
+    return {currentStep: 0, started: true, isInit: state.isInit, isExit: state.isExit}
   }).addCase(ExitTutorial, (state, _: PayloadAction) => {
-    return {instant: state.instant, started: false}
+    return {currentStep: state.currentStep, started: false, isInit: state.isInit, isExit: true}
   }).addCase(SkipTutorial, (state, _: PayloadAction) => {
-    return {instant: state.instant, started: false}
+    return {currentStep: state.currentStep, started: false, isInit: state.isInit, isExit: true}
   })
 })

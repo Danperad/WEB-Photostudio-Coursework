@@ -3,7 +3,7 @@ declare type ServiceModel = {
   title: string,
   description: string,
   cost: number,
-  serviceType: number,
+  type: number,
   photos: string[]
 }
 

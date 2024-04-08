@@ -7,7 +7,7 @@ import {
   CardMedia,
   FormControl,
   InputLabel,
-  MenuItem,
+  MenuItem, Portal,
   Select,
   SelectChangeEvent,
   Stack,
@@ -42,13 +42,13 @@ export default function Services() {
     if (key.current)
       return;
     key.current = true;
-    ServicesService.getServices("", "1", "1", 0).then((res) => {
+    ServicesService.getServices("", "", "", 0).then((res) => {
       dispatch(res);
     })
   }, [dispatch])
 
   useEffect(() => {
-    if (rootState.services.length === 0 && !tutorialState.instant)
+    if (rootState.services.length === 0 || !tutorialState.isInit || tutorialState.isExit || tutorialState.started)
       return
     dispatch(StartTutorial())
   }, [rootState, dispatch]);
@@ -170,6 +170,12 @@ export default function Services() {
         </Stack>
       </Box>
       <ServiceModal open={openInfoModal} handlerClose={closeInfoModal} service={selectedService}/>
+      {(!tutorialState.started || tutorialState.isExit) && (
+        <>
+          <Box id={"service-modal-portal-box"}/>
+          <Box id={"add-service-modal-portal-box"}/>
+        </>
+      )}
     </div>
   );
 }

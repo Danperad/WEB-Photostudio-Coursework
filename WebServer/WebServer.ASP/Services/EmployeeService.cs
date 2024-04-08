@@ -11,8 +11,8 @@ public class EmployeeService(IEmployeeRepository employeeRepository) : IEmployee
 {
     public async Task<IEnumerable<EmployeeDto>> GetAvailableEmployeesAsync(DateTime startDate, int duration, int serviceId)
     {
-        var employees = PrepareAvailableEmployeesByServiceId(startDate, duration, serviceId);
-        var res = await employees.ToListAsync();
+        var employees = await PrepareAvailableEmployeesByServiceId(startDate, duration, serviceId);
+        var res = employees;
         return res.Select(EmployeeDto.GetModel);
     }
     
@@ -29,9 +29,9 @@ public class EmployeeService(IEmployeeRepository employeeRepository) : IEmployee
         return employees;
     }
     
-    private IQueryable<Employee> PrepareAvailableEmployeesByServiceId(DateTime start, int duration, int serviceId)
+    private async Task<IEnumerable<Employee>> PrepareAvailableEmployeesByServiceId(DateTime start, int duration, int serviceId)
     {
-        var items = PrepareEmployeesByServiceId(serviceId);
+        var items = await PrepareEmployeesByServiceId(serviceId).ToListAsync();
         items = TimeUtils.GetAvailable(items, 60, start, duration);
         return items;
     }

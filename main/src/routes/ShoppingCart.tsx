@@ -1,12 +1,12 @@
-import {useState} from 'react';
-import {Button, Card, Checkbox, FormControlLabel, FormGroup, Stack, TextField, Typography} from "@mui/material";
-import IconButton from '@mui/material/IconButton';
+import {useEffect, useState} from 'react';
+import {Button, Card, Checkbox, FormControlLabel, FormGroup, Stack, TextField, Typography, IconButton} from "@mui/material";
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../redux/store";
 import {cartActions} from "../redux/slices/cartSlice";
 import {OpenModal} from "../redux/actions/authModalActions";
 import ClientService from "../services/ClientService";
+import {ExitTutorial, NextStep} from "../redux/actions/tutorialActions.ts";
 
 export default function ShoppingCart() {
   const [dateTime, setDateTime] = useState<string>();
@@ -17,6 +17,9 @@ export default function ShoppingCart() {
     return state.cart.servicePackage !== null ? state.cart.serviceModels.length + 1 : state.cart.serviceModels.length
   }
   const buy = () => {
+    if (state.tutorial.started && !state.tutorial.isExit){
+      dispatch(ExitTutorial());
+    }
     if (!state.client.isAuth) {
       dispatch(OpenModal(true));
       return;
@@ -25,12 +28,19 @@ export default function ShoppingCart() {
       if (res) dispatch(cartActions.ClearCart(0));
     })
   }
+
+  useEffect(() => {
+    if (state.tutorial.started && !state.tutorial.isExit){
+      dispatch(NextStep(4));
+    }
+  }, [])
+
   return (
     <div className='section'
          style={{backgroundColor: '#F0EDE8', borderRadius: '20px', padding: '22px', width: '100%', height: '100%'}}>
-      <Stack direction="row" spacing={8} alignItems='center' justifyContent="center">
+      <Stack direction="row" spacing={8} alignItems='center' justifyContent="center" >
         <Typography variant="h6" color="primary" align='center'>Корзина</Typography>
-        <Stack direction="row" spacing={2}>
+        <Stack direction="row" spacing={2} id={"cart-buy-area"}>
           <Typography variant="h6" color="primary" align='center'>Выбрано: {cartLength()}</Typography>
           <Button variant="contained" color="secondary" size="medium" disableElevation
                   disabled={cartLength() === 0} onClick={() => {

@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Box, Button, Modal, Stack, Typography} from "@mui/material";
+import {Box, Button, Modal, Stack, Typography, Portal} from "@mui/material";
 import {NewService, Service} from "../models/Models";
 import AddServiceModal from "./AddServiceModal";
 import {useDispatch, useSelector} from "react-redux";
@@ -16,7 +16,7 @@ interface ServiceModalProps {
 
 export default function ServiceModal(props: ServiceModalProps) {
   const handlePayModalOpen = () => {
-    if (props.service!.serviceType === 1) {
+    if (props.service!.type === 1) {
       const service: NewService = {
         id: new Date().getTime() + Math.random(),
         service: props.service!,
@@ -37,7 +37,9 @@ export default function ServiceModal(props: ServiceModalProps) {
   };
   const closePayModal = () => {
     setOpenPayModal(false);
+    props.handlerClose();
   };
+
   const [openPayModal, setOpenPayModal] = useState(false);
   const [available, setAvailable] = useState<boolean>(false);
   const [key, setKey] = useState<boolean>(false);
@@ -52,17 +54,13 @@ export default function ServiceModal(props: ServiceModalProps) {
     if (key) return;
     setKey(true);
     setAvailable(false);
-  }, [props, dispatch])
+  }, [props])
 
   useEffect(() => {
-    setTimeout(() => {
-      if (key && tutorialState.started) {
-        const instant = tutorialState.instant
-        const currentStep = instant?._currentStep as number
-        dispatch(NextStep(currentStep + 1))
-      }
-    }, 200)
-  }, [key])
+    if (key && tutorialState.started && !tutorialState.isExit) {
+      dispatch(NextStep(1))
+    }
+  }, [key, dispatch])
 
   const style = {
     position: 'absolute' as const,
@@ -78,57 +76,65 @@ export default function ServiceModal(props: ServiceModalProps) {
   };
 
   if (props.service === null) return <></>;
-  return (
-    <Modal
-      open={props.open}
-      onClose={props.handlerClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={style} id={"info-service-modal"}>
-        <Stack spacing={2} width={"100%"} mt={2} alignItems="center"
-               justifyContent={"center"}>
-          <Stack alignItems="center" justifyContent={"center"}
-                 style={{height: "400px", width: "600px", borderRadius: "10px"}}>
-            <Carousel animation={"fade"} indicators={false} sx={{
-              width: "100%",
-              height: "100%"
-            }}>
-              {props.service!.photos.map((photo, index) => (
-                <img
-                  src={photo}
-                  alt={props.service!.title}
-                  key={index}
-                  width="100%"
-                  height="100%"
-                />
-              ))}
-            </Carousel>
-          </Stack>
-          <Box sx={{width: "80%"}}>
+  const toRender = (<Box sx={style} id={"info-service-modal"}>
+      <Stack spacing={2} width={"100%"} mt={2} alignItems="center"
+             justifyContent={"center"}>
+        <Stack alignItems="center" justifyContent={"center"}
+               style={{height: "400px", width: "600px", borderRadius: "10px"}}>
+          <Carousel animation={"fade"} indicators={false} sx={{
+            width: "100%",
+            height: "100%"
+          }}>
+            {props.service!.photos.map((photo, index) => (
+              <img
+                src={photo}
+                alt={props.service!.title}
+                key={index}
+                width="100%"
+                height="100%"
+              />
+            ))}
+          </Carousel>
+        </Stack>
+        <Box sx={{width: "80%"}}>
+          <Typography variant="subtitle1">
+            Название: {props.service!.title}
+          </Typography>
+          <Typography variant="subtitle1">
+            Описание: {props.service!.description}
+          </Typography>
+        </Box>
+        <Stack direction="row" width={"80%"} justifyContent="space-between" alignItems="center">
+          <div style={{width: "100px"}}></div>
+          <Stack direction="row" spacing={2}>
             <Typography variant="subtitle1">
-              Название: {props.service!.title}
+              Стоимость: {props.service!.cost} рублей
             </Typography>
-            <Typography variant="subtitle1">
-              Описание: {props.service!.description}
-            </Typography>
-          </Box>
-          <Stack direction="row" width={"80%"} justifyContent="space-between" alignItems="center">
-            <div style={{width: "100px"}}></div>
-            <Stack direction="row" spacing={2}>
-              <Typography variant="subtitle1">
-                Стоимость: {props.service!.cost} рублей
-              </Typography>
-              <Button id={"open-buy-modal"} variant="contained" color="secondary" disabled={available} size="medium"
-                      disableElevation
-                      sx={{borderRadius: '10px'}} onClick={() => handlePayModalOpen()}>
-                Добавить в корзину
-              </Button>
-            </Stack>
+            <Button id={"open-buy-modal"} variant="contained" color="secondary" disabled={available} size="medium"
+                    disableElevation
+                    sx={{borderRadius: '10px'}} onClick={() => handlePayModalOpen()}>
+              Настроить
+            </Button>
           </Stack>
         </Stack>
-        <AddServiceModal open={openPayModal} handlerClose={closePayModal} service={props.service}/>
-      </Box>
-    </Modal>
+      </Stack>
+      <AddServiceModal open={openPayModal} handlerClose={closePayModal} service={props.service}/>
+    </Box>
+  )
+  return (
+    ((!tutorialState.started || tutorialState.isExit) ?
+      (<Modal
+        open={props.open}
+        onClose={props.handlerClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        {toRender}
+      </Modal>) : (
+        <Portal container={() => document.getElementById('service-modal-portal-box')}>
+          {toRender}
+        </Portal>
+        )
+    )
   );
 }

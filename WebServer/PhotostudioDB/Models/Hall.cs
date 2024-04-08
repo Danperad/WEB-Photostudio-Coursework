@@ -24,7 +24,7 @@ public class Hall : IServiced
     public int AddressId { get; internal set; }
     public Address Address { get; internal set; }
     public decimal PricePerHour { get; internal set; }
-    public ICollection<string> Photos { get; internal set; }
+    public List<string> Photos { get; internal set; }
     public ICollection<ApplicationService> Services { get; set; }
 
     #endregion

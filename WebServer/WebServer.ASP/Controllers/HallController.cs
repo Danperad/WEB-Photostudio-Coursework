@@ -18,7 +18,7 @@ public class HallController(IHallService hallService) : ControllerBase
     [HttpGet("getfree")]
     public async Task<IActionResult> GetFree([FromQuery] DateTime start, [FromQuery] int duration)
     {
-        if (start < DateTime.Now.AddDays(1) || duration <= 30)
+        if (start < DateTime.Now.AddDays(1) || duration < 60)
         {
             return Ok(new AnswerDto(false, null, 101));
         }

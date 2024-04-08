@@ -10,6 +10,7 @@ import {
   InputLabel,
   MenuItem,
   Modal,
+  Portal,
   Select,
   SelectChangeEvent,
   Stack,
@@ -46,7 +47,7 @@ interface ServiceModalProps {
 
 export default function AddServiceModal(props: ServiceModalProps) {
   const title = () => {
-    switch (props.service!.serviceType) {
+    switch (props.service!.type) {
       case 2:
         return "Зал";
       case 3:
@@ -70,17 +71,26 @@ export default function AddServiceModal(props: ServiceModalProps) {
   const [number, setNumber] = useState<string>('');
   const [fullEnabled, setFullEnabled] = useState<boolean>(false);
   const [isFullTime, setIsFullTime] = useState<boolean>(false);
+  const [key, setKey] = useState<boolean>(false);
+
 
   const tutorialState = useSelector((state: RootState) => state.tutorial);
 
   useEffect(() => {
-    setTimeout(() => {
-      if (props.open && tutorialState.started) {
-        const currentStep = tutorialState.instant?._currentStep as number
-        dispatch(NextStep(currentStep + 1))
-      }
-    }, 200)
+    if (!props.open) {
+      setKey(false);
+      return;
+    }
+    if (key) return;
+    setKey(true);
   }, [props])
+
+  useEffect(() => {
+    if (key && tutorialState.started && !tutorialState.isExit) {
+      dispatch(NextStep(2))
+    }
+  }, [key, dispatch])
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (+event.target.value < 0 || isNaN(+event.target.value)) return;
     setDuration(event.target.value);
@@ -121,19 +131,22 @@ export default function AddServiceModal(props: ServiceModalProps) {
       setFullEnabled(false);
       return;
     }
-    if (props.service!.serviceType === 5) {
+    if (props.service!.type === 1) {
       setEnabled(true);
+      return;
     }
     fillItems(date, dur);
 
   }
   const fillItems = (date: number, dur: number) => {
     switch (props.service!.id) {
-      case 7:
-        HallService.getFree(date, dur).then((res) => {
+      case 3:
+        HallService.getFree(new Date(date), dur).then((res) => {
           if (res.length === 0) return;
           setItems(res);
           setEnabled(true);
+        }).catch(err => {
+          console.log(err);
         })
         break;
       case 5:
@@ -157,13 +170,13 @@ export default function AddServiceModal(props: ServiceModalProps) {
 
   const handleSelect = (event: SelectChangeEvent) => {
     setSelected(event.target.value as string);
-    if (props.service!.serviceType === 4)
+    if (props.service!.type === 4)
       setCount(getAvailable(event.target.value as string))
     if ((event.target.value as string) === '') {
       setFullEnabled(false)
       return;
     }
-    if (props.service!.serviceType === 2) setFullEnabled(true)
+    if (props.service!.type === 2) setFullEnabled(true)
   };
 
   const getAvailable = (itemm: string) => {
@@ -184,14 +197,14 @@ export default function AddServiceModal(props: ServiceModalProps) {
     });
     if (item !== null) {
       let itemPrice: number;
-      if (props.service!.serviceType === 4 && number !== '') itemPrice = ((+number) * (item as ICostable)!.cost);
+      if (props.service!.type === 4 && number !== '') itemPrice = ((+number) * (item as ICostable)!.cost);
       else itemPrice = (item as ICostable)!.cost;
       price += itemPrice * ((+duration) / 60);
     }
     return price;
   }
 
-  const buy = () => {
+  const addToCart = () => {
     const newService: NewService = {
       id: new Date().getTime() + Math.random(),
       service: props.service!,
@@ -204,17 +217,17 @@ export default function AddServiceModal(props: ServiceModalProps) {
       number: null,
       isFullTime: null,
     }
-    switch (props.service!.id) {
-      case 7:
+    switch (props.service!.type) {
+      case 1:
+        break
+      case 2:
         let res: Hall | null = null;
         items.forEach((item) => {
           if (item.id === +selectedItem) res = (item as Hall);
         });
         newService.hall = res!;
         break;
-      case 5:
-      case 6:
-      case 10:
+      case 4:
         let rented: RentedItem | null = null;
         items.forEach((item) => {
           if (item.id === +selectedItem) rented = (item as RentedItem);
@@ -222,7 +235,7 @@ export default function AddServiceModal(props: ServiceModalProps) {
         newService.rentedItem = rented!;
         newService.number = +number;
         break;
-      case 13:
+      case 3:
         newService.isFullTime = isFullTime;
         let empl1: Employee | null = null;
         items.forEach((item) => {
@@ -241,24 +254,23 @@ export default function AddServiceModal(props: ServiceModalProps) {
         break;
     }
     dispatch(cartActions.ServiceAdded(newService));
+    if (!(!tutorialState.started || tutorialState.isExit)) {
+      dispatch(NextStep(3))
+    }
     props.handlerClose();
   }
 
-  if (props.service === null) return <></>;
-  return (
-    <Modal
-      open={props.open}
-      onClose={props.handlerClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={style} id={"add-service-modal"}>
-        <Stack direction="row" ml={16} spacing={2} width={"70%"} mt={2} justifyContent="space-between"
-               alignItems="center">
-          <Stack spacing={2}>
-            <Typography variant="subtitle1">
-              Название:
-            </Typography>
+  if (props.service === null || !props.open) return <></>;
+  const toRender2 = (
+    <Box sx={style} id={"add-service-modal"}>
+      <Stack direction="row" ml={16} spacing={2} width={"70%"} mt={2} justifyContent="space-between"
+             alignItems="center">
+
+        <Stack spacing={2}>
+          <Typography variant="subtitle1">
+            Название: {props.service.title}
+          </Typography>
+          {props.service!.type !== 1 && (<>
             <TextField
               id="datetime-local"
               label="Дата и время"
@@ -275,15 +287,17 @@ export default function AddServiceModal(props: ServiceModalProps) {
             <TextField label="Период" color='primary' inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
                        size='small' sx={{width: '100%'}}
                        value={duration} onChange={handleChange}/>
-            {props.service.serviceType === 5 &&
+            {props.service.type === 5 &&
               <FormGroup>
                 <FormControlLabel control={<Checkbox checked={isFullTime} onChange={() => {
                   setIsFullTime(!isFullTime)
                 }}/>} label="На все время?"/>
               </FormGroup>
             }
-          </Stack>
-          <Stack spacing={2}>
+          </>)}
+        </Stack>
+        <Stack spacing={2}>
+          {props.service!.type >= 2 && (
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label"
                           style={{lineHeight: '0.7em', height: '20px'}}>{objectTitle}</InputLabel>
@@ -294,42 +308,53 @@ export default function AddServiceModal(props: ServiceModalProps) {
                 value={selectedItem}
                 sx={{height: '40px'}} disabled={!isEnabled}
                 onChange={handleSelect}
+                MenuProps={{ disablePortal: true, anchorEl: () => (document.getElementById("demo-simple-select") as Element), anchorOrigin: {horizontal:"right", vertical:"top"}}}
               >
-                {items.map((hall, index) => (
-                  <MenuItem key={index} value={hall.id}>{hall.title}</MenuItem>
+                {items.map((costable, index) => (
+                  <MenuItem key={index} value={costable.id}>{costable.title}</MenuItem>
                 ))}
               </Select>
-            </FormControl>
-            {(props.service!.serviceType === 3 || props.service!.serviceType === 5) &&
-              <TextField label={"Адрес"} color='primary' size='small' sx={{width: '100%'}}
-                         disabled={!isEnabled} value={address} onChange={handleAddressChange}/>
-            }
-            {props.service!.serviceType === 4 &&
-              <>
-                <TextField label={"Количество"} inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
-                           color='primary' size='small' sx={{width: '100%'}}
-                           disabled={!isEnabled} value={number} onChange={handleNumberChange}/>
-                <Typography>Доступно: {count}</Typography>
-              </>
-            }
-            <Stack direction="row" width={"80%"} justifyContent="space-between" alignItems="center">
-              <div style={{width: "100px"}}></div>
-              <Stack direction="row" spacing={2}>
-                <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
-                  Стоимость: {getPrice()} рублей
-                </Typography>
-                <Button variant="contained" color="secondary" size="medium" disableElevation
-                        sx={{borderRadius: '10px'}}
-                        onClick={() => {
-                          buy()
-                        }} disabled={!fullEnabled}>
-                  Купить
-                </Button>
-              </Stack>
+            </FormControl>)}
+          {props.service!.type === 4 &&
+            <>
+              <TextField label={"Количество"} inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
+                         color='primary' size='small' sx={{width: '100%'}}
+                         disabled={!isEnabled} value={number} onChange={handleNumberChange}/>
+              <Typography>Доступно: {count}</Typography>
+            </>
+          }
+          <Stack direction="row" width={"80%"} justifyContent="space-between" alignItems="center">
+            <div style={{width: "100px"}}></div>
+            <Stack direction="row" spacing={2}>
+              <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
+                Стоимость: {getPrice()} рублей
+              </Typography>
+              <Button variant="contained" color="secondary" size="medium" disableElevation
+                      sx={{borderRadius: '10px'}}
+                      onClick={() => {
+                        addToCart()
+                      }} disabled={!fullEnabled}>
+                Добавить в корзину
+              </Button>
             </Stack>
           </Stack>
         </Stack>
-      </Box>
-    </Modal>
+      </Stack>
+    </Box>
+  )
+  return (
+    ((!tutorialState.started || tutorialState.isExit) ? (
+      <Modal
+        open={props.open}
+        onClose={props.handlerClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        {toRender2}
+      </Modal>) : (
+      <Portal container={() => document.getElementById('add-service-modal-portal-box')}>
+        {toRender2}
+      </Portal>
+    ))
   )
 }
