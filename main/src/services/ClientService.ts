@@ -25,7 +25,7 @@ interface Serv {
 }
 
 class ClientService {
-    loadClient() {
+    loadClient = () => {
         const header = authHeader();
         if (!header.Authorization)
             return undefined
@@ -41,23 +41,21 @@ class ClientService {
                 console.log(err);
                 return snackbarActions.ErrorAction(err.message);
             })
-    }
+    };
 
-    updateAvatar(avatar: string) {
-        return axios.post(API_URL + 'avatar', {avatar: avatar}, {headers: authHeader()})
-            .then((res) => {
-                const data: Answer = res.data;
-                if (data.status) {
-                    return clientActions.addedAvatar(data.answer.user);
-                }
-                const error = errorParser(String(data.error!));
-                return snackbarActions.ErrorAction(error);
-            }).catch((err) => {
-                return snackbarActions.ErrorAction(err.message);
-            })
-    }
+    updateAvatar = (avatar: string) => axios.post(API_URL + 'avatar', {avatar: avatar}, {headers: authHeader()})
+        .then((res) => {
+            const data: Answer = res.data;
+            if (data.status) {
+                return clientActions.addedAvatar(data.answer.user);
+            }
+            const error = errorParser(String(data.error!));
+            return snackbarActions.ErrorAction(error);
+        }).catch((err) => {
+            return snackbarActions.ErrorAction(err.message);
+        });
 
-    buy(cart: State) {
+    buy = (cart: State) => {
         const mass: Serv[] = []
         cart.serviceModels.forEach((serv) => {
             mass.push({
@@ -87,7 +85,7 @@ class ClientService {
             console.log(err);
             return false;
         })
-    }
+    };
 }
 
 export default new ClientService();

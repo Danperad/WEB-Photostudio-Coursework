@@ -15,7 +15,7 @@ interface ServiceModalProps {
 
 export default function ServiceModal(props: ServiceModalProps) {
     const handlePayModalOpen = () => {
-        if (props.service!.serviceType === 1) {
+        if (props.service!.type === 1) {
             const service: NewService = {
                 id: new Date().getTime() + Math.random(),
                 service: props.service!,

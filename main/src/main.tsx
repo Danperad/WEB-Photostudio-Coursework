@@ -22,12 +22,12 @@ const dark = createTheme({
   palette: {
       mode: 'light',
       primary: {
-          main: purple["500"],
+          main: '#8785A2',
           contrastText: '#ffffff'
       },
       secondary: {
-          main: deepPurple["700"],
-          contrastText: '#ffffff'
+          main: '#F6F6F6',
+          contrastText: '#1e1e1e'
       },
   },
 });

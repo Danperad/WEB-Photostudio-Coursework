@@ -1,4 +1,3 @@
-import React from 'react';
 import {Modal, Box, Link, Container, Typography} from "@mui/material";
 import Login from "./Login";
 import {useNavigate} from "react-router-dom";
@@ -14,7 +13,7 @@ function AuthModal(props: AuthProps) {
 	return (
 		<Modal open={props.open} onClose={props.handlerClose}>
 			<Box sx={{
-				position: 'absolute' as 'absolute',
+				position: 'absolute' as const,
 				bgcolor: 'background.default',
 				right: '1rem',
 				top: '1rem',

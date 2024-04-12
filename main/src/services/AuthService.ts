@@ -8,50 +8,48 @@ import {snackbarActions} from "../redux/slices/snackbarSlice";
 const API_URL = "auth/"
 
 class AuthService {
-    register(reg: RegistrationModel) {
-        return axios.post(API_URL + "signup", reg)
-            .then((res) => {
-                const data: Answer = res.data;
-                if (data.status) {
-                    setCookie("access_token", data.answer.accessToken, {expires: 1, path: ''});
-                    setCookie("refresh_token", data.answer.refreshToken, {expires: 90, path: ''});
-                    const client: Client = data.answer.user;
-                    return clientActions.registerSuccess(client);
-                }
-                const error = errorParser(String(data.error!));
-                return snackbarActions.ErrorAction(error);
-            }).catch((err) => {
-                return snackbarActions.ErrorAction(err.message);
-            })
-    }
-
-    login(login: LoginModel) {
-        return axios.post(API_URL + "signin", login).then(
-            (res) => {
-                const data: Answer = res.data;
-                if (data.status) {
-                    setCookie("access_token", data.answer.accessToken, {expires: 1, path: ''});
-                    setCookie("refresh_token", data.answer.refreshToken, {expires: 90, path: ''});
-                    const client: Client = data.answer.user;
-                    return clientActions.loginSuccess(client);
-                }
-                const error = errorParser(String(data.error!));
-                return snackbarActions.ErrorAction(error);
-            }).catch((err) => {
+    register = (reg: RegistrationModel) => axios.post(API_URL + "signup", reg)
+        .then((res) => {
+            const data: Answer = res.data;
+            if (data.status) {
+                setCookie("access_token", data.answer.accessToken, {expires: 1, path: ''});
+                setCookie("refresh_token", data.answer.refreshToken, {expires: 90, path: ''});
+                const client: Client = data.answer.user;
+                return clientActions.registerSuccess(client);
+            }
+            const error = errorParser(String(data.error!));
+            return snackbarActions.ErrorAction(error);
+        }).catch((err) => {
             return snackbarActions.ErrorAction(err.message);
-        })
-    }
+        });
+
+    login = (login: LoginModel) => axios.post(API_URL + "signin", login).then(
+        (res) => {
+            const data: Answer = res.data;
+            if (data.status) {
+                setCookie("access_token", data.answer.accessToken, {expires: 1, path: ''});
+                setCookie("refresh_token", data.answer.refreshToken, {expires: 90, path: ''});
+                const client: Client = data.answer.user;
+                return clientActions.loginSuccess(client);
+            }
+            const error = errorParser(String(data.error!));
+            return snackbarActions.ErrorAction(error);
+        }).catch((err) => {
+        return snackbarActions.ErrorAction(err.message);
+    });
 
     reAuth() {
-		if (getCookie("refresh_token") === undefined) return;
-        axios.get(API_URL + "reauth?token=" + getCookie("refresh_token")).then(
+		if (!getCookie("refresh_token")) return;
+        const params = new URLSearchParams();
+        params.append('token', getCookie("refresh_token")!)
+        axios.get(API_URL + "reauth", {params: params}).then(
             (res) => {
                 const data: Answer = res.data;
                 if (!data.status) return;
 				setCookie("access_token", data.answer.accessToken, {expires: 1, path: ''});
 				setCookie("refresh_token", data.answer.refreshToken, {expires: 90, path: ''});
 			}).catch((err) => {
-            	console.log(err.message)
+                console.log(err.message)
         })
     }
 

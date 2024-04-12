@@ -40,7 +40,7 @@ interface ServiceModalProps {
 
 export default function AddServiceModal(props: ServiceModalProps) {
     const title = () => {
-        switch (props.service!.serviceType) {
+        switch (props.service!.type) {
             case 2:
                 return "Зал";
             case 3:
@@ -105,7 +105,7 @@ export default function AddServiceModal(props: ServiceModalProps) {
             setFullEnabled(false);
             return;
         }
-        if (props.service!.serviceType === 5) {
+        if (props.service!.type === 5) {
             setEnabled(true);
         }
         fillItems(date, dur);
@@ -141,13 +141,13 @@ export default function AddServiceModal(props: ServiceModalProps) {
 
     const handleSelect = (event: SelectChangeEvent) => {
         setSelected(event.target.value as string);
-        if (props.service!.serviceType === 4)
+        if (props.service!.type === 4)
             setCount(getAvailable(event.target.value as string))
         if ((event.target.value as string) === '') {
             setFullEnabled(false)
             return;
         }
-        if (props.service!.serviceType === 2) setFullEnabled(true)
+        if (props.service!.type === 2) setFullEnabled(true)
     };
 
     const getAvailable = (itemm: string) => {
@@ -168,7 +168,7 @@ export default function AddServiceModal(props: ServiceModalProps) {
         });
         if (item !== null) {
             let itemPrice : number;
-            if (props.service!.serviceType === 4 && number !== '') itemPrice = ((+number) * (item as ICostable)!.cost);
+            if (props.service!.type === 4 && number !== '') itemPrice = ((+number) * (item as ICostable)!.cost);
             else itemPrice = (item as ICostable)!.cost;
             price += itemPrice * ((+duration)/60);
         }
@@ -259,7 +259,7 @@ export default function AddServiceModal(props: ServiceModalProps) {
                         <TextField label="Период" color='primary' inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
                                    size='small' sx={{width: '100%'}}
                                    value={duration} onChange={handleChange}/>
-                        {props.service.serviceType === 5 &&
+                        {props.service.type === 5 &&
                             <FormGroup>
                                 <FormControlLabel control={<Checkbox checked={isFullTime} onChange={() => {
                                     setIsFullTime(!isFullTime)
@@ -284,11 +284,11 @@ export default function AddServiceModal(props: ServiceModalProps) {
                                 ))}
                             </Select>
                         </FormControl>
-                        {(props.service!.serviceType === 3 || props.service!.serviceType === 5) &&
+                        {(props.service!.type === 3 || props.service!.type === 5) &&
                             <TextField label={"Адрес"} color='primary' size='small' sx={{width: '100%'}}
                                        disabled={!isEnabled} value={address} onChange={handleAddressChange}/>
                         }
-                        {props.service!.serviceType === 4 &&
+                        {props.service!.type === 4 &&
                             <>
                                 <TextField label={"Количество"} inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
                                            color='primary' size='small' sx={{width: '100%'}}

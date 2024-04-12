@@ -5,7 +5,7 @@ import {HallsLoaded} from "../actions/hallActions";
 const state : Hall[] = []
 
 export const hallReducer = createReducer(state, (builder) => {
-    builder.addCase(HallsLoaded, (state, action: PayloadAction<Hall[]>) => {
+    builder.addCase(HallsLoaded, (_state, action: PayloadAction<Hall[]>) => {
         return action.payload;
     })
 })

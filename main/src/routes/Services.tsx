@@ -1,7 +1,6 @@
 import {useState, useEffect, ChangeEvent, useRef} from 'react';
 import {
     Stack,
-    Button,
     Typography,
     Box,
     TextField,
@@ -9,9 +8,6 @@ import {
     MenuItem,
     FormControl,
     Select,
-    Card,
-    CardContent,
-    CardMedia,
     SelectChangeEvent
 } from '@mui/material';
 import {useDispatch, useSelector} from "react-redux";
@@ -21,6 +17,7 @@ import ServiceModal from "../components/ServiceModal";
 import {Service} from "../models/Models";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {serviceActions} from '../redux/slices/serviceSlice';
+import {ServiceCart} from "../components/ServiceCart.tsx";
 
 interface State {
     search: string,
@@ -82,7 +79,7 @@ export default function Services() {
 
     return (
         <div style={{width: "100%"}}>
-            <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2} width={"50%"} mt={1}
+            <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2} width={"50%"} mt={2}
                    ml={2}>
                 <TextField label="Поиск" value={filterState.search} onChange={handleChange("search")} color='primary'
                            size='small' sx={{width: '100%'}}/>
@@ -123,40 +120,11 @@ export default function Services() {
                     </Select>
                 </FormControl>
             </Stack>
-            <Box sx={{width: "90%", margin: '0 auto', marginTop: '40px'}}>
+            <Box sx={{width: "95%", margin: '0 auto', marginTop: '40px'}}>
                 <Stack>
                     <InfiniteScroll next={loadMore} hasMore={rootState.hasMore} loader={<Typography>Загрузка...</Typography>} dataLength={rootState.services.length}>
                         {rootState.services.map((service) => (
-                            <Card key={service.id} sx={{mt: 2}}>
-                                <Stack direction={'row'}>
-                                    <CardMedia
-                                        component={"img"}
-                                        height={"140"}
-                                        sx={{width: '30%'}}
-                                        image={service.photos[0]}
-                                        alt="photo"
-                                    />
-                                    <CardContent>
-                                        <Typography gutterBottom variant="h5" component="div">
-                                            {service.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {service.description}
-                                        </Typography>
-                                    </CardContent>
-                                    <Stack direction="row" justifyContent="space-between" alignItems={'flex-end'} mr={2}
-                                           ml={2}
-                                           pb={1} spacing={1}>
-                                        <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
-                                            Стоимость: {service.cost} рублей
-                                        </Typography>
-                                        <Button size="medium" variant="contained" color="secondary"
-                                                onClick={() => {
-                                                    handleInfoModalOpen(service)
-                                                }}>Подробнее</Button>
-                                    </Stack>
-                                </Stack>
-                            </Card>
+                            <ServiceCart service={service} handleInfoModalOpen={() => {handleInfoModalOpen(service)}} />
                         ))}
                     </InfiniteScroll>
                 </Stack>

@@ -8,7 +8,16 @@ const API_URL = "services/"
 
 class ServicesService {
     getServices(search: string, sort: string, type: string, start: number) {
-        return axios.get(API_URL + 'get?search=' + search + '&order=' + sort + '&type=' + type + '&count=6&start=' + (start + 1))
+        const params = new URLSearchParams();
+        if (search !== "")
+            params.append("search", search)
+        if (sort !== "")
+            params.append("order", sort)
+        if (type !== "")
+            params.append("type", type)
+        params.append("start", String( start+1))
+        params.append("count", String( 6))
+        return axios.get(API_URL + 'get', {params: params})
             .then((res) => {
                 const data: Answer = res.data;
                 if (data.status) {
@@ -26,7 +35,9 @@ class ServicesService {
     }
 
     getServiceById(id: number) {
-        return axios.get(API_URL + `getId?id=${id}`)
+        const params = new URLSearchParams();
+        params.append('id', String(id))
+        return axios.get(API_URL + `getId`, {params: params})
             .then((res) => {
                 const data: Answer = res.data;
                 if (data.status) {

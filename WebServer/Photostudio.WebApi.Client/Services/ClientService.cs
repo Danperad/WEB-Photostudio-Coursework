@@ -19,7 +19,7 @@ public class ClientService(
     IStatusRepository statusRepository,
     IServiceRepository serviceRepository,
     IRentedItemRepository rentedItemRepository,
-    IMapperBase mapper) : IClientService
+    IMapper mapper) : IClientService
 {
     public async Task<AuthAnswerDto?> AuthClientAsync(AuthModel authModel)
     {
