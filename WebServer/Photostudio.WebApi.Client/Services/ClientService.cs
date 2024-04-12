@@ -2,28 +2,21 @@
 using System.Security.Claims;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Client.Configs;
 using PhotoStudio.WebApi.Lib.Dto;
-using PhotoStudio.WebApi.Client.Repositories.Interfaces;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
 
 namespace PhotoStudio.WebApi.Client.Services;
 
 public class ClientService(
-    IClientRepository clientRepository,
-    IServicePackageRepository servicePackageRepository,
-    IRefreshTokenRepository refreshTokenRepository,
-    IEmployeeRepository employeeRepository,
-    IHallRepository hallRepository,
-    IStatusRepository statusRepository,
-    IServiceRepository serviceRepository,
-    IRentedItemRepository rentedItemRepository,
+    PhotoStudioContext context,
     IMapper mapper) : IClientService
 {
     public async Task<AuthAnswerDto?> AuthClientAsync(AuthModel authModel)
     {
-        var client = await clientRepository.GetClients()
+        var client = await context.Clients
             .FirstOrDefaultAsync(c => c.EMail == authModel.Login && c.Password == authModel.Password);
         if (client is null)
         {
@@ -37,17 +30,28 @@ public class ClientService(
     public async Task<AuthAnswerDto> RegisterClientAsync(RegisterDto registerDto)
     {
         var client = registerDto.MapToClient();
-        client = await clientRepository.AddClientAsync(client);
-        var tokens = await GenerateTokenAsync(client);
-        return new AuthAnswerDto(tokens.Item1, tokens.Item2, mapper.Map<ClientDto>(client));
+        var client1 = client;
+        var clients = await context.Clients.Where(c => c.EMail == client1.EMail || c.Phone == client1.Phone).ToListAsync();
+        if (clients.Count != 0)
+        {
+            throw new NotImplementedException(clients.Any(c => c.EMail == client.EMail)
+                ? 402.ToString()
+                : 400.ToString());
+        }
+        var newClient = await context.Clients.AddAsync(client);
+        await context.SaveChangesAsync();       
+        var tokens = await GenerateTokenAsync(newClient.Entity);
+        return new AuthAnswerDto(tokens.Item1, tokens.Item2, mapper.Map<ClientDto>(newClient.Entity));
     }
 
     public async Task<AuthAnswerDto?> ReAuthClientAsync(string token)
     {
-        var entryToken = (await refreshTokenRepository.GetRefreshTokensAsync()).AsNoTracking()
+        await context.RefreshTokens.Where(t => t.EndDate.CompareTo(DateTime.Now) == -1)
+            .ExecuteDeleteAsync();
+        var entryToken = context.RefreshTokens.AsNoTracking()
             .Include(t => t.Client)
             .First(t => t.Token == token);
-        await refreshTokenRepository.DeleteRefreshTokenAsync(token);
+        await context.RefreshTokens.Where(t => t.Token == token).ExecuteDeleteAsync();
         var tokens = await GenerateTokenAsync(entryToken.Client);
         return new AuthAnswerDto(tokens.Item1, tokens.Item2, mapper.Map<ClientDto>(entryToken.Client));
     }
@@ -56,15 +60,17 @@ public class ClientService(
     {
         var userIdClaim = user.Claims.First(c => c.Type == "user");
         var userId = Convert.ToInt32(userIdClaim.Value);
-        var client = await clientRepository.GetClients().FirstAsync(c => c.Id == userId);
+        var client = await context.Clients.FirstAsync(c => c.Id == userId);
         return client;
     }
 
     public async Task<ClientDto> UpdateClientAsync(ClientDto clientDto, PhotoStudio.DataBase.Models.Client client)
     {
         MapUpdates(clientDto, client);
-        var updatedClient = await clientRepository.UpdateClientAsync(client);
-        return mapper.Map<ClientDto>(updatedClient);
+        var contextClient = context.Entry(client);
+        contextClient.State = EntityState.Modified;
+        await context.SaveChangesAsync();
+        return mapper.Map<ClientDto>(contextClient.Entity);
     }
 
     public async Task<bool> AddOrderAsync(NewOrderModel cart, PhotoStudio.DataBase.Models.Client client)
@@ -80,10 +86,10 @@ public class ClientService(
             await AddServicesFromPackageAsync(cart.ServicePackage, services);
         }
 
-        var status = await statusRepository.GetStatusById(1);
+        var status = await context.Statuses.SingleAsync(s => s.Id == 1);
         foreach (var cartServiceModel in cart.ServiceModels)
         {
-            var service = await serviceRepository.GetServices().SingleAsync(s => s.Id == cartServiceModel.ServiceId);
+            var service = await context.Services.SingleAsync(s => s.Id == cartServiceModel.ServiceId);
             switch (service.Type)
             {
                 case Service.ServiceType.Simple:
@@ -95,7 +101,7 @@ public class ClientService(
                 case Service.ServiceType.HallRent:
                 {
                     CheckServiceModelPresent(cartServiceModel);
-                    var hall = await hallRepository.GetHalls().FirstAsync(h => h.Id == cartServiceModel.HallId);
+                    var hall = await context.Halls.FirstAsync(h => h.Id == cartServiceModel.HallId);
                     var newService = new ApplicationService(service, cartServiceModel.StartDateTime!.Value,
                         cartServiceModel.Duration!.Value, hall, status);
                     services.Add(newService);
@@ -104,9 +110,9 @@ public class ClientService(
                 case Service.ServiceType.Photo:
                 {
                     CheckServiceModelPresent(cartServiceModel);
-                    var employee = await employeeRepository.GetEmployees()
+                    var employee = await context.Employees
                         .FirstAsync(e => e.Id == cartServiceModel.EmployeeId);
-                    var hall = await hallRepository.GetHalls().FirstAsync(h => h.Id == cartServiceModel.HallId);
+                    var hall = await context.Halls.FirstAsync(h => h.Id == cartServiceModel.HallId);
                     var newService = new ApplicationService(service, employee, cartServiceModel.StartDateTime!.Value,
                         cartServiceModel.Duration!.Value, hall, status);
                     services.Add(newService);
@@ -117,7 +123,7 @@ public class ClientService(
                     CheckServiceModelPresent(cartServiceModel);
                     if (!cartServiceModel.Number.HasValue)
                         throw new NotImplementedException();
-                    var item = await rentedItemRepository.GetItems()
+                    var item = await context.RentedItems
                         .FirstAsync(i => i.Id == cartServiceModel.RentedItemId);
                     var newService = new ApplicationService(service, cartServiceModel.StartDateTime!.Value,
                         cartServiceModel.Duration!.Value, cartServiceModel.Number.Value, item, status);
@@ -129,9 +135,9 @@ public class ClientService(
                     CheckServiceModelPresent(cartServiceModel);
                     if (!cartServiceModel.IsFullTime.HasValue)
                         throw new NotImplementedException();
-                    var employee = await employeeRepository.GetEmployees()
+                    var employee = await context.Employees
                         .FirstAsync(e => e.Id == cartServiceModel.EmployeeId);
-                    var hall = await hallRepository.GetHalls().FirstAsync(h => h.Id == cartServiceModel.HallId);
+                    var hall = await context.Halls.FirstAsync(h => h.Id == cartServiceModel.HallId);
                     var newService = new ApplicationService(service, employee, cartServiceModel.StartDateTime!.Value,
                         cartServiceModel.Duration!.Value, hall, cartServiceModel.IsFullTime.Value, status);
                     services.Add(newService);
@@ -148,8 +154,8 @@ public class ClientService(
     private async Task AddServicesFromPackageAsync(NewServicePackageModel packageModel,
         List<ApplicationService> services)
     {
-        var servicePackage = await servicePackageRepository.GetPackages().Include(p => p.Services)
-            .ThenInclude(s => s.Service)
+        var servicePackage = await context.ServicePackages.Include(p => p.Services)
+            .ThenInclude(s => s.Service).Include(servicePackage => servicePackage.Photograph)
             .FirstAsync(s => s.Id == packageModel.Id);
         foreach (var service in servicePackage.Services)
         {
@@ -200,9 +206,9 @@ public class ClientService(
         if (!string.IsNullOrWhiteSpace(clientDto.MiddleName) && client.MiddleName != clientDto.MiddleName)
             client.MiddleName = clientDto.MiddleName;
         if (!string.IsNullOrWhiteSpace(clientDto.EMail) && client.EMail != clientDto.EMail &&
-            !clientRepository.GetClients().Any(c => c.EMail == clientDto.EMail)) client.EMail = clientDto.EMail;
+            !context.Clients.Any(c => c.EMail == clientDto.EMail)) client.EMail = clientDto.EMail;
         if (!string.IsNullOrWhiteSpace(clientDto.Phone) && client.Phone != clientDto.Phone &&
-            !clientRepository.GetClients().Any(c => c.Phone == clientDto.Phone)) client.Phone = clientDto.Phone;
+            !context.Clients.Any(c => c.Phone == clientDto.Phone)) client.Phone = clientDto.Phone;
     }
 
     private static JwtSecurityToken GenToken(int id, int expiresDays)
@@ -219,7 +225,10 @@ public class ClientService(
         var jwt = handler.WriteToken(GenToken(client.Id, 1));
         var refreshjwt = handler.WriteToken(GenToken(client.Id, 30));
         var token = new RefreshToken(refreshjwt, client, 30);
-        token = await refreshTokenRepository.AddRefreshTokenAsync(token);
+        await context.RefreshTokens.Where(t => t.EndDate.CompareTo(DateTime.Now) == -1)
+            .ExecuteDeleteAsync();
+        token = (await context.RefreshTokens.AddAsync(token)).Entity;
+        await context.SaveChangesAsync();
         return (jwt, token.Token);
     }
 }

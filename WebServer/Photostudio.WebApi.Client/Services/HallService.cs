@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Lib.Dto;
-using PhotoStudio.WebApi.Client.Repositories.Interfaces;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
 using PhotoStudio.WebApi.Client.Utils;
 
 namespace PhotoStudio.WebApi.Client.Services;
 
-public class HallService(IHallRepository hallRepository, IMapper mapper) : IHallService
+public class HallService(PhotoStudioContext context, IMapper mapper) : IHallService
 {
     public async Task<IEnumerable<HallDto>> GetHallsAsync()
     {
@@ -26,7 +26,7 @@ public class HallService(IHallRepository hallRepository, IMapper mapper) : IHall
 
     private IQueryable<Hall> GetPreparedHalls()
     {
-        var halls = hallRepository.GetHalls();
+        var halls = context.Halls.AsQueryable();
         halls = halls.Include(h => h.Address);
         return halls;
     }

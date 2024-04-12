@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Lib.Dto;
-using PhotoStudio.WebApi.Client.Repositories.Interfaces;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
 using PhotoStudio.WebApi.Client.Utils;
 
 namespace PhotoStudio.WebApi.Client.Services;
 
-public class RentedItemService(IRentedItemRepository rentedItemRepository, IMapper mapper) : IRentedItemService
+public class RentedItemService(PhotoStudioContext context, IMapper mapper) : IRentedItemService
 {
     public async Task<IEnumerable<RentedItemDto>> GetItemsByServiceTypeAsync(int type)
     {
@@ -27,7 +27,7 @@ public class RentedItemService(IRentedItemRepository rentedItemRepository, IMapp
 
     private IQueryable<RentedItem> PrepareItemsByServiceType(int type)
     {
-        var items = rentedItemRepository.GetItems().AsNoTracking();
+        var items = context.RentedItems.AsNoTracking();
         items = type switch
         {
             5 => items.Where(i => i.IsСlothes && !i.IsKids).OrderBy(i => i.Title),

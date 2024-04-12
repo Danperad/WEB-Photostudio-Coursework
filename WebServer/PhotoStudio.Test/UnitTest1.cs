@@ -1,17 +1,12 @@
-using System.Security.Claims;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
-using PhotoStudio.WebApi.Client.Configs;
 using PhotoStudio.WebApi.Client.Controllers;
 using PhotoStudio.WebApi.Lib.Dto;
-using PhotoStudio.WebApi.Client.Repositories;
-using PhotoStudio.WebApi.Client.Repositories.Interfaces;
 using PhotoStudio.WebApi.Client.Services;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
 using PhotoStudio.WebApi.Lib;
@@ -21,7 +16,6 @@ namespace PhotoStudio.Test;
 public class Tests
 {
     private IServiceService _serviceService;
-    private IClientRepository _clientRepository;
     private List<HallDto> _hallDtos;
 
     [SetUp]
@@ -35,8 +29,7 @@ public class Tests
         context.Database.EnsureCreated();
         var mapperConfig = new MapperConfiguration(cfg => cfg.AddMaps(typeof(MapperConfig)));
         var mapper = new Mapper(mapperConfig);
-        _serviceService = new ServiceService(new ServiceRepository(context), mapper);
-        _clientRepository = new ClientRepository(context);
+        _serviceService = new ServiceService(context, mapper);
         List<Service> services =
         [
             new Service

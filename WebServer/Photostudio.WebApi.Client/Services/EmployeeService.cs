@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Lib.Dto;
-using PhotoStudio.WebApi.Client.Repositories.Interfaces;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
 using PhotoStudio.WebApi.Client.Utils;
 
 namespace PhotoStudio.WebApi.Client.Services;
 
-public class EmployeeService(IEmployeeRepository employeeRepository, IMapper mapper) : IEmployeeService
+public class EmployeeService(PhotoStudioContext context, IMapper mapper) : IEmployeeService
 {
     public async Task<IEnumerable<EmployeeDto>> GetAvailableEmployeesAsync(DateTime startDate, int duration, int serviceId)
     {
@@ -19,7 +19,7 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
     
     private IQueryable<Employee> PrepareEmployeesByServiceId(int serviceId)
     {
-        var employees = employeeRepository.GetEmployees().AsNoTracking();
+        var employees = context.Employees.AsNoTracking();
         employees = serviceId switch
         {
             2 => employees.Where(e => e.RoleId == 4),

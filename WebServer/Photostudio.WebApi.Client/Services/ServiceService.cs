@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Lib.Dto;
-using PhotoStudio.WebApi.Client.Repositories.Interfaces;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
 
 namespace PhotoStudio.WebApi.Client.Services;
 
-public class ServiceService(IServiceRepository serviceRepository, IMapper mapper) : IServiceService
+public class ServiceService(PhotoStudioContext context, IMapper mapper) : IServiceService
 {
     public async Task<IEnumerable<ServiceDto>> GetAllServicesAsync(int? count, int? start, int? order, int? type, string? search)
     {
@@ -21,7 +21,7 @@ public class ServiceService(IServiceRepository serviceRepository, IMapper mapper
     private IQueryable<Service> GetPreparedServices(int? order, int? type,
         string? search)
     {
-        var services = serviceRepository.GetServices().AsNoTracking();
+        var services = context.Services.AsNoTracking();
         if (type.HasValue)
         {
             services = services.Where(s => s.Type == (Service.ServiceType) type);
