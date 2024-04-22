@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {RentedItem, Service, NewService, Hall, Employee} from "../models/Models";
 import {
     Box, Button,
@@ -20,7 +20,7 @@ import {AppDispatch} from "../redux/store";
 import {cartActions} from "../redux/slices/cartSlice";
 
 const style = {
-    position: 'absolute' as 'absolute',
+    position: 'absolute' as const,
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -60,23 +60,26 @@ export default function AddServiceModal(props: ServiceModalProps) {
     const [isEnabled, setEnabled] = useState<boolean>(false);
     const [selectedItem, setSelected] = useState<string>('');
     const [count, setCount] = useState<number>(0);
-    const [address, setAddress] = useState<string>('');
     const [number, setNumber] = useState<string>('');
     const [fullEnabled, setFullEnabled] = useState<boolean>(false);
     const [isFullTime, setIsFullTime] = useState<boolean>(false);
+    const [key, setKey] = useState<boolean>(false);
 
+    useEffect(() => {
+        if (!props.open) {
+            setKey(false);
+            return;
+        }
+        if (key) return;
+        setKey(true);
+    }, [props])
+    
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (+event.target.value < 0 || isNaN(+event.target.value)) return;
         setDuration(event.target.value);
         if (dateTime === undefined || dateTime === '') return;
         check(+new Date(dateTime as string), +event.target.value)
     };
-
-    const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAddress(event.target.value);
-        if (event.target.value.split(' ').length === 2 && event.target.value.split(' ')[1].length > 0) setFullEnabled(true);
-        else setFullEnabled(false);
-    }
 
     const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.value === '') {
@@ -100,12 +103,11 @@ export default function AddServiceModal(props: ServiceModalProps) {
             setEnabled(false);
             setItems([]);
             setSelected('');
-            setAddress('');
             setNumber('');
             setFullEnabled(false);
             return;
         }
-        if (props.service!.type === 5) {
+        if (props.service!.type === 1) {
             setEnabled(true);
         }
         fillItems(date, dur);
@@ -113,11 +115,13 @@ export default function AddServiceModal(props: ServiceModalProps) {
     }
     const fillItems = (date: number, dur: number) => {
         switch (props.service!.id) {
-            case 7:
-                HallService.getFree(date, dur).then((res) => {
+            case 3:
+                HallService.getFree(new Date(date), dur).then((res) => {
                     if (res.length === 0) return;
                     setItems(res);
                     setEnabled(true);
+                }).catch(err => {
+                    console.log(err);
                 })
                 break;
             case 5:
@@ -147,7 +151,7 @@ export default function AddServiceModal(props: ServiceModalProps) {
             setFullEnabled(false)
             return;
         }
-        if (props.service!.type === 2) setFullEnabled(true)
+        setFullEnabled(true)
     };
 
     const getAvailable = (itemm: string) => {
@@ -179,17 +183,16 @@ export default function AddServiceModal(props: ServiceModalProps) {
         const newService: NewService = {
             id: new Date().getTime() + Math.random(),
             service: props.service!,
-            startTime: +new Date(dateTime),
+            startDateTime: new Date(dateTime),
             duration: +duration,
             hall: null,
             employee: null,
-            address: null,
             rentedItem: null,
             number: null,
             isFullTime: null,
         }
         switch (props.service!.id) {
-            case 7:
+            case 3:
                 let res: Hall | null = null;
                 items.forEach((item) => {
                     if (item.id === +selectedItem) res = (item as Hall);
@@ -197,8 +200,6 @@ export default function AddServiceModal(props: ServiceModalProps) {
                 newService.hall = res!;
                 break;
             case 5:
-            case 6:
-            case 10:
                 let rented: RentedItem | null = null;
                 items.forEach((item) => {
                     if (item.id === +selectedItem) rented = (item as RentedItem);
@@ -206,14 +207,13 @@ export default function AddServiceModal(props: ServiceModalProps) {
                 newService.rentedItem = rented!;
                 newService.number = +number;
                 break;
-            case 13:
+            case 6:
                 newService.isFullTime = isFullTime;
                 let empl1: Employee | null = null;
                 items.forEach((item) => {
                     if (item.id === +selectedItem) empl1 = item;
                 });
                 newService.employee = empl1!;
-                newService.address = address;
                 break;
             default:
                 let empl: Employee | null = null;
@@ -221,7 +221,6 @@ export default function AddServiceModal(props: ServiceModalProps) {
                     if (item.id === +selectedItem) empl = item;
                 });
                 newService.employee = empl!;
-                newService.address = address;
                 break;
         }
         dispatch(cartActions.ServiceAdded(newService));
@@ -284,10 +283,6 @@ export default function AddServiceModal(props: ServiceModalProps) {
                                 ))}
                             </Select>
                         </FormControl>
-                        {(props.service!.type === 3 || props.service!.type === 5) &&
-                            <TextField label={"Адрес"} color='primary' size='small' sx={{width: '100%'}}
-                                       disabled={!isEnabled} value={address} onChange={handleAddressChange}/>
-                        }
                         {props.service!.type === 4 &&
                             <>
                                 <TextField label={"Количество"} inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}

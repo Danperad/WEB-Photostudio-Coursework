@@ -24,7 +24,7 @@ public class Employee : Human, IServiced
     public string Password { get; internal set; }
     public decimal? Price { get; internal set; }
     
-    public ICollection<ApplicationService> Services { get; set; }
+    public List<ApplicationService> Services { get; set; }
 
     #endregion
 

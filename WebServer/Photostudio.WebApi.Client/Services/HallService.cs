@@ -12,28 +12,25 @@ public class HallService(PhotoStudioContext context, IMapper mapper) : IHallServ
 {
     public async Task<IEnumerable<HallDto>> GetHallsAsync()
     {
-        var halls = GetPreparedHalls();
-        var res = await halls.ToListAsync();
-        return mapper.Map<List<Hall>, List<HallDto>>(res);
+        var halls = await GetPreparedHalls();
+        return mapper.Map<List<Hall>, List<HallDto>>(halls);
     }
 
     public async Task<IEnumerable<HallDto>> GetAvailableHallsAsync(DateTime startDate, int duration)
     {
-        var halls = GetPreparedAvailableHalls(startDate, duration);
-        var res = await halls.ToListAsync();
-        return mapper.Map<List<Hall>, List<HallDto>>(res);
+        var halls = await GetPreparedAvailableHalls(startDate, duration);
+        return mapper.Map<List<Hall>, List<HallDto>>(halls);
     }
 
-    private IQueryable<Hall> GetPreparedHalls()
+    private async Task<List<Hall>> GetPreparedHalls()
     {
-        var halls = context.Halls.AsQueryable();
-        halls = halls.Include(h => h.Address);
-        return halls;
+        var halls = context.Halls.Include(h => h.Address);
+        return await halls.ToListAsync();
     }
 
-    private IQueryable<Hall> GetPreparedAvailableHalls(DateTime startDate, int duration)
+    private async Task<List<Hall>> GetPreparedAvailableHalls(DateTime startDate, int duration)
     {
-        var halls = GetPreparedHalls();
+        var halls = await GetPreparedHalls();
         halls = TimeUtils.GetAvailable(halls, 90, startDate, duration);
         return halls;
     }

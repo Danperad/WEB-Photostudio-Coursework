@@ -12,17 +12,15 @@ public class RentedItemService(PhotoStudioContext context, IMapper mapper) : IRe
 {
     public async Task<IEnumerable<RentedItemDto>> GetItemsByServiceTypeAsync(int type)
     {
-        var items = PrepareItemsByServiceType(type);
-        var res = await items.ToListAsync();
-        return mapper.Map<List<RentedItem>, List<RentedItemDto>>(res);
+        var items = await PrepareItemsByServiceType(type).ToListAsync();
+        return mapper.Map<List<RentedItem>, List<RentedItemDto>>(items);
     }
 
     public async Task<IEnumerable<RentedItemDto>> GetAvailableItemsByServiceTypeAsync(DateTime start, int duration,
         int type)
     {
-        var items = PrepareAvailableItemsByServiceType(start, duration, type);
-        var res = await items.ToListAsync();
-        return res.Select(RentedItemDto.GetModel);
+        var items = await PrepareAvailableItemsByServiceType(start, duration, type);
+        return items.Select(RentedItemDto.GetModel);
     }
 
     private IQueryable<RentedItem> PrepareItemsByServiceType(int type)
@@ -37,9 +35,9 @@ public class RentedItemService(PhotoStudioContext context, IMapper mapper) : IRe
         return items;
     }
     
-    private IQueryable<RentedItem> PrepareAvailableItemsByServiceType(DateTime start, int duration, int type)
+    private async Task<List<RentedItem>> PrepareAvailableItemsByServiceType(DateTime start, int duration, int type)
     {
-        var items = PrepareItemsByServiceType(type);
+        var items = await PrepareItemsByServiceType(type).ToListAsync();
         items = TimeUtils.GetAvailable(items, 60, start, duration);
         return items;
     }

@@ -1,11 +1,10 @@
 import {useEffect, useState} from 'react';
-import {styled} from '@mui/material/styles';
-import {Box, Button, Paper, Stack, TextField, Typography} from '@mui/material';
+import {Box, Button, Card, CardContent, Grid, Paper, Stack, TextField, Typography} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 import {useSelector} from "react-redux";
 import {RootState} from "../redux/store";
+import {styled} from "@mui/material/styles";
 
-// @ts-ignore
 const Item = styled(Paper)(({theme}) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -27,6 +26,9 @@ export default function Profile() {
         setKey(true);
     }, [user]);
 
+    if (user.client === null) {
+        return <></>;
+    }
     return (
         <div style={{width: "100%"}}>
             <Stack direction="row" spacing={10} sx={{margin: "30px 10px 0 10px"}}>
@@ -39,11 +41,13 @@ export default function Profile() {
                         noValidate
                         autoComplete="off"
                     >
-                        <TextField label="Фамилия" variant={"outlined"} size='small' value={user.client?.lastName!} required/>
-                        <TextField label="Имя" size='small' value={user.client?.firstName!} required/>
-                        <TextField label="Отчество" size='small' value={user.client?.middleName!}/>
-                        <TextField label="Номер телефона" size='small' type={'phone'} value={user.client?.phone!} required/>
-                        <TextField label="Email" size='small' type={'email'} value={user.client?.eMail!} required/>
+                        <TextField label="Фамилия" variant={"outlined"} size='small' value={user.client.lastName}
+                                   required/>
+                        <TextField label="Имя" size='small' value={user.client.firstName} required/>
+                        <TextField label="Отчество" size='small' value={user.client.middleName}/>
+                        <TextField label="Номер телефона" size='small' type={'phone'} value={user.client.phone}
+                                   required/>
+                        <TextField label="Email" size='small' type={'email'} value={user.client.eMail} required/>
                     </Stack>
                     <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" mt={2} ml={12}>
                         <Button variant="contained" color="secondary" size="medium" disableElevation
@@ -86,7 +90,6 @@ export default function Profile() {
                         Сформировать отчет
                     </Button>
                 </Stack>
-                {/*
                 <Box sx={{flexGrow: 1}}>
                     <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
                         {Array.from(Array(2)).map((_, index) => (
@@ -113,7 +116,6 @@ export default function Profile() {
                                                 </Typography>
                                                 <Stack direction="row">
                                                     <Typography variant="subtitle1">Услуги:</Typography>
-                                                     map
                                                     <Typography>услуга1, </Typography>
                                                 </Stack>
                                                 <Stack direction="row" justifyContent="space-between"
@@ -121,7 +123,6 @@ export default function Profile() {
                                                     <Typography variant="subtitle1">
                                                         Стоимость:
                                                     </Typography>
-                                                    <Rating name="simple-controlled"/>
                                                 </Stack>
                                             </CardContent>
                                         </Box>
@@ -131,7 +132,6 @@ export default function Profile() {
                         ))}
                     </Grid>
                 </Box>
-*/}
             </Box>
         </div>
     );

@@ -24,7 +24,7 @@ public class RentedItem : IServiced
     public bool IsСlothes { get; internal set; }
     public bool IsKids { get; internal set; }
 
-    public ICollection<ApplicationService> Services { get; set; }
+    public List<ApplicationService> Services { get; set; }
     #endregion
 
 }

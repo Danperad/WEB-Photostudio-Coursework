@@ -19,11 +19,10 @@ export default function ServiceModal(props: ServiceModalProps) {
             const service: NewService = {
                 id: new Date().getTime() + Math.random(),
                 service: props.service!,
-                startTime: null,
+                startDateTime: null,
                 duration: null,
                 hall: null,
                 employee: null,
-                address: null,
                 rentedItem: null,
                 number: null,
                 isFullTime: null,
@@ -53,7 +52,7 @@ export default function ServiceModal(props: ServiceModalProps) {
     }, [props])
 
     const style = {
-        position: 'absolute' as 'absolute',
+        position: 'absolute' as const,
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',

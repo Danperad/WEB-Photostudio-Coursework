@@ -31,15 +31,17 @@ public class ClientService(
     {
         var client = registerDto.MapToClient();
         var client1 = client;
-        var clients = await context.Clients.Where(c => c.EMail == client1.EMail || c.Phone == client1.Phone).ToListAsync();
+        var clients = await context.Clients.Where(c => c.EMail == client1.EMail || c.Phone == client1.Phone)
+            .ToListAsync();
         if (clients.Count != 0)
         {
             throw new NotImplementedException(clients.Any(c => c.EMail == client.EMail)
                 ? 402.ToString()
                 : 400.ToString());
         }
+
         var newClient = await context.Clients.AddAsync(client);
-        await context.SaveChangesAsync();       
+        await context.SaveChangesAsync();
         var tokens = await GenerateTokenAsync(newClient.Entity);
         return new AuthAnswerDto(tokens.Item1, tokens.Item2, mapper.Map<ClientDto>(newClient.Entity));
     }
@@ -87,7 +89,7 @@ public class ClientService(
         }
 
         var status = await context.Statuses.SingleAsync(s => s.Id == 1);
-        foreach (var cartServiceModel in cart.ServiceModels)
+        foreach (var cartServiceModel in cart.ServiceModels.OrderBy(s => s.ServiceId))
         {
             var service = await context.Services.SingleAsync(s => s.Id == cartServiceModel.ServiceId);
             switch (service.Type)
@@ -112,7 +114,7 @@ public class ClientService(
                     CheckServiceModelPresent(cartServiceModel);
                     var employee = await context.Employees
                         .FirstAsync(e => e.Id == cartServiceModel.EmployeeId);
-                    var hall = await context.Halls.FirstAsync(h => h.Id == cartServiceModel.HallId);
+                    var hall = services.First(s => s.Hall != null).Hall;
                     var newService = new ApplicationService(service, employee, cartServiceModel.StartDateTime!.Value,
                         cartServiceModel.Duration!.Value, hall, status);
                     services.Add(newService);
@@ -146,6 +148,20 @@ public class ClientService(
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        var servicePackage = cart.ServicePackage is null
+            ? null
+            : await context.ServicePackages.FirstOrDefaultAsync(s => s.Id == cart.ServicePackage.Id);
+        var order = new Order(client, DateTime.Now, services, status, servicePackage);
+        await context.Orders.AddAsync(order);
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            return false;
         }
 
         return true;
@@ -191,7 +207,7 @@ public class ClientService(
 
     private static void CheckServiceModelPresent(NewServiceModel serviceModel)
     {
-        if (!serviceModel.StartDateTime.HasValue || serviceModel.Duration.HasValue)
+        if (!serviceModel.StartDateTime.HasValue || !serviceModel.Duration.HasValue)
             throw new NotImplementedException();
     }
 

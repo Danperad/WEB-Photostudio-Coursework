@@ -17,7 +17,7 @@ class HallService {
         }).catch((err) => {
             return snackbarActions.ErrorAction(err.message);
         });
-    getFree(date: number, dur: number) {
+    getFree(date: Date, dur: number) {
         const params = new URLSearchParams();
         params.append('start', new Date(date).toISOString());
         params.append('duration', String(dur));

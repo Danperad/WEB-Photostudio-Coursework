@@ -2,5 +2,5 @@
 
 public interface IServiced
 {
-    public ICollection<ApplicationService> Services { get; internal set; }
+    public List<ApplicationService> Services { get; internal set; }
 }

@@ -13,10 +13,10 @@ internal static class TimeUtils
             return !((time0 > time1 && time0 < endTime1) || (endTime0 > time1 && endTime0 < endTime1));
         };
 
-    internal static IQueryable<T> GetAvailable<T>(IQueryable<T> serviceds, int @const, DateTime startDate, int duration)
+    internal static List<T> GetAvailable<T>(IEnumerable<T> serviceds, int @const, DateTime startDate, int duration)
         where T : IServiced
     {
         return serviceds.Where(h =>
-            !h.Services.Any(a => GetTimed(@const, startDate, duration, a.StartDateTime!.Value, a.Duration!.Value)));
+            !h.Services.Any(a => GetTimed(@const, startDate, duration, a.StartDateTime!.Value, a.Duration!.Value))).ToList();
     }
 }

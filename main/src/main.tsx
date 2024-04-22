@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {createTheme, ThemeProvider} from "@mui/material";
-import {deepPurple, purple} from "@mui/material/colors";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3';
 import {LocalizationProvider} from '@mui/x-date-pickers';

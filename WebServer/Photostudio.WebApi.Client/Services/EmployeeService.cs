@@ -12,9 +12,8 @@ public class EmployeeService(PhotoStudioContext context, IMapper mapper) : IEmpl
 {
     public async Task<IEnumerable<EmployeeDto>> GetAvailableEmployeesAsync(DateTime startDate, int duration, int serviceId)
     {
-        var employees = PrepareAvailableEmployeesByServiceId(startDate, duration, serviceId);
-        var res = await employees.ToListAsync();
-        return mapper.Map<List<Employee>, List<EmployeeDto>>(res);
+        var employees = await PrepareAvailableEmployeesByServiceId(startDate, duration, serviceId);
+        return mapper.Map<List<Employee>, List<EmployeeDto>>(employees);
     }
     
     private IQueryable<Employee> PrepareEmployeesByServiceId(int serviceId)
@@ -30,9 +29,9 @@ public class EmployeeService(PhotoStudioContext context, IMapper mapper) : IEmpl
         return employees;
     }
     
-    private IQueryable<Employee> PrepareAvailableEmployeesByServiceId(DateTime start, int duration, int serviceId)
+    private async Task<List<Employee>> PrepareAvailableEmployeesByServiceId(DateTime start, int duration, int serviceId)
     {
-        var items = PrepareEmployeesByServiceId(serviceId);
+        var items = await PrepareEmployeesByServiceId(serviceId).ToListAsync();
         items = TimeUtils.GetAvailable(items, 60, start, duration);
         return items;
     }

@@ -63,7 +63,7 @@ class ClientService {
                 isFullTime: serv.isFullTime,
                 employeeId: serv.employee === null ? null : serv.employee!.id,
                 hallId: serv.hall === null ? null : serv.hall!.id,
-                startDateTime: serv.startTime,
+                startDateTime: serv.startDateTime,
                 number: serv.number,
                 duration: serv.duration,
                 address: serv.address,

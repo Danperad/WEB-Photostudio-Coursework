@@ -36,7 +36,7 @@ export default function Services() {
         if (key.current)
             return;
         key.current = true;
-        ServicesService.getServices("","1","1", 0).then((res) => {
+        ServicesService.getServices("","1","", 0).then((res) => {
             dispatch(res);
         })
     }, [])
