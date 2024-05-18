@@ -11,6 +11,7 @@ public class Employee : Human, IServiced
         Date = DateOnly.MinValue;
         Role = new Role();
         Services = new List<ApplicationService>();
+        BoundServices = new List<Service>();
     }
 
     #endregion
@@ -23,9 +24,9 @@ public class Employee : Human, IServiced
     public Role Role { get; internal set; }
     public string Password { get; internal set; }
     public decimal? Price { get; internal set; }
-    
+
     public List<ApplicationService> Services { get; set; }
+    public List<Service> BoundServices { get; set; }
 
     #endregion
-
 }

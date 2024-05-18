@@ -58,9 +58,9 @@ public class Tests
 
         _hallDtos =
         [
-            new HallDto(1, "Hall1", "Description1", 1, 5000, new List<string>()),
-            new HallDto(2, "Hall2", "Description2", 2, 5000, new List<string>()),
-            new HallDto(3, "Hall3", "Description3", 3, 5000, new List<string>()),
+            new HallDto(1, "Hall1", "Description1",  5000, new List<string>()),
+            new HallDto(2, "Hall2", "Description2",  5000, new List<string>()),
+            new HallDto(3, "Hall3", "Description3",  5000, new List<string>()),
         ];
     }
 

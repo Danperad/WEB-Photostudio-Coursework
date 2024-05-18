@@ -64,8 +64,7 @@ namespace PhotoStudio.DataBase.Migrations
                     description = table.Column<string>(type: "text", nullable: false),
                     cost = table.Column<decimal>(type: "money", nullable: false),
                     number = table.Column<long>(type: "bigint", nullable: false),
-                    is_clothes = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    is_kids = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false)
+                    type = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -107,15 +106,14 @@ namespace PhotoStudio.DataBase.Migrations
                 name: "statuses",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    id = table.Column<int>(type: "integer", nullable: false),
                     type = table.Column<int>(type: "integer", nullable: false),
                     title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_statuses", x => x.id);
+                    table.PrimaryKey("PK_statuses", x => new { x.id, x.type });
                 });
 
             migrationBuilder.CreateTable(
@@ -128,7 +126,7 @@ namespace PhotoStudio.DataBase.Migrations
                     description = table.Column<string>(type: "text", nullable: false),
                     address_id = table.Column<int>(type: "integer", nullable: false),
                     price_per_hour = table.Column<decimal>(type: "money", nullable: false),
-                    photos = table.Column<string[]>(type: "text[]", nullable: false)
+                    photos = table.Column<List<string>>(type: "text[]", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -147,8 +145,8 @@ namespace PhotoStudio.DataBase.Migrations
                 {
                     token = table.Column<string>(type: "text", nullable: false),
                     client_id = table.Column<int>(type: "integer", nullable: false),
-                    sign_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    sign_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -185,6 +183,30 @@ namespace PhotoStudio.DataBase.Migrations
                         name: "FK_employees_roles_role_id",
                         column: x => x.role_id,
                         principalTable: "roles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmployeeService",
+                columns: table => new
+                {
+                    BoundEmployeesId = table.Column<int>(type: "integer", nullable: false),
+                    BoundServicesId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmployeeService", x => new { x.BoundEmployeesId, x.BoundServicesId });
+                    table.ForeignKey(
+                        name: "FK_EmployeeService_employees_BoundEmployeesId",
+                        column: x => x.BoundEmployeesId,
+                        principalTable: "employees",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EmployeeService_services_BoundServicesId",
+                        column: x => x.BoundServicesId,
+                        principalTable: "services",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -232,14 +254,15 @@ namespace PhotoStudio.DataBase.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false, defaultValueSql: "nextval('\"ApplicationServiceTemplateSequence\"')"),
                     service_id = table.Column<int>(type: "integer", nullable: false),
-                    duration = table.Column<int>(type: "integer", nullable: true),
+                    duration = table.Column<TimeSpan>(type: "interval", nullable: true),
                     hall_id = table.Column<int>(type: "integer", nullable: true),
                     rented_item_id = table.Column<int>(type: "integer", nullable: true),
                     number = table.Column<int>(type: "integer", nullable: true),
                     is_full_time = table.Column<bool>(type: "boolean", nullable: true),
                     status_id = table.Column<int>(type: "integer", nullable: false),
+                    status_type = table.Column<int>(type: "integer", nullable: false),
                     StylistId = table.Column<int>(type: "integer", nullable: true),
-                    ServicePackageId = table.Column<int>(type: "integer", nullable: true)
+                    ServicePackageId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -263,7 +286,8 @@ namespace PhotoStudio.DataBase.Migrations
                         name: "FK_application_services_templates_service_packages_ServicePack~",
                         column: x => x.ServicePackageId,
                         principalTable: "service_packages",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_application_services_templates_services_service_id",
                         column: x => x.service_id,
@@ -271,10 +295,10 @@ namespace PhotoStudio.DataBase.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_application_services_templates_statuses_status_id",
-                        column: x => x.status_id,
+                        name: "FK_application_services_templates_statuses_status_id_status_ty~",
+                        columns: x => new { x.status_id, x.status_type },
                         principalTable: "statuses",
-                        principalColumn: "id",
+                        principalColumns: new[] { "id", "type" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -285,10 +309,12 @@ namespace PhotoStudio.DataBase.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     client_id = table.Column<int>(type: "integer", nullable: false),
-                    date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    date_time = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     status_id = table.Column<int>(type: "integer", nullable: false),
+                    status_type = table.Column<int>(type: "integer", nullable: false),
                     service_package_id = table.Column<int>(type: "integer", nullable: true),
-                    contract_id = table.Column<int>(type: "integer", nullable: false)
+                    contract_id = table.Column<int>(type: "integer", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -305,10 +331,10 @@ namespace PhotoStudio.DataBase.Migrations
                         principalTable: "service_packages",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_orders_statuses_status_id",
-                        column: x => x.status_id,
+                        name: "FK_orders_statuses_status_id_status_type",
+                        columns: x => new { x.status_id, x.status_type },
                         principalTable: "statuses",
-                        principalColumn: "id",
+                        principalColumns: new[] { "id", "type" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -322,12 +348,15 @@ namespace PhotoStudio.DataBase.Migrations
                     service_id = table.Column<int>(type: "integer", nullable: false),
                     employee_id = table.Column<int>(type: "integer", nullable: true),
                     status_id = table.Column<int>(type: "integer", nullable: false),
-                    start_date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    duration = table.Column<int>(type: "integer", nullable: true),
+                    status_type = table.Column<int>(type: "integer", nullable: false),
+                    start_date_time = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    duration = table.Column<TimeSpan>(type: "interval", nullable: true),
                     hall_id = table.Column<int>(type: "integer", nullable: true),
                     rented_item_id = table.Column<int>(type: "integer", nullable: true),
                     number = table.Column<int>(type: "integer", nullable: true),
-                    is_full_time = table.Column<bool>(type: "boolean", nullable: true)
+                    is_full_time = table.Column<bool>(type: "boolean", nullable: true),
+                    Cost = table.Column<decimal>(type: "numeric", nullable: false),
+                    BingingPackageId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -354,16 +383,21 @@ namespace PhotoStudio.DataBase.Migrations
                         principalTable: "rented_items",
                         principalColumn: "id");
                     table.ForeignKey(
+                        name: "FK_application_services_service_packages_BingingPackageId",
+                        column: x => x.BingingPackageId,
+                        principalTable: "service_packages",
+                        principalColumn: "id");
+                    table.ForeignKey(
                         name: "FK_application_services_services_service_id",
                         column: x => x.service_id,
                         principalTable: "services",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_application_services_statuses_status_id",
-                        column: x => x.status_id,
+                        name: "FK_application_services_statuses_status_id_status_type",
+                        columns: x => new { x.status_id, x.status_type },
                         principalTable: "statuses",
-                        principalColumn: "id",
+                        principalColumns: new[] { "id", "type" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -403,6 +437,11 @@ namespace PhotoStudio.DataBase.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_application_services_BingingPackageId",
+                table: "application_services",
+                column: "BingingPackageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_application_services_employee_id",
                 table: "application_services",
                 column: "employee_id");
@@ -428,9 +467,9 @@ namespace PhotoStudio.DataBase.Migrations
                 column: "service_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_application_services_status_id",
+                name: "IX_application_services_status_id_status_type",
                 table: "application_services",
-                column: "status_id");
+                columns: new[] { "status_id", "status_type" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_application_services_templates_hall_id",
@@ -453,9 +492,9 @@ namespace PhotoStudio.DataBase.Migrations
                 column: "ServicePackageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_application_services_templates_status_id",
+                name: "IX_application_services_templates_status_id_status_type",
                 table: "application_services_templates",
-                column: "status_id");
+                columns: new[] { "status_id", "status_type" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_application_services_templates_StylistId",
@@ -502,6 +541,11 @@ namespace PhotoStudio.DataBase.Migrations
                 column: "role_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeeService_BoundServicesId",
+                table: "EmployeeService",
+                column: "BoundServicesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_hall_address_id",
                 table: "hall",
                 column: "address_id");
@@ -523,9 +567,9 @@ namespace PhotoStudio.DataBase.Migrations
                 column: "service_package_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_orders_status_id",
+                name: "IX_orders_status_id_status_type",
                 table: "orders",
-                column: "status_id");
+                columns: new[] { "status_id", "status_type" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_refresh_tokens_client_id",
@@ -583,6 +627,9 @@ namespace PhotoStudio.DataBase.Migrations
 
             migrationBuilder.DropTable(
                 name: "contracts");
+
+            migrationBuilder.DropTable(
+                name: "EmployeeService");
 
             migrationBuilder.DropTable(
                 name: "refresh_tokens");

@@ -9,7 +9,7 @@ public class MapperConfig : Profile
     public MapperConfig()
     {
         CreateMap<Client, ClientDto>();
-        CreateMap<Employee, EmployeeDto>();
+        CreateMap<Employee, EmployeeDto>().ForMember(e => e.Cost, ed => ed.MapFrom(src => src.Price));
         CreateMap<Hall, HallDto>();
         CreateMap<ServicePackage, ServicePackageDto>();
         CreateMap<RentedItem, RentedItemDto>();

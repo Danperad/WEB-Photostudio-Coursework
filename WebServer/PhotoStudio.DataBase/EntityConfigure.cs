@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhotoStudio.DataBase.Models;
 
 namespace PhotoStudio.DataBase;
@@ -80,10 +81,13 @@ internal static class EntityConfigure
         builder.Property(o => o.Id).HasColumnName("id");
         builder.Property(o => o.ClientId).HasColumnName("client_id");
         builder.Property(o => o.DateTime).HasColumnName("date_time");
-        builder.Property(o => o.StatusId).HasColumnName("status_id");
+        builder.Property(a => a.StatusId).HasColumnName("status_id");
+        builder.Property(a => a.StatusType).HasColumnName("status_type");
         builder.Property(o => o.ContractId).HasColumnName("contract_id");
         builder.Property(o => o.ServicePackageId).HasColumnName("service_package_id");
         builder.HasOne(o => o.Contract).WithOne(c => c.Order).HasForeignKey<Contract>(c => c.OrderId);
+        builder.Navigation(o => o.Services).AutoInclude();
+        builder.Navigation(s => s.Status).AutoInclude();
     }
 
     internal static void RentedItemConfigure(EntityTypeBuilder<RentedItem> builder)
@@ -93,8 +97,7 @@ internal static class EntityConfigure
         builder.Property(r => r.Title).HasMaxLength(50).HasColumnName("title");
         builder.HasIndex(r => r.Title).IsUnique();
         builder.Property(r => r.Cost).IsRequired().HasColumnType("money").HasColumnName("cost");
-        builder.Property(r => r.IsСlothes).HasDefaultValue(false).HasColumnName("is_clothes");
-        builder.Property(r => r.IsKids).HasDefaultValue(false).HasColumnName("is_kids");
+        builder.Property(r => r.Type).IsRequired().HasColumnName("type");
         builder.Property(r => r.Description).HasColumnName("description");
         builder.Property(r => r.Number).HasColumnName("number");
     }
@@ -123,9 +126,10 @@ internal static class EntityConfigure
     internal static void StatusConfigure(EntityTypeBuilder<Status> builder)
     {
         builder.ToTable("statuses");
+        builder.HasKey(s => new { s.Id, s.Type });
         builder.Property(s => s.Id).HasColumnName("id");
-        builder.Property(s => s.Title).HasMaxLength(50).HasColumnName("title");
         builder.Property(s => s.Type).HasColumnName("type");
+        builder.Property(s => s.Title).HasMaxLength(50).HasColumnName("title");
         builder.Property(s => s.Description).HasColumnName("description");
     }
 
@@ -137,12 +141,18 @@ internal static class EntityConfigure
         builder.Property(a => a.ServiceId).HasColumnName("service_id");
         builder.Property(a => a.EmployeeId).HasColumnName("employee_id");
         builder.Property(a => a.StatusId).HasColumnName("status_id");
+        builder.Property(a => a.StatusType).HasColumnName("status_type");
         builder.Property(a => a.HallId).HasColumnName("hall_id");
         builder.Property(a => a.StartDateTime).HasColumnName("start_date_time");
         builder.Property(a => a.Duration).HasColumnName("duration");
         builder.Property(a => a.IsFullTime).HasColumnName("is_full_time");
         builder.Property(a => a.RentedItemId).HasColumnName("rented_item_id");
         builder.Property(a => a.Number).HasColumnName("number");
+        builder.Navigation(s => s.Employee).AutoInclude();
+        builder.Navigation(s => s.Service).AutoInclude();
+        builder.Navigation(s => s.Hall).AutoInclude();
+        builder.Navigation(s => s.RentedItem).AutoInclude();
+        builder.Navigation(s => s.Status).AutoInclude();
     }
     
     internal static void ApplicationServiceTemplateConfigure(EntityTypeBuilder<ApplicationServiceTemplate> builder)
@@ -152,11 +162,13 @@ internal static class EntityConfigure
         builder.Property(a => a.Id).HasColumnName("id");
         builder.Property(a => a.ServiceId).HasColumnName("service_id");
         builder.Property(a => a.StatusId).HasColumnName("status_id");
+        builder.Property(a => a.StatusType).HasColumnName("status_type");
         builder.Property(a => a.HallId).HasColumnName("hall_id");
         builder.Property(a => a.Duration).HasColumnName("duration");
         builder.Property(a => a.IsFullTime).HasColumnName("is_full_time");
         builder.Property(a => a.RentedItemId).HasColumnName("rented_item_id");
         builder.Property(a => a.Number).HasColumnName("number");
+        builder.Navigation(s => s.Status).AutoInclude();
     }
 
     internal static void ServicePackageConfigure(EntityTypeBuilder<ServicePackage> builder)

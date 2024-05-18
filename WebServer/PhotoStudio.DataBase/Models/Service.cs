@@ -12,6 +12,7 @@ public class Service
         Type = 0;
         Photos = new List<string>();
         ServicePackages = new List<ServicePackage>();
+        BoundEmployees = new List<Employee>();
     }
 
     #endregion
@@ -22,9 +23,10 @@ public class Service
     public string Title { get; set; }
     public string Description { get; set; }
     public decimal Cost { get; set; }
-    public List<string> Photos { get; set; }
+    public List<string> Photos { get; internal set; }
     public ServiceType Type { get; set; }
-    public IEnumerable<ServicePackage> ServicePackages { get; set; }
+    public List<ServicePackage> ServicePackages { get; internal set; }
+    public List<Employee> BoundEmployees { get; internal set; }
 
     #endregion
 

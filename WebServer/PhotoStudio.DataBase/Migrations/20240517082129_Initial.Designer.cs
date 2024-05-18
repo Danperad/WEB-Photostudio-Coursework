@@ -13,7 +13,7 @@ using PhotoStudio.DataBase;
 namespace PhotoStudio.DataBase.Migrations
 {
     [DbContext(typeof(PhotoStudioContext))]
-    [Migration("20240210161612_Initial")]
+    [Migration("20240517082129_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -21,12 +21,27 @@ namespace PhotoStudio.DataBase.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.HasSequence("ApplicationServiceTemplateSequence");
+
+            modelBuilder.Entity("EmployeeService", b =>
+                {
+                    b.Property<int>("BoundEmployeesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("BoundServicesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("BoundEmployeesId", "BoundServicesId");
+
+                    b.HasIndex("BoundServicesId");
+
+                    b.ToTable("EmployeeService");
+                });
 
             modelBuilder.Entity("PhotoStudio.DataBase.Models.Address", b =>
                 {
@@ -78,8 +93,14 @@ namespace PhotoStudio.DataBase.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Duration")
-                        .HasColumnType("integer")
+                    b.Property<int?>("BingingPackageId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("numeric");
+
+                    b.Property<TimeSpan?>("Duration")
+                        .HasColumnType("interval")
                         .HasColumnName("duration");
 
                     b.Property<int?>("EmployeeId")
@@ -111,14 +132,20 @@ namespace PhotoStudio.DataBase.Migrations
                         .HasColumnName("service_id");
 
                     b.Property<DateTime?>("StartDateTime")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("start_date_time");
 
                     b.Property<int>("StatusId")
                         .HasColumnType("integer")
                         .HasColumnName("status_id");
 
+                    b.Property<int>("StatusType")
+                        .HasColumnType("integer")
+                        .HasColumnName("status_type");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("BingingPackageId");
 
                     b.HasIndex("EmployeeId");
 
@@ -130,7 +157,7 @@ namespace PhotoStudio.DataBase.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("StatusId", "StatusType");
 
                     b.ToTable("application_services", (string)null);
                 });
@@ -145,8 +172,8 @@ namespace PhotoStudio.DataBase.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseSequence(b.Property<int>("Id"));
 
-                    b.Property<int?>("Duration")
-                        .HasColumnType("integer")
+                    b.Property<TimeSpan?>("Duration")
+                        .HasColumnType("interval")
                         .HasColumnName("duration");
 
                     b.Property<int?>("HallId")
@@ -169,12 +196,16 @@ namespace PhotoStudio.DataBase.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("service_id");
 
-                    b.Property<int?>("ServicePackageId")
+                    b.Property<int>("ServicePackageId")
                         .HasColumnType("integer");
 
                     b.Property<int>("StatusId")
                         .HasColumnType("integer")
                         .HasColumnName("status_id");
+
+                    b.Property<int>("StatusType")
+                        .HasColumnType("integer")
+                        .HasColumnName("status_type");
 
                     b.Property<int?>("StylistId")
                         .HasColumnType("integer");
@@ -189,9 +220,9 @@ namespace PhotoStudio.DataBase.Migrations
 
                     b.HasIndex("ServicePackageId");
 
-                    b.HasIndex("StatusId");
-
                     b.HasIndex("StylistId");
+
+                    b.HasIndex("StatusId", "StatusType");
 
                     b.ToTable("application_services_templates", (string)null);
 
@@ -393,7 +424,7 @@ namespace PhotoStudio.DataBase.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<string[]>("Photos")
+                    b.Property<List<string>>("Photos")
                         .IsRequired()
                         .HasColumnType("text[]")
                         .HasColumnName("photos");
@@ -436,7 +467,7 @@ namespace PhotoStudio.DataBase.Migrations
                         .HasColumnName("contract_id");
 
                     b.Property<DateTime>("DateTime")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_time");
 
                     b.Property<int?>("ServicePackageId")
@@ -447,13 +478,20 @@ namespace PhotoStudio.DataBase.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("status_id");
 
+                    b.Property<int>("StatusType")
+                        .HasColumnType("integer")
+                        .HasColumnName("status_type");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
 
                     b.HasIndex("ServicePackageId");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("StatusId", "StatusType");
 
                     b.ToTable("orders", (string)null);
                 });
@@ -469,10 +507,10 @@ namespace PhotoStudio.DataBase.Migrations
                         .HasColumnName("client_id");
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("SignDate")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("sign_date");
 
                     b.HasKey("Token");
@@ -500,18 +538,6 @@ namespace PhotoStudio.DataBase.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<bool>("IsKids")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_kids");
-
-                    b.Property<bool>("IsСlothes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("is_clothes");
-
                     b.Property<long>("Number")
                         .HasColumnType("bigint")
                         .HasColumnName("number");
@@ -521,6 +547,10 @@ namespace PhotoStudio.DataBase.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("title");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
 
                     b.HasKey("Id");
 
@@ -660,11 +690,12 @@ namespace PhotoStudio.DataBase.Migrations
             modelBuilder.Entity("PhotoStudio.DataBase.Models.Status", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("type");
 
                     b.Property<string>("Description")
                         .HasColumnType("text")
@@ -676,17 +707,32 @@ namespace PhotoStudio.DataBase.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("title");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer")
-                        .HasColumnName("type");
-
-                    b.HasKey("Id");
+                    b.HasKey("Id", "Type");
 
                     b.ToTable("statuses", (string)null);
                 });
 
+            modelBuilder.Entity("EmployeeService", b =>
+                {
+                    b.HasOne("PhotoStudio.DataBase.Models.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("BoundEmployeesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PhotoStudio.DataBase.Models.Service", null)
+                        .WithMany()
+                        .HasForeignKey("BoundServicesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PhotoStudio.DataBase.Models.ApplicationService", b =>
                 {
+                    b.HasOne("PhotoStudio.DataBase.Models.ServicePackage", "BingingPackage")
+                        .WithMany()
+                        .HasForeignKey("BingingPackageId");
+
                     b.HasOne("PhotoStudio.DataBase.Models.Employee", "Employee")
                         .WithMany("Services")
                         .HasForeignKey("EmployeeId");
@@ -713,9 +759,11 @@ namespace PhotoStudio.DataBase.Migrations
 
                     b.HasOne("PhotoStudio.DataBase.Models.Status", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId")
+                        .HasForeignKey("StatusId", "StatusType")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BingingPackage");
 
                     b.Navigation("Employee");
 
@@ -746,13 +794,9 @@ namespace PhotoStudio.DataBase.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PhotoStudio.DataBase.Models.ServicePackage", null)
+                    b.HasOne("PhotoStudio.DataBase.Models.ServicePackage", "ServicePackage")
                         .WithMany("Services")
-                        .HasForeignKey("ServicePackageId");
-
-                    b.HasOne("PhotoStudio.DataBase.Models.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
+                        .HasForeignKey("ServicePackageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -760,11 +804,19 @@ namespace PhotoStudio.DataBase.Migrations
                         .WithMany()
                         .HasForeignKey("StylistId");
 
+                    b.HasOne("PhotoStudio.DataBase.Models.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId", "StatusType")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Hall");
 
                     b.Navigation("RentedItem");
 
                     b.Navigation("Service");
+
+                    b.Navigation("ServicePackage");
 
                     b.Navigation("Status");
 
@@ -834,7 +886,7 @@ namespace PhotoStudio.DataBase.Migrations
 
                     b.HasOne("PhotoStudio.DataBase.Models.Status", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId")
+                        .HasForeignKey("StatusId", "StatusType")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

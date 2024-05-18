@@ -4,7 +4,7 @@ using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Lib.Dto;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
-using PhotoStudio.WebApi.Client.Utils;
+using PhotoStudio.WebApi.Lib;
 
 namespace PhotoStudio.WebApi.Client.Services;
 
@@ -12,7 +12,7 @@ public class HallService(PhotoStudioContext context, IMapper mapper) : IHallServ
 {
     public async Task<IEnumerable<HallDto>> GetHallsAsync()
     {
-        var halls = await GetPreparedHalls();
+        var halls = await GetPreparedHalls().ToListAsync();
         return mapper.Map<List<Hall>, List<HallDto>>(halls);
     }
 
@@ -22,16 +22,17 @@ public class HallService(PhotoStudioContext context, IMapper mapper) : IHallServ
         return mapper.Map<List<Hall>, List<HallDto>>(halls);
     }
 
-    private async Task<List<Hall>> GetPreparedHalls()
+    private async Task<List<Hall>> GetPreparedAvailableHalls(DateTime startDate, int duration)
     {
-        var halls = context.Halls.Include(h => h.Address);
+        var halls = GetPreparedHalls();
+        halls = TimeUtils.GetAvailable(halls, TimeSpan.FromMinutes(90), startDate, TimeSpan.FromMinutes(duration));
         return await halls.ToListAsync();
     }
 
-    private async Task<List<Hall>> GetPreparedAvailableHalls(DateTime startDate, int duration)
+    private IQueryable<Hall> GetPreparedHalls()
     {
-        var halls = await GetPreparedHalls();
-        halls = TimeUtils.GetAvailable(halls, 90, startDate, duration);
+        var halls = context.Halls.Include(h => h.Address);
         return halls;
     }
+
 }

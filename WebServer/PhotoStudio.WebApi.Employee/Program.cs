@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using PhotoStudio.DataBase;
-using PhotoStudio.WebApi.Employee.Controllers;
+using PhotoStudio.DataBase.Models;
+using PhotoStudio.WebApi.Employee.Config;
+using PhotoStudio.WebApi.Employee.Hubs;
 using PhotoStudio.WebApi.Employee.Services;
 using PhotoStudio.WebApi.Employee.Services.Interfaces;
 using PhotoStudio.WebApi.Lib;
@@ -16,8 +18,17 @@ builder.Services.AddDbContext<PhotoStudioContext>(conf =>
         .EnableSensitiveDataLogging()
         .EnableDetailedErrors());
 
-builder.Services.AddAutoMapper(typeof(MapperConfig));
+builder.Services.AddAutoMapper(typeof(MapperConfig), typeof(AdditionMapperConfig));
+builder.Services.AddTransient<IRabbitMqService, RabbitMqService>();
 builder.Services.AddTransient<IClientService, ClientService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<IServiceService, ServiceService>();
+builder.Services.AddTransient<IHallService, HallService>();
+builder.Services.AddTransient<IEmployeeService, EmployeeService>();
+builder.Services.AddTransient<IRentedItemService, RentedItemService>();
+builder.Services.AddTransient<IApplicationOrderService, ApplicationOrderService>();
+
+builder.Services.AddHostedService<QueueBackgroundService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -32,6 +43,6 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 app.UseAuthorization().UseAuthentication();
 app.MapDefaultControllerRoute();
-app.MapHub<ClientHub>("/clients");
+app.MapHub<MainHub>("/hub");
 
 app.Run();

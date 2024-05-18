@@ -88,7 +88,8 @@ public class ClientService(
             await AddServicesFromPackageAsync(cart.ServicePackage, services);
         }
 
-        var status = await context.Statuses.SingleAsync(s => s.Id == 1);
+        var status =
+            await context.Statuses.SingleAsync(s => s.Id == StatusValue.NotAccepted && s.Type == StatusType.Service);
         foreach (var cartServiceModel in cart.ServiceModels.OrderBy(s => s.ServiceId))
         {
             var service = await context.Services.SingleAsync(s => s.Id == cartServiceModel.ServiceId);
@@ -105,7 +106,7 @@ public class ClientService(
                     CheckServiceModelPresent(cartServiceModel);
                     var hall = await context.Halls.FirstAsync(h => h.Id == cartServiceModel.HallId);
                     var newService = new ApplicationService(service, cartServiceModel.StartDateTime!.Value,
-                        cartServiceModel.Duration!.Value, hall, status);
+                        TimeSpan.FromMinutes(cartServiceModel.Duration!.Value), hall, status);
                     services.Add(newService);
                 }
                     break;
@@ -116,7 +117,7 @@ public class ClientService(
                         .FirstAsync(e => e.Id == cartServiceModel.EmployeeId);
                     var hall = services.First(s => s.Hall != null).Hall;
                     var newService = new ApplicationService(service, employee, cartServiceModel.StartDateTime!.Value,
-                        cartServiceModel.Duration!.Value, hall, status);
+                        TimeSpan.FromMinutes(cartServiceModel.Duration!.Value), hall, status);
                     services.Add(newService);
                 }
                     break;
@@ -128,7 +129,7 @@ public class ClientService(
                     var item = await context.RentedItems
                         .FirstAsync(i => i.Id == cartServiceModel.RentedItemId);
                     var newService = new ApplicationService(service, cartServiceModel.StartDateTime!.Value,
-                        cartServiceModel.Duration!.Value, cartServiceModel.Number.Value, item, status);
+                        TimeSpan.FromMinutes(cartServiceModel.Duration!.Value), cartServiceModel.Number.Value, item, status);
                     services.Add(newService);
                 }
                     break;
@@ -141,7 +142,7 @@ public class ClientService(
                         .FirstAsync(e => e.Id == cartServiceModel.EmployeeId);
                     var hall = await context.Halls.FirstAsync(h => h.Id == cartServiceModel.HallId);
                     var newService = new ApplicationService(service, employee, cartServiceModel.StartDateTime!.Value,
-                        cartServiceModel.Duration!.Value, hall, cartServiceModel.IsFullTime.Value, status);
+                        TimeSpan.FromMinutes(cartServiceModel.Duration!.Value), hall, cartServiceModel.IsFullTime.Value, status);
                     services.Add(newService);
                 }
                     break;
@@ -152,8 +153,10 @@ public class ClientService(
 
         var servicePackage = cart.ServicePackage is null
             ? null
-            : await context.ServicePackages.FirstOrDefaultAsync(s => s.Id == cart.ServicePackage.Id);
-        var order = new Order(client, DateTime.Now, services, status, servicePackage);
+            : await context.ServicePackages.FirstAsync(s => s.Id == cart.ServicePackage.Id);
+        var orderStatus =
+            await context.Statuses.SingleAsync(s => s.Id == StatusValue.NotAccepted && s.Type == StatusType.Order);
+        var order = new Order(client, DateTime.Now, services, orderStatus, servicePackage);
         await context.Orders.AddAsync(order);
         try
         {

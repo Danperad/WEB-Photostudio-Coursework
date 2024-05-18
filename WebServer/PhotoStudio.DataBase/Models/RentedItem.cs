@@ -1,5 +1,12 @@
 ﻿namespace PhotoStudio.DataBase.Models;
 
+public enum ItemType
+{
+    Simple = 1,
+    Cloth,
+    KidsCloth
+}
+
 public class RentedItem : IServiced
 {
     internal RentedItem()
@@ -9,8 +16,7 @@ public class RentedItem : IServiced
         Description = "";
         Cost = 0;
         Number = 0;
-        IsСlothes = false;
-        IsKids = false;
+        Type = ItemType.Simple;
         Services = new List<ApplicationService>();
     }
 
@@ -21,10 +27,9 @@ public class RentedItem : IServiced
     public string Description { get; internal set; }
     public decimal Cost { get; internal set; }
     public uint Number { get; internal set; }
-    public bool IsСlothes { get; internal set; }
-    public bool IsKids { get; internal set; }
+    public ItemType Type { get; internal set; }
 
     public List<ApplicationService> Services { get; set; }
-    #endregion
 
+    #endregion
 }

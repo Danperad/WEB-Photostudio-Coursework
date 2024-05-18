@@ -1,0 +1,5 @@
+export {SimpleService} from "./SimpleService.tsx"
+export {PhotoService} from "./PhotoService.tsx"
+export {HallRentService} from "./HallRentService.tsx"
+export {ItemRentService} from "./ItemRentService.tsx"
+export {StyleService} from "./StyleService.tsx"

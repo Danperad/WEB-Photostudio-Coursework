@@ -1,15 +1,30 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
 import './index.css'
 import Sidebar from "./components/Sidebar.tsx";
 import {Stack} from "@mui/material";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Clients, Employees, EmployeeServices, Orders} from "./routes";
+import {LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs'
+import {App} from "./App.tsx";
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-      <Stack direction={"row"}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <BrowserRouter>
+        <App/>
+        <Stack direction={"row"}>
           <Sidebar/>
-          <App/>
-      </Stack>
+          <Routes>
+            <Route path={"clients"} element={<Clients/>}/>
+            <Route path={"orders"} element={<Orders/>}/>
+            <Route path={"employees"} element={<Employees/>}/>
+            <Route path={"employeesServices"} element={<EmployeeServices/>}/>
+          </Routes>
+        </Stack>
+      </BrowserRouter>
+    </LocalizationProvider>
   </React.StrictMode>,
 )

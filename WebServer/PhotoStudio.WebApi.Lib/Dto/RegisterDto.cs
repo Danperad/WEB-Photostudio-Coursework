@@ -21,9 +21,9 @@ public class RegisterDto
                string.IsNullOrEmpty(model.Phone) || string.IsNullOrEmpty(model.EMail);
     }
 
-    public PhotoStudio.DataBase.Models.Client MapToClient()
+    public DataBase.Models.Client MapToClient()
     {
-        return new PhotoStudio.DataBase.Models.Client(LastName, FirstName, Phone)
+        return new DataBase.Models.Client(LastName, FirstName, Phone)
         {
             MiddleName = MiddleName,
             EMail = EMail,

@@ -4,7 +4,7 @@ using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Lib.Dto;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
-using PhotoStudio.WebApi.Client.Utils;
+using PhotoStudio.WebApi.Lib;
 
 namespace PhotoStudio.WebApi.Client.Services;
 
@@ -31,8 +31,8 @@ public class EmployeeService(PhotoStudioContext context, IMapper mapper) : IEmpl
     
     private async Task<List<Employee>> PrepareAvailableEmployeesByServiceId(DateTime start, int duration, int serviceId)
     {
-        var items = await PrepareEmployeesByServiceId(serviceId).ToListAsync();
-        items = TimeUtils.GetAvailable(items, 60, start, duration);
-        return items;
+        var items = PrepareEmployeesByServiceId(serviceId);
+        items = TimeUtils.GetAvailable(items, TimeSpan.FromMinutes(60), start, TimeSpan.FromMinutes(duration));
+        return await items.ToListAsync();
     }
 }

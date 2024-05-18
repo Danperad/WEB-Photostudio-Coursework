@@ -8,19 +8,22 @@ public class ApplicationService
     public int OrderId { get; internal set; }
     public int ServiceId { get; internal set; }
     public int? EmployeeId { get; internal set; }
-    public int StatusId { get; internal set; }
+    public StatusValue StatusId { get; internal set; }
+    public StatusType StatusType { get; internal set; }
     public Order Order { get; internal set; }
     public Service Service { get; internal set; }
     public Employee? Employee { get; set; }
     public Status Status { get; set; }
     public DateTime? StartDateTime { get; set; }
-    public int? Duration { get; set; }
+    public TimeSpan? Duration { get; set; }
     public int? HallId { get; internal set; }
     public Hall? Hall { get; set; }
     public int? RentedItemId { get; internal set; }
     public int? Number { get; internal set; }
     public RentedItem? RentedItem { get; internal set; }
     public bool? IsFullTime { get; set; }
+    public decimal Cost { get; internal set; }
+    public ServicePackage? BingingPackage { get; internal set; }
 
     #endregion
 
@@ -44,6 +47,7 @@ public class ApplicationService
         Service = service;
         Status = status;
         Order = new Order();
+        Cost = Service.Cost;
     }
 
     /// <summary>
@@ -53,7 +57,7 @@ public class ApplicationService
     /// <param name="startDateTime"></param>
     /// <param name="duration"></param>
     /// <param name="status"></param>
-    private ApplicationService(Service service, DateTime startDateTime, int duration, Status status)
+    private ApplicationService(Service service, DateTime startDateTime, TimeSpan duration, Status status)
         : this(service, status)
     {
         StartDateTime = startDateTime;
@@ -68,10 +72,11 @@ public class ApplicationService
     /// <param name="duration"></param>
     /// <param name="hall"></param>
     /// <param name="status"></param>
-    public ApplicationService(Service service, DateTime startDateTime, int duration,
+    public ApplicationService(Service service, DateTime startDateTime, TimeSpan duration,
         Hall hall, Status status) : this(service, startDateTime, duration, status)
     {
         Hall = hall;
+        Cost += hall.PricePerHour * duration.Hours;
     }
 
     /// <summary>
@@ -81,13 +86,15 @@ public class ApplicationService
     /// <param name="employee"></param>
     /// <param name="startDateTime"></param>
     /// <param name="duration"></param>
-    /// <param name="hall"></param>
     /// <param name="status"></param>
-    public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration, Hall hall,
+    public ApplicationService(Service service, Employee employee, DateTime startDateTime, TimeSpan duration,
         Status status)
-        : this(service, startDateTime, duration, hall, status)
+        : this(service, startDateTime, duration, status)
     {
         Employee = employee;
+        if (!employee.Price.HasValue) return;
+        
+        Cost += employee.Price.Value * duration.Hours;
     }
 
     /// <summary>
@@ -99,11 +106,12 @@ public class ApplicationService
     /// <param name="number"></param>
     /// <param name="rentedItem"></param>
     /// <param name="status"></param>
-    public ApplicationService(Service service, DateTime startDateTime, int duration,
+    public ApplicationService(Service service, DateTime startDateTime, TimeSpan duration,
         int number, RentedItem rentedItem, Status status) : this(service, startDateTime, duration, status)
     {
         Number = number;
         RentedItem = rentedItem;
+        Cost += rentedItem.Cost * number * duration.Hours;
     }
 
     /// <summary>
@@ -113,13 +121,15 @@ public class ApplicationService
     /// <param name="employee"></param>
     /// <param name="startDateTime"></param>
     /// <param name="duration"></param>
-    /// <param name="hall"></param>
     /// <param name="isFullTime"></param>
     /// <param name="status"></param>
-    public ApplicationService(Service service, Employee employee, DateTime startDateTime, int duration,
-        Hall hall, bool isFullTime, Status status) : this(service, employee, startDateTime, duration, hall, status)
+    public ApplicationService(Service service, Employee employee, DateTime startDateTime, TimeSpan duration, bool isFullTime, Status status) : this(service, employee, startDateTime, duration, status)
     {
         IsFullTime = isFullTime;
+        if (!employee.Price.HasValue) return;
+
+        Cost -= employee.Price.Value * duration.Hours;
+        Cost += employee.Price.Value * duration.Hours * (decimal)1.5;
     }
 
     #endregion

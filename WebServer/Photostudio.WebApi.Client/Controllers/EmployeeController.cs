@@ -9,16 +9,15 @@ namespace PhotoStudio.WebApi.Client.Controllers;
 public class EmployeeController(IEmployeeService employeeService) : ControllerBase
 {
     [HttpGet("getfree")]
-    public async Task<IActionResult> GetFreeEmployees([FromQuery] int service, [FromQuery] long start,
+    public async Task<IActionResult> GetFreeEmployees([FromQuery] int service, [FromQuery] DateTime start,
         [FromQuery] int duration)
     {
-        if (start == 0 || duration == 0)
+        if (start < DateTime.Now.AddDays(1) || duration <= 30)
         {
             return Ok(new AnswerDto(false, null, 101));
         }
 
-        var date = new DateTime(1970, 1, 1, 3, 0, 0, 0).AddMilliseconds(start);
-        var employees = await employeeService.GetAvailableEmployeesAsync(date, duration, service);
+        var employees = await employeeService.GetAvailableEmployeesAsync(start, duration, service);
         return Ok(new AnswerDto(true, new { employees = employees }, null));
     }
 }
