@@ -18,6 +18,17 @@ public class AdditionMapperConfig : Profile
             src.Order.StatusId));
         CreateMap<Status, StatusDto>();
         CreateMap<Service, SimpleServiceDto>();
+
+        CreateMap<Client, ClientReportDto>();
+        CreateMap<ServicePackage, ServicePackageReportDto>();
+        CreateMap<DataBase.Models.Employee, EmployeeReportDto>();
+        CreateMap<ApplicationService, ApplicationServiceReportDto>()
+            .ForMember(a => a.Service, ad => ad.MapFrom(src => src.Service.Title))
+            .ForMember(a => a.Hall, ad => ad.MapFrom(src => src.Hall != null ? src.Hall.Title : null))
+            .ForMember(a => a.Item, ad => ad.MapFrom(src => src.RentedItem != null ? src.RentedItem.Title : null))
+            .ForMember(o => o.Status, od => od.MapFrom(src => src.Status.Title));
+        CreateMap<Order, OrderReportDto>().ForMember(o => o.Number, od => od.MapFrom(src => src.Id))
+            .ForMember(o => o.Status, od => od.MapFrom(src => src.Status.Title));
     }
 
     private static int? TimeSpanToMinutes(TimeSpan? span) => (int?)span?.TotalMinutes;

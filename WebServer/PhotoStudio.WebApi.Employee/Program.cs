@@ -27,6 +27,7 @@ builder.Services.AddTransient<IHallService, HallService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IRentedItemService, RentedItemService>();
 builder.Services.AddTransient<IApplicationOrderService, ApplicationOrderService>();
+builder.Services.AddTransient<IReportService, ReportService>();
 
 builder.Services.AddHostedService<QueueBackgroundService>();
 
