@@ -20,12 +20,46 @@ public class ReportService(PhotoStudioContext context, IMapper mapper) : IReport
         var sheet = workbook.CreateSheet("Report");
         for (var i = 0; i < orders.Count; i++)
         {
-            var row = sheet.CreateRow(i);
-            row.CreateCell(0).SetCellValue(i+1);
-            row.CreateCell(1).SetCellValue(orders[i].Number);
-            row.CreateCell(2).SetCellValue(DateOnly.FromDateTime(orders[i].DateTime));
-            row.CreateCell(3).SetCellValue(orders[i].Status);
-            row.CreateCell(4).SetCellValue(Convert.ToDouble(orders[i].TotalPrice));
+            var order = orders[i];
+            var row = sheet.CreateRow(0);
+            row.CreateCell(1).SetCellValue(i + 1);
+            row.CreateCell(2).SetCellValue(order.Number);
+            row.CreateCell(3).SetCellValue(DateOnly.FromDateTime(order.DateTime));
+            row.CreateCell(4).SetCellValue(order.Client.LastName);
+            row.CreateCell(5).SetCellValue(order.Status);
+            row.CreateCell(6).SetCellValue(order.ServicePackage?.Title ?? "-");
+            row.CreateCell(7).SetCellValue(Convert.ToDouble(order.TotalPrice));
+            foreach (var service in order.Services)
+            {
+                row.CreateCell(9).SetCellValue(service.Service);
+                row.CreateCell(9).SetCellValue(service.Employee.LastName);
+                row.CreateCell(10).SetCellValue(service.Status);
+                row.CreateCell(11).SetCellValue(service.Hall ?? "-");
+                row.CreateCell(12).SetCellValue(service.Item ?? "-");
+                {
+                    var cell = row.CreateCell(13);
+                    if (service.Number.HasValue)
+                        cell.SetCellValue(service.Number.Value);
+                    else
+                        cell.SetCellValue("-");
+                }
+                {
+                    var cell = row.CreateCell(14);
+                    if (service.StartDateTime.HasValue)
+                        cell.SetCellValue(service.StartDateTime.Value);
+                    else
+                        cell.SetCellValue("-");
+                }
+                {
+                    var cell = row.CreateCell(15);
+                    if (service.Duration.HasValue)
+                        cell.SetCellValue(service.Duration.Value.TotalMinutes);
+                    else
+                        cell.SetCellValue("-");
+                }
+                row.CreateCell(16).SetCellValue(service.BingingPackage?.Title ?? "-");
+                row.CreateCell(17).SetCellValue(Convert.ToDouble(service.Cost));
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ public class ApplicationServiceReportDto
     public string? Item { get; set; }
     public int? Number { get; internal set; }
     public bool? IsFullTime { get; set; }
-    public ServicePackageReportDto BingingPackage { get; set; }
+    public ServicePackageReportDto? BingingPackage { get; set; }
 }
 
 public class EmployeeReportDto
