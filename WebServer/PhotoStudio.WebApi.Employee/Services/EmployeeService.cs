@@ -10,11 +10,11 @@ namespace PhotoStudio.WebApi.Employee.Services;
 
 public class EmployeeService(PhotoStudioContext context, IMapper mapper) : IEmployeeService
 {
-    public async Task<IEnumerable<EmployeeDto>> GetAvailableEmployees(DateTime start, TimeSpan duration, int serviceId)
+    public IAsyncEnumerable<EmployeeDto> GetAvailableEmployees(DateTime start, TimeSpan duration, int serviceId)
     {
         var employees = context.Employees.Where(e => e.BoundServices.Any(s => s.Id == serviceId))
             .Include(h => h.Services).AsQueryable();
         employees = employees.GetAvailable(TimeSpan.FromMinutes(90), start, duration);
-        return await employees.ProjectTo<EmployeeDto>(mapper.ConfigurationProvider).ToListAsync();
+        return employees.ProjectTo<EmployeeDto>(mapper.ConfigurationProvider).AsAsyncEnumerable();
     }
 }

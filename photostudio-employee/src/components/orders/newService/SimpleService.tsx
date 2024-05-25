@@ -7,7 +7,7 @@ function SimpleService(props: NewServiceProps) {
   const {service, onComplete} = props
   const [orderService] = useState<OrderService>(
     {
-      service: service.id
+      service: service
     }
   )
   return (

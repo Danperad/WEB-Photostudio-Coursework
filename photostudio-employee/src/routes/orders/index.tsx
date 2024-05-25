@@ -1,30 +1,42 @@
 import {useEffect, useState} from "react";
-import {Button, Divider, Stack, TextField, Typography} from "@mui/material";
+import {Button, Divider, Stack, TextField} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {OrdersTable} from "./OrdersTable.tsx";
 import {Order} from "@models/*";
 import {OrderInfo} from "../../components/orders/OrderInfo.tsx";
 import {getAllOrders} from "../../services/orderService.ts";
+import {Reports} from "./Reports.tsx";
 
 function Orders() {
   const [search, setSearch] = useState<string>(``)
   const [orders, setOrders] = useState<Order[]>([]);
+  const [isReportsOpen, setIsReportsOpen] = useState<boolean>(false)
   const [selectedOrder, setSelectedOrder] = useState<Order | undefined>(undefined)
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    setTimeout(() => {
-      getAllOrders(search ? search : undefined).then(res => {
-        if (res.ok){
-          setOrders(res.val)
-        }
-        else {
-          console.log(res.val)
-        }
-      })
+    const timer = setTimeout(() => {
+      searchOrders()
     }, 200)
+    return () => clearTimeout(timer)
   }, [search])
+
+  const searchOrders = () => {
+    getAllOrders(search ? search : undefined).then(res => {
+      if (res.ok){
+        setOrders(res.val)
+      }
+      else {
+        console.log(res.val)
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (isReportsOpen)
+      setSelectedOrder(undefined)
+  }, [isReportsOpen]);
 
   const handelNewOrderClick = () => {
     navigate("/clients")
@@ -32,20 +44,19 @@ function Orders() {
 
   const handelOrderSelect = (order: Order) => {
     setSelectedOrder(order)
+    setIsReportsOpen(false)
   }
 
   const handleOrderInfoClose = () => {
     setSelectedOrder(undefined)
   }
 
+  const orderStatusChangedHandler = () => {
+    searchOrders()
+  };
+
   return (
     <Stack direction={"row"} width={"100%"}>
-      <div className={"hidden"}>
-        <Typography>TODO:</Typography>
-        <Typography>Список всех заявок</Typography>
-        <Typography>Поиск</Typography>
-        <Typography>Просмотр</Typography>
-      </div>
       <Stack direction={"column"} width={"50%"}>
         <Stack direction={"row"}>
           <TextField label={"Поиск"} size={"small"} value={search} onChange={e => {
@@ -54,13 +65,19 @@ function Orders() {
           <Button variant={"contained"} onClick={handelNewOrderClick}>
             Новая заявка
           </Button>
+          <Button variant={"contained"} onClick={() => setIsReportsOpen(true)}>
+            Генерация отчетов Отчеты
+          </Button>
         </Stack>
         <OrdersTable orders={orders} onOrderSelect={handelOrderSelect}/>
       </Stack>
       <Divider orientation={"vertical"} variant={"middle"} flexItem/>
       <Stack direction={"column"} width={"50%"}>
         {selectedOrder && (
-          <OrderInfo order={selectedOrder} close={handleOrderInfoClose}/>
+          <OrderInfo order={selectedOrder} close={handleOrderInfoClose} onOrderStatusChanged={orderStatusChangedHandler}/>
+        )}
+        {isReportsOpen && (
+          <Reports/>
         )}
       </Stack>
     </Stack>

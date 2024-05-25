@@ -37,10 +37,10 @@ function PhotoService(props: NewServiceProps) {
 
   const handleComplete = () => {
     const orderService: OrderService = {
-      service: service.id,
+      service: service,
       startDateTime: startTime,
       duration: duration,
-      employee: selectedEmployee?.id
+      employee: selectedEmployee
     }
     onComplete(orderService)
   }

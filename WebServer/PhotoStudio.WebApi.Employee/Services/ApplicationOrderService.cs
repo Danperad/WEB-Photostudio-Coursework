@@ -11,23 +11,23 @@ namespace PhotoStudio.WebApi.Employee.Services;
 public class ApplicationOrderService(PhotoStudioContext context, IRabbitMqService rabbitMqService, IMapper mapper)
     : IApplicationOrderService
 {
-    public async Task<List<OrderServiceWithClientDto>> GetServicesByEmployee(int employeeId, bool showAll)
+    public IAsyncEnumerable<OrderServiceWithClientDto> GetServicesByEmployee(int employeeId, bool showAll)
     {
-        var services = await context.Employees.Where(e => e.Id == employeeId).Take(1).Include(e => e.Services)
+        var services = context.Employees.Where(e => e.Id == employeeId).Take(1).Include(e => e.Services)
             .ThenInclude(applicationService => applicationService.Order).ThenInclude(order => order.Status)
             .SelectMany(e => e.Services)
             .Where(s => showAll ||
                         ((s.Order.StatusId == StatusValue.InWork || s.Order.StatusId == StatusValue.NotStarted) && (s.StatusId == StatusValue.NotStarted || s.StatusId == StatusValue.InWork)))
             .ProjectTo<OrderServiceWithClientDto>(mapper.ConfigurationProvider)
-            .ToListAsync();
+            .AsAsyncEnumerable();
         return services;
     }
 
-    public async Task<List<OrderServiceWithClientDto>> GetServicesByOrder(int orderId)
+    public IAsyncEnumerable<OrderServiceWithClientDto> GetServicesByOrder(int orderId)
     {
-        var services = await context.Orders.Where(o => o.Id == orderId).Include(o => o.Services).Include(o => o.Status)
+        var services = context.Orders.Where(o => o.Id == orderId).Include(o => o.Services).Include(o => o.Status)
             .SelectMany(o => o.Services).ProjectTo<OrderServiceWithClientDto>(mapper.ConfigurationProvider)
-            .ToListAsync();
+            .AsAsyncEnumerable();
         return services;
     }
 

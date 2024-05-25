@@ -20,7 +20,7 @@ export async function getClients(search?: string | undefined): Promise<Result<Cl
 export async function addClient(client: Client): Promise<Result<Client, AxiosError>> {
   try {
     const res = await axiosInstant.post('clients', client);
-    return res.data;
+    return Ok(res.data);
   } catch (error) {
     const err = error as AxiosError;
     return Err(err);

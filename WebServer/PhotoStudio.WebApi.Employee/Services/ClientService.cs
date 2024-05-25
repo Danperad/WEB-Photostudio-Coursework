@@ -11,7 +11,7 @@ namespace PhotoStudio.WebApi.Employee.Services;
 
 public class ClientService(PhotoStudioContext context, IRabbitMqService rabbitMqService, IMapper mapper) : IClientService
 {
-    public async Task<IEnumerable<ClientDto>> GetClients(string? search, int count, int start)
+    public IAsyncEnumerable<ClientDto> GetClients(string? search, int count, int start)
     {
         IQueryable<Client> clients = context.Clients.AsNoTracking().OrderBy(c => c.LastName).ThenBy(c => c.FirstName);
         if (!string.IsNullOrWhiteSpace(search))
@@ -23,7 +23,7 @@ public class ClientService(PhotoStudioContext context, IRabbitMqService rabbitMq
         }
 
         clients = clients.Skip(start).Take(count);
-        var res = await clients.ProjectTo<ClientDto>(mapper.ConfigurationProvider).ToListAsync();
+        var res = clients.ProjectTo<ClientDto>(mapper.ConfigurationProvider).AsAsyncEnumerable();
         return res;
     }
 

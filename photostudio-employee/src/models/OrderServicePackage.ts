@@ -1,7 +1,7 @@
 import {ServicePackage} from "./ServicePackage.ts";
 
 interface OrderServicePackage {
-  servicePackage: ServicePackage
+  servicePackage: ServicePackage | number
   startDateTime: Date
 }
 

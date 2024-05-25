@@ -9,16 +9,16 @@ namespace PhotoStudio.WebApi.Employee.Controllers;
 public class ApplicationController(IApplicationOrderService applicationOrderService) : ControllerBase
 {
     [HttpGet("order/{orderId:int}")]
-    public async Task<IActionResult> GetServicesByOrderId(int orderId)
+    public IActionResult GetServicesByOrderId(int orderId)
     {
-        var ordersServices = await applicationOrderService.GetServicesByOrder(orderId);
+        var ordersServices = applicationOrderService.GetServicesByOrder(orderId);
         return Ok(ordersServices);
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetOrderServices(int employeeId, bool? showAll = false)
+    public IActionResult GetOrderServices(int employeeId, bool? showAll = false)
     {
-        var ordersServices = await applicationOrderService.GetServicesByEmployee(employeeId, showAll ?? false);
+        var ordersServices = applicationOrderService.GetServicesByEmployee(employeeId, showAll ?? false);
         return Ok(ordersServices);
     }
     

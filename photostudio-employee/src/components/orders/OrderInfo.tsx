@@ -1,4 +1,4 @@
-import {Order, OrderService, Service, Status} from "@models/*";
+import {Employee, Hall, Item, Order, OrderService, Service, ServicePackage, Status} from "@models/*";
 import {
   Button,
   FormControl,
@@ -17,29 +17,41 @@ import {ArrowBack} from "@mui/icons-material";
 import {useEffect, useState} from "react";
 import {StatusType, StatusValue} from "../../models/Status.ts";
 import {getServicesByOrders, updateOrderStatus} from "../../services/orderService.ts";
+import dayjs from "dayjs";
 
 type OrderInfoProps = {
   order: Order,
+  onOrderStatusChanged: () => void,
   close: () => void
 }
 
 function OrderInfo(props: OrderInfoProps) {
-  const {order, close} = props
+  const {order, onOrderStatusChanged, close} = props
   const [orderServices, setOrderServices] = useState<OrderService[]>([])
   const [allowedStatuses, setAllowedStatuses] = useState<Status[]>([])
   const [selectedStatus, setSelectedStatus] = useState<Status>(order.status!)
 
   useEffect(() => {
     getServicesByOrders(order).then(res => {
-      if (res.ok){
+      if (res.ok) {
         setOrderServices(res.val)
-      }
-      else {
+      } else {
         console.log(res.val)
       }
     })
-    const statuses : Status[] = []
-    switch (order.status?.id){
+    setOrderStatusesRender()
+  }, [order]);
+
+  const getEmployeeFullName = (employee: Employee) => {
+    let name = employee.lastName + ` ` + employee.firstName.charAt(0) + `.`
+    if (employee.middleName)
+      name += ` ` + employee.middleName.charAt(0) + `.`
+    return name
+  }
+
+  const setOrderStatusesRender = () => {
+    const statuses: Status[] = []
+    switch (order.status?.id) {
       case StatusValue.Done:
       case StatusValue.Canceled:
         return
@@ -64,7 +76,7 @@ function OrderInfo(props: OrderInfoProps) {
         break;
     }
     setAllowedStatuses(statuses)
-  }, [order]);
+  }
 
   const handleSelectStatus = (event: SelectChangeEvent<number>) => {
     if (order.status!.id === +event.target.value)
@@ -75,7 +87,10 @@ function OrderInfo(props: OrderInfoProps) {
 
   const handleStatusChange = () => {
     updateOrderStatus(order, selectedStatus).then(res => {
-      if (!res.ok){
+      if (res.ok) {
+        onOrderStatusChanged()
+        setOrderStatusesRender()
+      } else {
         console.log(res.val)
       }
     }).catch(err => console.log(err))
@@ -94,11 +109,38 @@ function OrderInfo(props: OrderInfoProps) {
         {order.servicePackage && (
           <Paper>
             <Typography>Пакет услуг</Typography>
-            <ListItem>{order.servicePackage.servicePackage.title}</ListItem>
+            <Typography>{(order.servicePackage.servicePackage as ServicePackage).title}</Typography>
+            <Typography>Начало: {dayjs(order.servicePackage.startDateTime).format("DD-MM-YY HH:mm")}</Typography>
+            <Typography>Длительность: {(order.servicePackage.servicePackage as ServicePackage).duration} мин.</Typography>
           </Paper>
         )}
         {orderServices.map((service: OrderService) => (
-          <ListItem>{(service.service as Service).title}</ListItem>
+          <ListItem key={service.id}>
+            <Paper>
+              <Typography>{(service.service as Service).title}</Typography>
+              {service.employee && (
+                <Typography>Сотрудник: {getEmployeeFullName(service.employee as Employee)}</Typography>
+              )}
+              {service.hall && (
+                <Typography>Зал: {(service.hall as Hall).title}</Typography>
+              )}
+              {service.item && (
+                <Typography>Предмет: {(service.item as Item).title}</Typography>
+              )}
+              {service.count && (
+                <Typography>Количество: {service.count}</Typography>
+              )}
+              {service.startDateTime && (
+                <Typography>Начало: {dayjs(service.startDateTime).format("DD-MM-YY HH:mm")}</Typography>
+              )}
+              {service.duration && (
+                <Typography>Длительность: {service.duration} мин.</Typography>
+              )}
+              {service.isFullTime && (
+                <Typography>На всё время</Typography>
+              )}
+            </Paper>
+          </ListItem>
         ))}
       </List>
       {allowedStatuses.length !== 0 && (

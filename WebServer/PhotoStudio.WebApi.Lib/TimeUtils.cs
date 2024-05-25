@@ -11,9 +11,11 @@ public static class TimeUtils
         var periodEnd = startDate + duration;
         var adjustedPeriodStart = startDate - @const;
         var adjustedPeriodEnd = periodEnd + @const;
-
-        return services.Where(h =>
-            !h.Services.Any(a =>
-                a.StartDateTime + a.Duration <= adjustedPeriodStart || a.StartDateTime >= adjustedPeriodEnd));
+        var rrr = services.Where(h =>
+            !h.Services.Any(s =>
+                ((s.StartDateTime - @const >= adjustedPeriodEnd && s.StartDateTime + s.Duration + @const <= adjustedPeriodEnd) ||
+                 (s.StartDateTime - @const >= adjustedPeriodStart && s.StartDateTime + s.Duration + @const <= adjustedPeriodStart) ||
+                 (adjustedPeriodStart >= s.StartDateTime - @const && adjustedPeriodEnd <= s.StartDateTime + s.Duration + @const)) && s.StatusId != StatusValue.Canceled));
+        return rrr;
     }
 }

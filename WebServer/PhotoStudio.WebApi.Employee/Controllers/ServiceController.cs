@@ -8,9 +8,9 @@ namespace PhotoStudio.WebApi.Employee.Controllers;
 public class ServiceController(IServiceService serviceService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllServices()
+    public IActionResult GetAllServices()
     {
-        var services = await serviceService.GetServices();
+        var services = serviceService.GetServices();
         return Ok(services);
     }
 }

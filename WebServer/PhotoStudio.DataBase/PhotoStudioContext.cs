@@ -42,7 +42,7 @@ public sealed class PhotoStudioContext: DbContext
     public DbSet<Status> Statuses { get; internal set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; internal set; } = null!;
     public DbSet<ServicePackage> ServicePackages { get; internal set; } = null!;
-    public DbSet<ApplicationServiceTemplate> ApplicationServiceTemplates { get; internal set; } = null;
+    public DbSet<ApplicationServiceTemplate> ApplicationServiceTemplates { get; internal set; } = null!;
 
     #endregion
 }

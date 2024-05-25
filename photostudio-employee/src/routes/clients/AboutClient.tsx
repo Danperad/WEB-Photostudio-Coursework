@@ -34,6 +34,12 @@ function AboutClient(props: AboutClientProps) {
       return;
     }
     lastSelectedClient.current = client.id
+    searchOrders()
+    setTabStatus(TabStatus.Orders)
+  }, [client])
+
+  const searchOrders = () => {
+
     getOrdersByClient(client).then(res => {
       if (res.ok){
         setOrders(res.val)
@@ -42,8 +48,7 @@ function AboutClient(props: AboutClientProps) {
         console.log(res.val)
       }
     }).catch(err => console.log(err))
-    setTabStatus(TabStatus.Orders)
-  }, [client])
+  }
 
   const fullName = () => {
     let name = client.lastName + ` ` + client.firstName.charAt(0) + `.`
@@ -66,8 +71,19 @@ function AboutClient(props: AboutClientProps) {
   };
 
   const closeOrderInfoHandler = () => {
+    setSelectedOrder(undefined)
     setTabStatus(TabStatus.Orders)
   };
+
+  const orderCreatedHandler = () => {
+    searchOrders()
+    closeNewOrderHandler()
+  };
+
+  const orderStatusChangedHandler = () => {
+    searchOrders()
+  };
+
   return (
     <>
       {currentTabStatus === TabStatus.Orders && (
@@ -83,10 +99,10 @@ function AboutClient(props: AboutClientProps) {
         </Stack>
       )}
       {currentTabStatus === TabStatus.NewOrder && (
-        <NewOrderTab client={client} close={closeNewOrderHandler}/>
+        <NewOrderTab client={client} close={closeNewOrderHandler} onOrderCreated={orderCreatedHandler}/>
       )}
       {currentTabStatus === TabStatus.OrderInfo && selectedOrder && (
-        <OrderInfo order={selectedOrder} close={closeOrderInfoHandler}/>
+        <OrderInfo order={selectedOrder} close={closeOrderInfoHandler} onOrderStatusChanged={orderStatusChangedHandler}/>
       )}
     </>
   )

@@ -9,9 +9,9 @@ namespace PhotoStudio.WebApi.Employee.Controllers;
 public class ClientController(IClientService clientService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAllClients(string? search = null, int? number = null, int? start = null)
+    public IActionResult GetAllClients(string? search = null, int? number = null, int? start = null)
     {
-        var clients = await clientService.GetClients(search, number ?? 20, start ?? 0);
+        var clients = clientService.GetClients(search, number ?? 20, start ?? 0);
         return Ok(clients);
     }
 

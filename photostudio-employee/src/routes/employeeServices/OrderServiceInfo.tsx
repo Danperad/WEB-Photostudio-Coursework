@@ -1,8 +1,21 @@
-import {EmployeeService, Service, Status} from "@models/*";
-import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography} from "@mui/material";
+import {EmployeeService, Hall, Item, Service, Status} from "@models/*";
+import {
+  Button,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  SelectChangeEvent,
+  Stack,
+  Typography
+} from "@mui/material";
+import {ArrowBack} from "@mui/icons-material";
 import {useEffect, useState} from "react";
 import {StatusType, StatusValue} from "../../models/Status.ts";
 import {updateServicesStatus} from "../../services/employeeService.ts";
+import dayjs from "dayjs";
 
 type OrderServiceInfoProps = {
   orderService: EmployeeService,
@@ -49,7 +62,30 @@ function OrderServiceInfo(props: OrderServiceInfoProps) {
 
   return (
     <Stack direction={"column"}>
-      <Typography onClick={onClose}>{(orderService.service as Service).title}</Typography>
+      <IconButton onClick={onClose}>
+        <ArrowBack/>
+      </IconButton>
+      <Paper>
+        <Typography>{(orderService.service as Service).title}</Typography>
+        {orderService.hall && (
+          <Typography>Зал: {(orderService.hall as Hall).title}</Typography>
+        )}
+        {orderService.item && (
+          <Typography>Предмет: {(orderService.item as Item).title}</Typography>
+        )}
+        {orderService.count && (
+          <Typography>Количество: {orderService.count}</Typography>
+        )}
+        {orderService.startDateTime && (
+          <Typography>Начало: {dayjs(orderService.startDateTime).format("DD-MM-YY HH:mm")}</Typography>
+        )}
+        {orderService.duration && (
+          <Typography>Длительность: {orderService.duration} мин.</Typography>
+        )}
+        {orderService.isFullTime && (
+          <Typography>На всё время</Typography>
+        )}
+      </Paper>
       {allowedStatuses.length !== 0 && (
         <Stack direction={"row"}>
           <FormControl>

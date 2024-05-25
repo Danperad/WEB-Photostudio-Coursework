@@ -9,9 +9,9 @@ namespace PhotoStudio.WebApi.Employee.Services;
 
 public class ServiceService(PhotoStudioContext context, IMapper mapper) : IServiceService
 {
-    public async Task<IEnumerable<SimpleServiceDto>> GetServices()
+    public IAsyncEnumerable<SimpleServiceDto> GetServices()
     {
         var services = context.Services.AsNoTracking().OrderBy(s => s.Type).ThenBy(s => s.Title);
-        return await services.ProjectTo<SimpleServiceDto>(mapper.ConfigurationProvider).ToListAsync();
+        return services.ProjectTo<SimpleServiceDto>(mapper.ConfigurationProvider).AsAsyncEnumerable();
     }
 }

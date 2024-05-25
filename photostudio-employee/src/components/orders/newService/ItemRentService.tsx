@@ -49,10 +49,10 @@ function ItemRentService(props: NewServiceProps) {
 
   const handleComplete = () => {
     const orderService: OrderService = {
-      service: service.id,
+      service: service,
       startDateTime: startTime,
       duration: duration,
-      item: selectedItem?.id,
+      item: selectedItem,
       count: selectedCount,
     }
     onComplete(orderService)

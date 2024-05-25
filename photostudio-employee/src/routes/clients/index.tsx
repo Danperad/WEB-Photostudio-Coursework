@@ -21,14 +21,7 @@ function Clients() {
 
   useEffect(() => {
     const searchClients = setTimeout(() => {
-      getClients(search ? search : undefined).then(res => {
-        if (res.ok){
-          setClients(res.val)
-        }
-        else {
-          console.log(res.val)
-        }
-      }).catch(error => console.log(error))
+      searchClient()
     }, 500)
     return () => clearTimeout(searchClients)
   }, [search]);
@@ -44,6 +37,17 @@ function Clients() {
     }
     setRightTabStatus(RightTabStatus.Empty)
   }, [currentClient, isNewClient])
+
+  const searchClient = () => {
+    getClients(search ? search : undefined).then(res => {
+      if (res.ok){
+        setClients(res.val)
+      }
+      else {
+        console.log(res.val)
+      }
+    }).catch(error => console.log(error))
+  }
 
   const selectNewClient = () => {
     setCurrentClient(undefined)
@@ -74,7 +78,10 @@ function Clients() {
       </Stack>
       <Divider orientation={"vertical"} variant={"middle"} flexItem/>
       {currentRightTabStatus === RightTabStatus.NewClient && (
-        <NewClientTab close={closeRightTab}/>
+        <NewClientTab close={closeRightTab} onClientCreated={() => {
+          closeRightTab()
+          searchClient()
+        }}/>
       )}
       {currentRightTabStatus === RightTabStatus.Orders && currentClient && (
         <AboutClient client={currentClient} close={closeRightTab}/>

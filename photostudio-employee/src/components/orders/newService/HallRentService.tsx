@@ -28,10 +28,10 @@ function HallRentService(props: NewServiceProps) {
 
   const handleComplete = () => {
     const orderService: OrderService = {
-      service: service.id,
+      service: service,
       startDateTime: startTime,
       duration: duration,
-      hall: selectedHall?.id
+      hall: selectedHall
     }
     onComplete(orderService)
   }

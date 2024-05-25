@@ -16,16 +16,16 @@ const clearClient = (): Client => {
 }
 
 type NewClientTabProps = {
+  onClientCreated: () => void
   close: () => void
 }
 
 function NewClientTab(props: NewClientTabProps) {
-  const {close} = props
+  const {onClientCreated ,close} = props
   const handleAddClient = (c: Client) => {
-    console.log(c)
     addClient(c).then(res => {
       if (res.ok) {
-        close()
+        onClientCreated()
       }
       else{
         console.log(res.val);
@@ -35,10 +35,7 @@ function NewClientTab(props: NewClientTabProps) {
 
   return (
     <Stack direction={"column"} width={"50%"}>
-      <IconButton onClick={e => {
-        e.preventDefault()
-        close()
-      }}>
+      <IconButton onClick={close}>
         <Close/>
       </IconButton>
       <FormContainer defaultValues={clearClient()} onSuccess={handleAddClient}>

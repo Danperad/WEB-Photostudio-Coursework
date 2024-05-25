@@ -10,25 +10,35 @@ namespace PhotoStudio.WebApi.Employee.Services;
 
 public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqService, IMapper mapper) : IOrderService
 {
-    public async Task<IEnumerable<OrderDto>> GetAllOrders(int count, int start)
+    public IAsyncEnumerable<OrderDto> GetAllOrders(int count, int start)
     {
         var orders = context.Orders.AsNoTracking().OrderByDescending(o => o.Id).Skip(start).Take(count)
             .Include(o => o.Client);
-        return await orders.ProjectTo<OrderDto>(mapper.ConfigurationProvider).ToListAsync();
+        return orders.ProjectTo<OrderDto>(mapper.ConfigurationProvider).AsAsyncEnumerable();
     }
 
-    public async Task<IEnumerable<OrderDto>> GetOrdersByClient(int clientId)
+    public IAsyncEnumerable<OrderDto> GetOrdersByClient(int clientId)
     {
-        var client = await context.Clients.AsNoTracking().Include(c => c.Orders)
-            .FirstAsync(c => c.Id == clientId);
-        return mapper.Map<List<Order>, List<OrderDto>>(client.Orders.ToList());
+        var client = context.Clients.AsNoTracking().OrderByDescending(o => o.Id).Include(c => c.Orders)
+            .Where(c => c.Id == clientId).SelectMany(c => c.Orders).OrderByDescending(o => o.Id).ProjectTo<OrderDto>(mapper.ConfigurationProvider).AsAsyncEnumerable();
+        return client;
     }
 
     public async Task<OrderDto> AddNewOrder(NewOrderDto order)
     {
-        if (order.Services.Count == 0)
+        if (order.Services.Count == 0 && order.ServicePackage is null)
         {
             throw new NotImplementedException();
+        }
+        
+        foreach (var service in order.Services)
+        {
+            if (service.StartDateTime.HasValue)
+            {
+                service.StartDateTime = service.StartDateTime.Value.Date +
+                                        TimeSpan.FromMinutes(service.StartDateTime.Value.Minute +
+                                                             service.StartDateTime.Value.Hour * 60);
+            }
         }
 
         var client = await context.Clients.FirstAsync(c => c.Id == order.Client);
@@ -37,6 +47,35 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
         var status =
             await context.Statuses.SingleAsync(s => s.Id == StatusValue.NotAccepted && s.Type == StatusType.Service);
         ApplicationService? hallService = null;
+        ServicePackage? servicePackage = null;
+        if (order.ServicePackage is not null)
+        {
+            servicePackage = await context.ServicePackages.Include(sp => sp.Services)
+                .ThenInclude(applicationServiceTemplate => applicationServiceTemplate.Service).FirstAsync(s => s.Id == order.ServicePackage.ServicePackageId);
+            foreach (var serviceTemplate in servicePackage.Services)
+            {
+                switch (serviceTemplate.Service.Type)
+                {
+                    case Service.ServiceType.Simple:
+                    {
+                        var employee = await context.Employees.Where(e => e.BoundServices.Contains(serviceTemplate.Service))
+                            .OrderBy(_ => Guid.NewGuid()).FirstAsync();
+                        services.Add(serviceTemplate.MapToApplicationService(employee));
+                        break;
+                    }
+                    case Service.ServiceType.HallRent or Service.ServiceType.ItemRent:
+                    {
+                        var employee = await context.Employees.Where(e => e.BoundServices.Contains(serviceTemplate.Service))
+                            .OrderBy(_ => Guid.NewGuid()).FirstAsync();
+                        services.Add(serviceTemplate.MapToApplicationService(employee, order.ServicePackage.StartDateTime));
+                        break;
+                    }
+                    default:
+                        services.Add(serviceTemplate.MapToApplicationService(null, order.ServicePackage.StartDateTime));
+                        break;
+                }
+            }
+        }
         foreach (var newServiceModel in order.Services.OrderBy(s => s.Id))
         {
             var service = await context.Services.SingleAsync(s => s.Id == newServiceModel.Service);
@@ -121,7 +160,7 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
         var orderStatus =
             await context.Statuses.SingleAsync(s => s.Id == StatusValue.NotAccepted && s.Type == StatusType.Order);
 
-        var newOrder = new Order(client, DateTime.Now, services, orderStatus, null);
+        var newOrder = new Order(client, DateTime.Now, services, orderStatus, servicePackage);
         var newAddedOrder = await context.Orders.AddAsync(newOrder);
 
         await context.SaveChangesAsync();

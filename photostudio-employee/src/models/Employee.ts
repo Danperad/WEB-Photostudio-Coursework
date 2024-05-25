@@ -3,7 +3,7 @@ interface Employee {
   lastName: string,
   firstName: string,
   middleName: string | undefined,
-  costPerHour: number,
+  cost: number,
 }
 
 export type {Employee}

@@ -2,5 +2,5 @@
 
 public interface IReportService
 {
-    Task GenReport(DateTime startDate, DateTime endDate);
+    Task GenReport(DateTime startDate, DateTime endDate, Stream output);
 }

@@ -10,14 +10,13 @@ public class AdditionMapperConfig : Profile
     {
         CreateMap<RentedItem, RentedItemDto>();
         CreateMap<Order, OrderDto>().ForMember(o => o.Number, od => od.MapFrom(src => src.Id));
-        CreateMap<ApplicationService, OrderServiceDto>().ForMember(o => o.Duration, od => od.MapFrom(src =>
-            TimeSpanToMinutes(src.Duration)));
         CreateMap<ApplicationService, OrderServiceWithClientDto>().ForMember(o => o.Duration, od => od.MapFrom(src =>
             TimeSpanToMinutes(src.Duration))).ForMember(o => o.Client, od => od.MapFrom(src =>
             src.Order.Client)).ForMember(o => o.OrderStatus, od => od.MapFrom(src =>
             src.Order.StatusId));
         CreateMap<Status, StatusDto>();
         CreateMap<Service, SimpleServiceDto>();
+        CreateMap<ServicePackage, ServicePackageWithoutPhotosDto>().ForMember(o => o.Cost, od => od.MapFrom(src => src.Price));
 
         CreateMap<Client, ClientReportDto>();
         CreateMap<ServicePackage, ServicePackageReportDto>();

@@ -9,6 +9,7 @@ public class OrderServiceWithClientDto
     public ClientDto Client { get; set; } = null!;
     public SimpleServiceDto Service { get; set; } = null!;
     public RentedItemDto? Item { get; set; }
+    public EmployeeDto Employee { get; set; } = null!;
     public int? Count { get; set; }
     public HallDto? Hall { get; set; }
     public DateTime? StartDateTime { get; set; }

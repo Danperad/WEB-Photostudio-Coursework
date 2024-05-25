@@ -7,14 +7,14 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {Clients, Employees, EmployeeServices, Orders} from "./routes";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs'
-import {App} from "./App.tsx";
+import {ServiceWorker} from "./ServiceWorker.tsx";
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <BrowserRouter>
-        <App/>
+        <ServiceWorker/>
         <Stack direction={"row"}>
           <Sidebar/>
           <Routes>

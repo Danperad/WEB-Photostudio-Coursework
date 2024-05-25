@@ -10,6 +10,7 @@ public class ServicePackage
         Hall = new Hall();
         Photos = new List<string>();
         Services = new HashSet<ApplicationServiceTemplate>();
+        Orders = new List<Order>();
     }
 
     #region Props
@@ -25,6 +26,7 @@ public class ServicePackage
     public int EmployeeId { get; internal set; }
     public int Duration { get; internal set; }
     public decimal Price { get; internal set; }
+    public List<Order> Orders { get; internal set; }
 
     #endregion
 }

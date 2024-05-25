@@ -1,57 +1,51 @@
-import {useRegisterSW} from "virtual:pwa-register/react";
-import {useRef} from "react";
-import {HttpTransportType, HubConnection, HubConnectionBuilder} from "@microsoft/signalr";
-
-const baseUrl = import.meta.env.VITE_API_URL;
+import {ServiceWorker} from "./ServiceWorker.tsx";
+import {Stack} from "@mui/material";
+import Sidebar from "./components/Sidebar.tsx";
+import {Route, Routes, useNavigate} from "react-router-dom";
+import {Auth, Clients, Employees, EmployeeServices, Orders} from "./routes";
+import {useSelector} from "react-redux";
+import {RootState} from "./redux/store.ts";
+import {AuthEmployee} from "@models/*";
+import {useEffect} from "react";
 
 function App() {
-  const connection = useRef<HubConnection | null>(null)
-  const isAllowNotification = useRef<boolean>(false)
-  useRegisterSW({
-    onRegisteredSW(_, registration) {
-      connection.current = new HubConnectionBuilder().withUrl(`${baseUrl ? baseUrl : `/api`}/hub`, {
-        skipNegotiation: true,
-        transport: HttpTransportType.WebSockets
-      }).build()
-      if (Notification.permission === "default") {
-        Notification.requestPermission().then(res => isAllowNotification.current = res === "granted")
-      } else {
-        isAllowNotification.current = Notification.permission === "granted"
-      }
-      connection.current?.on("NewClient", () => {
-        console.log("NewClient")
-        if (isAllowNotification.current) {
-          registration!.showNotification("Новый клиент", {
-            body: "В базе новый клиент",
-            tag: "new-client",
-          })
-        }
-      })
-      connection.current?.on("NewOrder", () => {
-        if (isAllowNotification.current) {
-          registration!.showNotification("Новая заявка", {
-            body: "В базе новая заявка",
-            tag: "new-order",
-          })
-        }
-      })
-      connection.current?.on("StatusChanged", data => {
-        if (isAllowNotification.current) {
-          registration!.showNotification("Новый статус заявки", {
-            body: `У заявки ${data} изменился статус`,
-            tag: "order-status-changed",
-          })
-        }
-      })
-      connection.current?.start().catch(console.error)
-    },
-    onRegisterError(error) {
-      console.error('SW registration error', error)
-    },
-  })
+  const rootState = useSelector((state: RootState) => state.employee.employee) as (AuthEmployee | undefined);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!rootState)
+      navigate("auth")
+    else if (rootState.role > 2) {
+      navigate("employeesServices")
+    } else {
+      navigate("clients")
+    }
+  }, [rootState]);
   return (
-    <></>
+    <>
+      <ServiceWorker/>
+      <Routes>
+        {!rootState && (
+          <Route path={"auth"} element={<Auth/>}/>
+        )}
+        {rootState && (
+          <Stack direction={"row"}>
+            <Sidebar/>
+            {rootState.role <= 2 && (
+              <>
+                <Route path={"clients"} element={<Clients/>}/>
+                <Route path={"orders"} element={<Orders/>}/>
+                <Route path={"employees"} element={<Employees/>}/>
+              </>
+            )}
+            {rootState.role > 2 && (
+              <Route path={"employeesServices"} element={<EmployeeServices/>}/>
+            )}
+          </Stack>
+        )}
+      </Routes>
+    </>
   )
 }
 
-export {App}
+export default App;

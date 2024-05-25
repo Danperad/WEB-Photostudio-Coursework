@@ -8,9 +8,10 @@ namespace PhotoStudio.WebApi.Employee.Controllers;
 public class HallController(IHallService hallService) : ControllerBase
 {
     [HttpGet("available")]
-    public async Task<IActionResult> GetAvailableHalls(DateTime start, int duration)
+    public IActionResult GetAvailableHalls(DateTime start, int duration)
     {
-        var halls = await hallService.GetAvailableHalls(start, TimeSpan.FromMinutes(duration));
+        start = start.Date + TimeSpan.FromMinutes(start.Minute + start.Hour * 60);
+        var halls = hallService.GetAvailableHalls(start, TimeSpan.FromMinutes(duration));
         return Ok(halls);
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using PhotoStudio.DataBase;
-using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Employee.Config;
 using PhotoStudio.WebApi.Employee.Hubs;
 using PhotoStudio.WebApi.Employee.Services;
@@ -23,6 +22,7 @@ builder.Services.AddTransient<IRabbitMqService, RabbitMqService>();
 builder.Services.AddTransient<IClientService, ClientService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IServiceService, ServiceService>();
+builder.Services.AddTransient<IServicePackageService, ServicePackageService>();
 builder.Services.AddTransient<IHallService, HallService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IRentedItemService, RentedItemService>();
@@ -37,7 +37,7 @@ if (app.Environment.IsDevelopment())
     app.UseCors(x => x
         .AllowAnyMethod()
         .AllowAnyHeader()
-        .SetIsOriginAllowed(origin => true) // allow any origin
+        .SetIsOriginAllowed(_ => true) // allow any origin
         .AllowCredentials()); // allow credentials
 }
 
