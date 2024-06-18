@@ -1,21 +1,22 @@
-import {Box, Button, IconButton, List} from "@mui/material";
+import {Box, Button, List} from "@mui/material";
 import {ContactMail, Menu, Person} from '@mui/icons-material';
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 
 export default function Sidebar() {
-  const [isFullSize, setFullSize] = useState<boolean>(true);
+  const [isFullSize, setFullSize] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   return (
     <Box className={`sticky top-0 left-0 ${isFullSize ? `w-40` : `w-16`} flex items-center h-screen bg-black`}>
       <List className={"align-middle grid gap-5 w-screen"}>
-        <IconButton aria-label={"menu"} onClick={() => {
+        <Button aria-label={"menu"} onClick={() => {
           setFullSize(prevState => !prevState);
         }}>
           <Menu color={'primary'}/>
-        </IconButton>
+          {isFullSize && `Уменьшить`}
+        </Button>
         <Button variant={"text"} onClick={() => {
           navigate("clients")
         }}>
@@ -28,12 +29,18 @@ export default function Sidebar() {
           <Person color={'primary'}/>
           {isFullSize && `Заявки`}
         </Button>
-        {/*<Button variant={"text"} onClick={() => {*/}
-        {/*  navigate("employees")*/}
-        {/*}}>*/}
-        {/*  <ContactMail color={'primary'}/>*/}
-        {/*  {isFullSize && `Сотрудники`}*/}
-        {/*</Button>*/}
+        <Button variant={"text"} onClick={() => {
+          navigate("employees")
+        }}>
+          <ContactMail color={'primary'}/>
+          {isFullSize && `Сотрудники`}
+        </Button>
+        <Button variant={"text"} onClick={() => {
+          navigate("services")
+        }}>
+          <ContactMail color={'primary'}/>
+          {isFullSize && `Услуги`}
+        </Button>
         <Button variant={"text"} onClick={() => {
           navigate("employeesServices")
         }}>

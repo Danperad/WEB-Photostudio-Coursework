@@ -20,7 +20,8 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
     public IAsyncEnumerable<OrderDto> GetOrdersByClient(int clientId)
     {
         var client = context.Clients.AsNoTracking().OrderByDescending(o => o.Id).Include(c => c.Orders)
-            .Where(c => c.Id == clientId).SelectMany(c => c.Orders).OrderByDescending(o => o.Id).ProjectTo<OrderDto>(mapper.ConfigurationProvider).AsAsyncEnumerable();
+            .Where(c => c.Id == clientId).SelectMany(c => c.Orders).OrderByDescending(o => o.Id)
+            .ProjectTo<OrderDto>(mapper.ConfigurationProvider).AsAsyncEnumerable();
         return client;
     }
 
@@ -30,7 +31,7 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
         {
             throw new NotImplementedException();
         }
-        
+
         foreach (var service in order.Services)
         {
             if (service.StartDateTime.HasValue)
@@ -51,23 +52,31 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
         if (order.ServicePackage is not null)
         {
             servicePackage = await context.ServicePackages.Include(sp => sp.Services)
-                .ThenInclude(applicationServiceTemplate => applicationServiceTemplate.Service).FirstAsync(s => s.Id == order.ServicePackage.ServicePackageId);
+                .ThenInclude(applicationServiceTemplate => applicationServiceTemplate.Service)
+                .FirstAsync(s => s.Id == order.ServicePackage.ServicePackageId);
             foreach (var serviceTemplate in servicePackage.Services)
             {
                 switch (serviceTemplate.Service.Type)
                 {
                     case Service.ServiceType.Simple:
                     {
-                        var employee = await context.Employees.Where(e => e.BoundServices.Contains(serviceTemplate.Service))
+                        var employee = await context.Employees
+                            .Where(e => e.BoundServices.Contains(serviceTemplate.Service))
                             .OrderBy(_ => Guid.NewGuid()).FirstAsync();
                         services.Add(serviceTemplate.MapToApplicationService(employee));
                         break;
                     }
                     case Service.ServiceType.HallRent or Service.ServiceType.ItemRent:
                     {
-                        var employee = await context.Employees.Where(e => e.BoundServices.Contains(serviceTemplate.Service))
+                        var employee = await context.Employees
+                            .Where(e => e.BoundServices.Contains(serviceTemplate.Service))
                             .OrderBy(_ => Guid.NewGuid()).FirstAsync();
-                        services.Add(serviceTemplate.MapToApplicationService(employee, order.ServicePackage.StartDateTime));
+                        var newService =
+                            serviceTemplate.MapToApplicationService(employee, order.ServicePackage.StartDateTime);
+                        services.Add(
+                            newService);
+                        if (serviceTemplate.Service.Type == Service.ServiceType.HallRent)
+                            hallService = newService;
                         break;
                     }
                     default:
@@ -76,10 +85,12 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
                 }
             }
         }
+
         foreach (var newServiceModel in order.Services.OrderBy(s => s.Id))
         {
             var service = await context.Services.SingleAsync(s => s.Id == newServiceModel.Service);
-            if (services.Any(s => s.Service == service) && service.Type is Service.ServiceType.HallRent or Service.ServiceType.Photo)
+            if (services.Any(s => s.Service == service) &&
+                service.Type is Service.ServiceType.HallRent or Service.ServiceType.Photo)
                 throw new NotImplementedException();
             switch (service.Type)
             {
@@ -87,7 +98,8 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
                 {
                     var newService = new ApplicationService(service, status)
                     {
-                        Employee = context.Employees.Where(e => e.BoundServices.Contains(service)).OrderBy(_ => Guid.NewGuid()).First()
+                        Employee = context.Employees.Where(e => e.BoundServices.Contains(service))
+                            .OrderBy(_ => Guid.NewGuid()).First()
                     };
                     services.Add(newService);
                 }
@@ -99,7 +111,8 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
                     var newService = new ApplicationService(service, newServiceModel.StartDateTime!.Value,
                         TimeSpan.FromMinutes(newServiceModel.Duration!.Value), hall, status)
                     {
-                        Employee = context.Employees.Where(e => e.BoundServices.Contains(service)).OrderBy(_ => Guid.NewGuid()).First()
+                        Employee = context.Employees.Where(e => e.BoundServices.Contains(service))
+                            .OrderBy(_ => Guid.NewGuid()).First()
                     };
                     hallService = newService;
                     services.Add(newService);
@@ -126,7 +139,8 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
                         TimeSpan.FromMinutes(newServiceModel.Duration!.Value), newServiceModel.Count.Value, item,
                         status)
                     {
-                        Employee = context.Employees.Where(e => e.BoundServices.Contains(service)).OrderBy(_ => Guid.NewGuid()).First()
+                        Employee = context.Employees.Where(e => e.BoundServices.Contains(service))
+                            .OrderBy(_ => Guid.NewGuid()).First()
                     };
                     services.Add(newService);
                 }
@@ -149,14 +163,18 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
             }
         }
 
-        if (hallService is null && services.Any(s => s.Service.Type is Service.ServiceType.Photo or Service.ServiceType.Style))
+        if (hallService is null &&
+            services.Any(s => s.Service.Type is Service.ServiceType.Photo or Service.ServiceType.Style))
         {
             throw new NotImplementedException();
         }
-        foreach (var applicationService in services.Where(s => s.Service.Type is Service.ServiceType.Photo or Service.ServiceType.Style))
+
+        foreach (var applicationService in services.Where(s =>
+                     s.Service.Type is Service.ServiceType.Photo or Service.ServiceType.Style))
         {
             applicationService.Hall = hallService!.Hall;
         }
+
         var orderStatus =
             await context.Statuses.SingleAsync(s => s.Id == StatusValue.NotAccepted && s.Type == StatusType.Order);
 
@@ -177,7 +195,8 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
 
     public async Task<OrderDto> ChangeOrderStatus(int orderId, int statusId)
     {
-        var order = await context.Orders.Include(order => order.Services).Include(order => order.Status).FirstAsync(o => o.Id == orderId);
+        var order = await context.Orders.Include(order => order.Services).Include(order => order.Status)
+            .FirstAsync(o => o.Id == orderId);
         if (order.Status.Id is StatusValue.Canceled or StatusValue.Done)
             throw new NotImplementedException();
         var newStatus =

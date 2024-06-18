@@ -1,4 +1,6 @@
-﻿namespace PhotoStudio.DataBase.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PhotoStudio.DataBase.Models;
 
 public class Service
 {
@@ -20,8 +22,8 @@ public class Service
     #region Props
 
     public int Id { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
+    [MaxLength(50)]public string Title { get; set; }
+    [MaxLength(300)]public string Description { get; set; }
     public decimal Cost { get; set; }
     public List<string> Photos { get; internal set; }
     public ServiceType Type { get; set; }

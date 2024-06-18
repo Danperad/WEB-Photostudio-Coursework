@@ -12,27 +12,27 @@ import Services from "./routes/Services";
 import Profile from "./routes/Profile";
 import ShoppingCart from "./routes/ShoppingCart";
 import Header from "./components/Header";
-import ErrorCard from "./components/ErrorCard";
+import NotifyCard from "./components/NotifyCard.tsx";
 import Halls from "./routes/Halls";
 import ServicePackages from "./routes/ServicePackages";
 import Registration from "./routes/Registration.tsx";
 
 const dark = createTheme({
-  palette: {
-      mode: 'light',
-      primary: {
-          main: '#8785A2',
-          contrastText: '#ffffff'
-      },
-      secondary: {
-          main: '#F6F6F6',
-          contrastText: '#1e1e1e'
-      },
-  },
+    palette: {
+        mode: 'light',
+        primary: {
+            main: '#8785A2',
+            contrastText: '#ffffff'
+        },
+        secondary: {
+            main: '#F6F6F6',
+            contrastText: '#1e1e1e'
+        },
+    },
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+    <React.StrictMode>
         <Provider store={store}>
             <ThemeProvider theme={dark}>
                 <SnackbarProvider maxSnack={3}>
@@ -48,7 +48,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                                 <Route path={"/register"} element={<Registration/>}/>
                                 <Route path={"*"} element={<Navigate to={"/"}/>}/>
                             </Routes>
-                            <ErrorCard/>
+                            <NotifyCard/>
                         </BrowserRouter>
                     </LocalizationProvider>
                 </SnackbarProvider>

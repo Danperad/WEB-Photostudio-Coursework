@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace PhotoStudio.DataBase.Models;
 
 public class Client : Human
@@ -5,7 +7,7 @@ public class Client : Human
     #region Props
 
     public bool IsActive { get; set; }
-    public string? Password { get; set; }
+    [MaxLength(64)]public string? Password { get; set; }
     public IEnumerable<Order> Orders { get; internal set; }
     public IEnumerable<Contract> Contracts { get; internal set; }
     public string? Avatar { get; set; }

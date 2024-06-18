@@ -10,12 +10,10 @@ internal static class EntityConfigure
     {
         builder.ToTable("address");
         builder.Property(a => a.Id).HasColumnName("id");
-        builder.Property(a => a.Block).HasColumnName("block");
         builder.Property(a => a.Street).HasMaxLength(50).HasColumnName("street");
-        builder.Property(a => a.HouseNumber).HasColumnName("house_number");
-        builder.Property(a => a.ApartmentNumber).HasColumnName("apartment_number");
-        builder.Property(a => a.Settlement).HasColumnName("settlement");
-        builder.Property(a => a.CityDistrict).HasColumnName("city_district");
+        builder.Property(a => a.HouseNumber).HasMaxLength(6).HasColumnName("house_number");
+        builder.Property(a => a.ApartmentNumber).HasMaxLength(6).HasColumnName("apartment_number");
+        builder.Property(a => a.City).HasMaxLength(50).HasColumnName("city");
     }
 
     internal static void ClientConfigure(EntityTypeBuilder<Client> builder)

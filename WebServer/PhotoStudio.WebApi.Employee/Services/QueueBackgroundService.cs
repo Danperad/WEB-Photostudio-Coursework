@@ -30,10 +30,6 @@ public class QueueBackgroundService(IConfiguration configuration, IHubContext<Ma
         consumer.Received += async (_, ea) =>
         {
             var body = Encoding.UTF8.GetString(ea.Body.ToArray());
-            if (body.StartsWith("New_Client"))
-            {
-                await mainHub.Clients.All.SendAsync("NewClient", stoppingToken);
-            }
             if (body.StartsWith("New_Order"))
             {
                 await mainHub.Clients.All.SendAsync("NewOrder", stoppingToken);

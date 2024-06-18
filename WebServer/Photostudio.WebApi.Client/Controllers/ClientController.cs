@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PhotoStudio.WebApi.Client.Dto;
 using PhotoStudio.WebApi.Lib.Dto;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
 
@@ -36,5 +38,13 @@ public class ClientController(IClientService clientService, IMapper mapper) : Co
         var client = await clientService.AuthClientInContextAsync(HttpContext.User);
         var res = await clientService.AddOrderAsync(cart, client);
         return Ok(new AnswerDto(res, null, null));
+    }
+
+    [HttpGet("orders")]
+    public async Task<IActionResult> GetOrders()
+    {
+        var client = await clientService.AuthClientInContextAsync(HttpContext.User);
+        var orders = await clientService.GetOrdersByClient(client);
+        return Ok(new AnswerDto(true, orders, null));
     }
 }

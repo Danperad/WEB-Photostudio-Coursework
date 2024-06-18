@@ -20,8 +20,6 @@ function ClientRow(props: ClientRowProps) {
       ) : (
         <TableCell>-</TableCell>
       )}
-      <TableCell>{client.phone}</TableCell>
-      <TableCell>{client.eMail}</TableCell>
     </TableRow>
   )
 }

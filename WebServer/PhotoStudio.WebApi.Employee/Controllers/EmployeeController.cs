@@ -14,4 +14,11 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
         var employees = employeeService.GetAvailableEmployees(start, TimeSpan.FromMinutes(duration), serviceId);
         return Ok(employees);
     }
+
+    [HttpGet]
+    public IActionResult GetEmployees()
+    {
+        var employees = employeeService.GetAllEmployees();
+        return Ok(employees);
+    }
 }

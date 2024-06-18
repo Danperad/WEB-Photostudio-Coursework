@@ -46,7 +46,6 @@ public class ClientService(PhotoStudioContext context, IRabbitMqService rabbitMq
 
         var addedClient = context.Clients.Add(client);
         await context.SaveChangesAsync();
-        rabbitMqService.SendMessage("New_Client");
         return mapper.Map<Client, ClientDto>(addedClient.Entity);
     }
 }

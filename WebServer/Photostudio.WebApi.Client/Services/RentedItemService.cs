@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
@@ -12,15 +13,15 @@ public class RentedItemService(PhotoStudioContext context, IMapper mapper) : IRe
 {
     public async Task<IEnumerable<RentedItemDto>> GetItemsByServiceTypeAsync(int type)
     {
-        var items = await PrepareItemsByServiceType(type).ToListAsync();
-        return mapper.Map<List<RentedItem>, List<RentedItemDto>>(items);
+        var items = await PrepareItemsByServiceType(type).ProjectTo<RentedItemDto>(mapper.ConfigurationProvider).ToListAsync();
+        return items;
     }
 
     public async Task<IEnumerable<RentedItemDto>> GetAvailableItemsByServiceTypeAsync(DateTime start, int duration,
         int type)
     {
-        var items = await PrepareAvailableItemsByServiceType(start, duration, type);
-        return mapper.Map<List<RentedItem>, List<RentedItemDto>>(items);
+        var items = await PrepareAvailableItemsByServiceType(start, duration, type).ProjectTo<RentedItemDto>(mapper.ConfigurationProvider).ToListAsync();
+        return items;
     }
 
     private IQueryable<RentedItem> PrepareItemsByServiceType(int type)
@@ -35,10 +36,10 @@ public class RentedItemService(PhotoStudioContext context, IMapper mapper) : IRe
         return items;
     }
 
-    private async Task<List<RentedItem>> PrepareAvailableItemsByServiceType(DateTime start, int duration, int type)
+    private IQueryable<RentedItem> PrepareAvailableItemsByServiceType(DateTime start, int duration, int type)
     {
         var items = PrepareItemsByServiceType(type);
-        items = TimeUtils.GetAvailable(items,  TimeSpan.FromMinutes(90), start, TimeSpan.FromMinutes(duration));
-        return await items.ToListAsync();
+        items = items.GetAvailable(TimeSpan.FromMinutes(90), start, TimeSpan.FromMinutes(duration));
+        return items;
     }
 }

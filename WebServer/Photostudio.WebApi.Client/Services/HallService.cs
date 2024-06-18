@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
@@ -12,21 +13,22 @@ public class HallService(PhotoStudioContext context, IMapper mapper) : IHallServ
 {
     public async Task<IEnumerable<HallDto>> GetHallsAsync()
     {
-        var halls = await GetPreparedHalls().ToListAsync();
-        return mapper.Map<List<Hall>, List<HallDto>>(halls);
+        var halls = await GetPreparedHalls().ProjectTo<HallDto>(mapper.ConfigurationProvider).ToListAsync();
+        return halls;
     }
 
     public async Task<IEnumerable<HallDto>> GetAvailableHallsAsync(DateTime startDate, int duration)
     {
-        var halls = await GetPreparedAvailableHalls(startDate, duration);
-        return mapper.Map<List<Hall>, List<HallDto>>(halls);
+        var halls = await GetPreparedAvailableHalls(startDate, duration)
+            .ProjectTo<HallDto>(mapper.ConfigurationProvider).ToListAsync();
+        return halls;
     }
 
-    private async Task<List<Hall>> GetPreparedAvailableHalls(DateTime startDate, int duration)
+    private IQueryable<Hall> GetPreparedAvailableHalls(DateTime startDate, int duration)
     {
         var halls = GetPreparedHalls();
-        halls = TimeUtils.GetAvailable(halls, TimeSpan.FromMinutes(90), startDate, TimeSpan.FromMinutes(duration));
-        return await halls.ToListAsync();
+        halls = halls.GetAvailable(TimeSpan.FromMinutes(90), startDate, TimeSpan.FromMinutes(duration));
+        return halls;
     }
 
     private IQueryable<Hall> GetPreparedHalls()

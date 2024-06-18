@@ -35,13 +35,13 @@ function EmployeeServices() {
 
   return (
     <Stack direction={"row"} width={"100%"}>
-      <Stack direction={"column"} width={"50%"}>
+      <Stack direction={"column"} width={"50%"} spacing={1} px={1}>
         <FormGroup>
           <FormControlLabel control={<Switch checked={isShowClosed} onChange={handleShowClosedChange}/>}
                             label="Показывать завершенные"/>
         </FormGroup>
         {services.map(service => (
-          <Paper key={service.id} elevation={2} onClick={() => {
+          <Paper key={service.id} sx={{p:1}} elevation={1} onClick={() => {
             handleServiceSelected(service)
           }}>
             <Typography>{(service.service as Service).title}</Typography>

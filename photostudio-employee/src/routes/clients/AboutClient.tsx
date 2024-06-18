@@ -88,7 +88,7 @@ function AboutClient(props: AboutClientProps) {
     <>
       {currentTabStatus === TabStatus.Orders && (
         <Stack direction={"column"} width={'50%'}>
-          <Stack direction={"row"}>
+          <Stack direction={"row"} sx={{alignItems: "center", justifyContent: "space-between", pr: 1}} spacing={2}>
             <IconButton onClick={close}>
               <Close/>
             </IconButton>

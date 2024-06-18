@@ -2,25 +2,6 @@
 
 public class Order
 {
-    #region Methods
-
-    public bool Check()
-    {
-        try
-        {
-            var c = Client;
-            var s = Status;
-        }
-        catch
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    #endregion
-
     #region Props
 
     public int Id { get; internal set; }
@@ -59,6 +40,10 @@ public class Order
         Services = services;
         ServicePackage = package;
         TotalPrice = Services.Sum(s => s.Cost);
+        if (ServicePackage is not null)
+        {
+            TotalPrice += ServicePackage.Price;
+        }
     }
 
     #endregion

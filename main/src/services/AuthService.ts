@@ -1,6 +1,6 @@
 import axios from '../utils/axiosInstance.ts';
 import {getCookie, removeCookie, setCookie} from "typescript-cookie";
-import {Answer, LoginModel, RegistrationModel, Client} from "../models/Models";
+import {Answer, Client, LoginModel, RegistrationModel} from "../models/Models";
 import {clientActions} from '../redux/slices/clientSlice'
 import errorParser from "../errorParser";
 import {snackbarActions} from "../redux/slices/snackbarSlice";
@@ -39,17 +39,17 @@ class AuthService {
     });
 
     reAuth() {
-		if (!getCookie("refresh_token")) return;
+        if (!getCookie("refresh_token")) return;
         const params = new URLSearchParams();
         params.append('token', getCookie("refresh_token")!)
         axios.get(API_URL + "reauth", {params: params}).then(
             (res) => {
                 const data: Answer = res.data;
                 if (!data.status) return;
-				setCookie("access_token", data.answer.accessToken, {expires: 1, path: ''});
-				setCookie("refresh_token", data.answer.refreshToken, {expires: 90, path: ''});
-			}).catch((err) => {
-                console.log(err.message)
+                setCookie("access_token", data.answer.accessToken, {expires: 1, path: ''});
+                setCookie("refresh_token", data.answer.refreshToken, {expires: 90, path: ''});
+            }).catch((err) => {
+            console.log(err.message)
         })
     }
 

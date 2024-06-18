@@ -21,7 +21,7 @@ public class RabbitMqService(IConfiguration configuration) : IRabbitMqService
             Port = Convert.ToInt32(configuration.GetSection("RabbitMq")["Port"]),
             UserName = configuration.GetSection("RabbitMq")["UserName"],
             Password = configuration.GetSection("RabbitMq")["Password"],
-            ClientProvidedName = "PhotostudioEmployee",
+            ClientProvidedName = "PhotoStudioEmployee",
             DispatchConsumersAsync = true
         };
         using var connection = factory.CreateConnection();

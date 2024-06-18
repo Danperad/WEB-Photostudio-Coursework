@@ -17,8 +17,6 @@ function ClientsTable(props: ClientsTableProps) {
             <TableCell>Фамилия</TableCell>
             <TableCell>Имя</TableCell>
             <TableCell>Отчество</TableCell>
-            <TableCell>Телефон</TableCell>
-            <TableCell>Почта</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

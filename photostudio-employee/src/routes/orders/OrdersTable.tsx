@@ -14,7 +14,7 @@ function OrdersTable(props: OrdersTableProps) {
       <TableHead>
         <TableRow>
           <TableCell>Номер заявки</TableCell>
-          <TableCell>Клиента</TableCell>
+          <TableCell>Клиент</TableCell>
           <TableCell>Дата и время</TableCell>
           <TableCell>Стоимость</TableCell>
           <TableCell>Статус</TableCell>

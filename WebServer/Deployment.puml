@@ -1,0 +1,31 @@
+﻿@startuml
+'https://plantuml.com/deployment-diagram
+node Клиент {
+    component Браузер as Client
+}
+
+node Сотрудник {
+    component Браузер as Employee
+}
+
+node "Сервер приложений" {
+    component "Сервер клиентов" as ASPClient
+    component "Сервер сотрудинков" as ASPEmployee
+    component Nginx
+    Client -- Nginx
+    ASPClient -- Nginx
+    Employee -- Nginx
+    Nginx -- ASPEmployee : HTTP, SignalR
+    node RabbitMQ {
+        queue main 
+        main <- ASPClient
+        main -- ASPEmployee
+    }
+}
+
+database PostgreSql {
+    PostgreSql -- ASPClient
+    PostgreSql -- ASPEmployee
+}
+
+@enduml

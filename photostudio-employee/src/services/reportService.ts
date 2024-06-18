@@ -8,14 +8,14 @@ export async function getReport(start: Date, end: Date) : Promise<Result<boolean
       startDate: start,
       endDate: end
     },
-    responseType: 'blob'
+    responseType: 'blob',
   }).then(res => {
     const href = URL.createObjectURL(new Blob([res.data]));
-
+    const fileName = res.headers["content-disposition"].split("; ")[1].replace("filename=", "")
     // create "a" HTML element with href to file & click
     const link = document.createElement('a');
     link.href = href;
-    link.setAttribute('download', 'report.xlsx'); //or any other extension
+    link.setAttribute('download', fileName);
     document.body.appendChild(link);
     link.click();
 

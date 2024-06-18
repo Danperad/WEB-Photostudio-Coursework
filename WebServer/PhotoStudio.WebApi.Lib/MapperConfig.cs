@@ -11,8 +11,10 @@ public class MapperConfig : Profile
         CreateMap<Client, ClientDto>();
         CreateMap<Employee, EmployeeDto>().ForMember(e => e.Cost, ed => ed.MapFrom(src => src.Price));
         CreateMap<Hall, HallDto>();
-        CreateMap<ServicePackage, ServicePackageDto>();
+        CreateMap<ServicePackage, ServicePackageDto>().ForMember(c => c.Cost, cd => cd.MapFrom(src => src.Price));
         CreateMap<RentedItem, RentedItemDto>();
         CreateMap<Service, ServiceDto>();
+        CreateMap<Status, StatusDto>();
+        CreateMap<Service, SimpleServiceDto>();
     }
 }

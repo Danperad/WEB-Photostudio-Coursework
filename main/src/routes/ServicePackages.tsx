@@ -1,8 +1,5 @@
-import {useState, useEffect, useRef} from 'react';
-import {
-    Stack, Box, Card,
-    CardContent, Button, CardMedia, Typography
-} from '@mui/material';
+import {useEffect, useRef, useState} from 'react';
+import {Box, Button, Card, CardContent, CardMedia, Stack, Typography} from '@mui/material';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../redux/store";
 import PackageService from "../services/PackageService";
@@ -57,13 +54,16 @@ export default function ServicePackages() {
                                         {pack.description}
                                     </Typography>
                                 </CardContent>
-                                <Stack direction="row" justifyContent="space-between" alignItems={'flex-end'} mr={2} ml={2}
+                                <Stack direction="row" justifyContent="space-between" alignItems={'flex-end'} mr={2}
+                                       ml={2}
                                        pb={1} spacing={1}>
                                     <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
                                         Стоимость: {pack.cost} рублей
                                     </Typography>
                                     <Button size="medium" variant="contained" color="secondary"
-                                            onClick={() => {handleInfoModalOpen(pack)}}>Подробнее</Button>
+                                            onClick={() => {
+                                                handleInfoModalOpen(pack)
+                                            }}>Подробнее</Button>
                                 </Stack>
                             </Stack>
                         </Card>

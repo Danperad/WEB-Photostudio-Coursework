@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {Box, Button, Modal, Stack, Typography} from "@mui/material";
 import {NewService, Service} from "../models/Models";
 import AddServiceModal from "./AddServiceModal";
@@ -18,14 +18,7 @@ export default function ServiceModal(props: ServiceModalProps) {
         if (props.service!.type === 1) {
             const service: NewService = {
                 id: new Date().getTime() + Math.random(),
-                service: props.service!,
-                startDateTime: null,
-                duration: null,
-                hall: null,
-                employee: null,
-                rentedItem: null,
-                number: null,
-                isFullTime: null,
+                service: props.service!
             }
             dispatch(cartActions.ServiceAdded(service));
             props.handlerClose();

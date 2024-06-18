@@ -3,7 +3,7 @@ import {Answer, RentedItem} from "../models/Models";
 
 const API_URL = "renteditems/";
 
-class RentedItemService{
+class RentedItemService {
     getFree = (date: number, dur: number, service: number) => {
         const params = new URLSearchParams();
         params.append('start', new Date(date).toISOString());
@@ -21,4 +21,5 @@ class RentedItemService{
         })
     };
 }
+
 export default new RentedItemService();

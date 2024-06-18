@@ -13,11 +13,11 @@ export function ServiceCart(props: ServiceCartProps) {
                 <CardMedia
                     component={"img"}
                     height={"140"}
-                    sx={{width: '30%'}}
+                    sx={{width: '60%'}}
                     image={props.service.photos[0]}
                     alt="photo"
                 />
-                <CardContent>
+                <CardContent sx={{width: "100%"}}>
                     <Typography gutterBottom variant="h5" component="div">
                         {props.service.title}
                     </Typography>
@@ -25,7 +25,7 @@ export function ServiceCart(props: ServiceCartProps) {
                         {props.service.description}
                     </Typography>
                 </CardContent>
-                <Stack direction="row" justifyContent="space-between" alignItems={'flex-end'} mr={2}
+                <Stack direction="row" justifyContent={'right'} alignItems={'end'} mr={2}
                        ml={2}
                        pb={1} spacing={1}>
                     <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>

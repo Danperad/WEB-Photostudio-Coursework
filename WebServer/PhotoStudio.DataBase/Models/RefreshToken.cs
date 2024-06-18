@@ -18,7 +18,7 @@ public class RefreshToken
         EndDate = SignDate.AddDays(duration);
     }
 
-    [Key] public string Token { get; internal set; }
+    [Key][MaxLength(64)] public string Token { get; internal set; }
 
     public Client Client { get; internal set; }
     public int ClientId { get;internal set; }

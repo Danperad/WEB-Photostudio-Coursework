@@ -40,10 +40,9 @@ function Clients() {
 
   const searchClient = () => {
     getClients(search ? search : undefined).then(res => {
-      if (res.ok){
+      if (res.ok) {
         setClients(res.val)
-      }
-      else {
+      } else {
         console.log(res.val)
       }
     }).catch(error => console.log(error))
@@ -66,7 +65,7 @@ function Clients() {
   return (
     <Stack direction={"row"} width={"100%"}>
       <Stack direction={"column"} width={"50%"}>
-        <Stack direction={"row"}>
+        <Stack direction={"row"} sx={{pl: 2, mt: 1}} spacing={2}>
           <TextField label={"Поиск"} size={"small"} value={search} onChange={e => {
             setSearch(e.target.value)
           }}></TextField>

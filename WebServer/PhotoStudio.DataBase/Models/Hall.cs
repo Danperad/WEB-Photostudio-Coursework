@@ -1,4 +1,6 @@
-﻿namespace PhotoStudio.DataBase.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PhotoStudio.DataBase.Models;
 
 public class Hall : IServiced
 {
@@ -19,8 +21,8 @@ public class Hall : IServiced
     #region Props
 
     public int Id { get; internal set; }
-    public string Title { get; internal set; }
-    public string Description { get; internal set; }
+    [MaxLength(50)]public string Title { get; internal set; }
+    [MaxLength(300)]public string Description { get; internal set; }
     public int AddressId { get; internal set; }
     public Address Address { get; internal set; }
     public decimal PricePerHour { get; internal set; }

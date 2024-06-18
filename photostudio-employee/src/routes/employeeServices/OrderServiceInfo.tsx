@@ -1,6 +1,6 @@
 import {EmployeeService, Hall, Item, Service, Status} from "@models/*";
 import {
-  Button,
+  Button, Container,
   FormControl,
   IconButton,
   InputLabel,
@@ -61,11 +61,13 @@ function OrderServiceInfo(props: OrderServiceInfoProps) {
   };
 
   return (
-    <Stack direction={"column"}>
-      <IconButton onClick={onClose}>
-        <ArrowBack/>
-      </IconButton>
-      <Paper>
+    <Stack direction={"column"} spacing={1}>
+      <Container>
+        <IconButton onClick={onClose}>
+          <ArrowBack/>
+        </IconButton>
+      </Container>
+      <Paper sx={{mx: 1, p: 1}}>
         <Typography>{(orderService.service as Service).title}</Typography>
         {orderService.hall && (
           <Typography>Зал: {(orderService.hall as Hall).title}</Typography>
@@ -87,7 +89,7 @@ function OrderServiceInfo(props: OrderServiceInfoProps) {
         )}
       </Paper>
       {allowedStatuses.length !== 0 && (
-        <Stack direction={"row"}>
+        <Stack direction={"row"} spacing={2} ml={2}>
           <FormControl>
             <InputLabel id="status-select-label">Статус</InputLabel>
             <Select value={selectedStatus.id} onChange={handleSelectStatus} label={"Статус"}

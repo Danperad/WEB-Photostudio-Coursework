@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoStudio.DataBase", "Pho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoStudio.WebApi.Client", "PhotoStudio.WebApi.Client\PhotoStudio.WebApi.Client.csproj", "{FEB438A2-E089-4303-BB3A-C9D81602BED9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoStudio.Test", "PhotoStudio.Test\PhotoStudio.Test.csproj", "{BD7BEF49-1BBE-4AF5-BE04-82B946176BFD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoStudio.WebApi.Employee", "PhotoStudio.WebApi.Employee\PhotoStudio.WebApi.Employee.csproj", "{DA56BA02-FEAE-4C60-8A34-32836C26D6C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoStudio.WebApi.Lib", "PhotoStudio.WebApi.Lib\PhotoStudio.WebApi.Lib.csproj", "{5F174534-F5EF-4C23-A097-2D5F8EC8DAB2}"
@@ -24,10 +22,6 @@ Global
 		{FEB438A2-E089-4303-BB3A-C9D81602BED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEB438A2-E089-4303-BB3A-C9D81602BED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEB438A2-E089-4303-BB3A-C9D81602BED9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD7BEF49-1BBE-4AF5-BE04-82B946176BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD7BEF49-1BBE-4AF5-BE04-82B946176BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD7BEF49-1BBE-4AF5-BE04-82B946176BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD7BEF49-1BBE-4AF5-BE04-82B946176BFD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA56BA02-FEAE-4C60-8A34-32836C26D6C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA56BA02-FEAE-4C60-8A34-32836C26D6C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA56BA02-FEAE-4C60-8A34-32836C26D6C8}.Release|Any CPU.ActiveCfg = Release|Any CPU

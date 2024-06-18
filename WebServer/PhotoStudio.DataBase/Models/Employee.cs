@@ -1,4 +1,6 @@
-﻿namespace PhotoStudio.DataBase.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PhotoStudio.DataBase.Models;
 
 public class Employee : Human, IServiced
 {
@@ -18,11 +20,11 @@ public class Employee : Human, IServiced
 
     #region Props
 
-    public string Passport { get; internal set; }
+    [MaxLength(10)] public string Passport { get; internal set; }
     public DateOnly Date { get; internal set; }
     public int RoleId { get; internal set; }
     public Role Role { get; internal set; }
-    public string Password { get; internal set; }
+    [MaxLength(64)]public string Password { get; internal set; }
     public decimal? Price { get; internal set; }
 
     public List<ApplicationService> Services { get; set; }

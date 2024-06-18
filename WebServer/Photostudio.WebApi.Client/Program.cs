@@ -30,7 +30,9 @@ builder.Services.AddDbContext<PhotoStudioContext>(conf =>
         .EnableSensitiveDataLogging()
         .EnableDetailedErrors());
 
-builder.Services.AddAutoMapper(typeof(MapperConfig));
+builder.Services.AddAutoMapper(typeof(MapperConfig), typeof(AdditionMapperConfig));
+
+builder.Services.AddTransient<IRabbitMqService, RabbitMqService>();
 
 builder.Services.AddTransient<IClientService, ClientService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
@@ -38,6 +40,7 @@ builder.Services.AddTransient<IHallService, HallService>();
 builder.Services.AddTransient<IPackageService, PackageService>();
 builder.Services.AddTransient<IRentedItemService, RentedItemService>();
 builder.Services.AddTransient<IServiceService, ServiceService>();
+
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>

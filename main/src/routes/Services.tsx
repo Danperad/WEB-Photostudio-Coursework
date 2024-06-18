@@ -1,14 +1,14 @@
-import {useState, useEffect, ChangeEvent, useRef} from 'react';
+import {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {
-    Stack,
-    Typography,
     Box,
-    TextField,
+    FormControl,
     InputLabel,
     MenuItem,
-    FormControl,
     Select,
-    SelectChangeEvent
+    SelectChangeEvent,
+    Stack,
+    TextField,
+    Typography
 } from '@mui/material';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../redux/store";
@@ -21,13 +21,12 @@ import {ServiceCart} from "../components/ServiceCart.tsx";
 
 interface State {
     search: string,
-    sort: string,
     type: string
 }
 
 export default function Services() {
     const key = useRef(false)
-    const [filterState, setFilter] = useState<State>({search: "", sort: '1', type: '0'})
+    const [filterState, setFilter] = useState<State>({search: "", type: ''})
     const [selectedService, setSelected] = useState<Service | null>(null);
     const rootState = useSelector((state: RootState) => state.services);
     const dispatch = useDispatch<AppDispatch>();
@@ -36,7 +35,7 @@ export default function Services() {
         if (key.current)
             return;
         key.current = true;
-        ServicesService.getServices("","1","", 0).then((res) => {
+        ServicesService.getServices("", "", 0).then((res) => {
             dispatch(res);
         })
     }, [])
@@ -55,14 +54,14 @@ export default function Services() {
 
     const filter = (prop: keyof State, value: string) => {
         dispatch(serviceActions.ClearService("hehe"));
-        const tmp: State = {...filterState, [prop]: value}
-        ServicesService.getServices(tmp.search, tmp.sort, tmp.type, 0).then((res) => {
+        const tmp: State = {...filterState, [prop]: value.toString()}
+        ServicesService.getServices(tmp.search, tmp.type, 0).then((res) => {
             dispatch(res);
         })
     }
 
     const loadMore = () => {
-        ServicesService.getServices(filterState.search, filterState.sort, filterState.type, rootState.services.length).then((res) => {
+        ServicesService.getServices(filterState.search, filterState.type, rootState.services.length).then((res) => {
             dispatch(res);
         })
     }
@@ -102,29 +101,16 @@ export default function Services() {
                         <MenuItem value={1}>Дополнительные услуги</MenuItem>
                     </Select>
                 </FormControl>
-                <FormControl sx={{width: '70%'}}>
-                    <InputLabel id="demo-simple-select-label"
-                                style={{lineHeight: '0.4em', height: '20px', paddingTop: '3px'}}>Сортировать
-                        по</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        label="Сортировать по"
-                        sx={{height: '40px'}}
-                        value={filterState.sort}
-                        onChange={handleChangeSelect('sort')}
-                    >
-                        <MenuItem value={1}>Алфавиту</MenuItem>
-                        <MenuItem value={2}>Цене</MenuItem>
-                        <MenuItem value={3}>Рейтингу</MenuItem>
-                    </Select>
-                </FormControl>
             </Stack>
             <Box sx={{width: "95%", margin: '0 auto', marginTop: '40px'}}>
                 <Stack>
-                    <InfiniteScroll next={loadMore} hasMore={rootState.hasMore} loader={<Typography>Загрузка...</Typography>} dataLength={rootState.services.length}>
+                    <InfiniteScroll next={loadMore} hasMore={rootState.hasMore}
+                                    loader={<Typography>Загрузка...</Typography>}
+                                    dataLength={rootState.services.length}>
                         {rootState.services.map((service) => (
-                            <ServiceCart service={service} handleInfoModalOpen={() => {handleInfoModalOpen(service)}} />
+                            <ServiceCart service={service} handleInfoModalOpen={() => {
+                                handleInfoModalOpen(service)
+                            }}/>
                         ))}
                     </InfiniteScroll>
                 </Stack>

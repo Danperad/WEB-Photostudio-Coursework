@@ -5,6 +5,7 @@ import {snackbarActions} from "../redux/slices/snackbarSlice";
 import {HallsLoaded} from "../redux/actions/hallActions";
 
 const API_URL = "hall/"
+
 class HallService {
     getHalls = () => axios.get(API_URL + 'get')
         .then((res) => {
@@ -17,13 +18,14 @@ class HallService {
         }).catch((err) => {
             return snackbarActions.ErrorAction(err.message);
         });
+
     getFree(date: Date, dur: number) {
         const params = new URLSearchParams();
         params.append('start', new Date(date).toISOString());
         params.append('duration', String(dur));
         return axios.get(API_URL + 'getfree', {params: params}).then((res) => {
             const data: Answer = res.data;
-            if (data.status){
+            if (data.status) {
                 return data.answer.halls as Hall[];
             }
             return [];

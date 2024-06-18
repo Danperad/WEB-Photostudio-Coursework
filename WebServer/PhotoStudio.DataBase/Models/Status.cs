@@ -1,4 +1,6 @@
-﻿namespace PhotoStudio.DataBase.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace PhotoStudio.DataBase.Models;
 
 public enum StatusType
 {
@@ -26,6 +28,6 @@ public class Status
 
     public StatusValue Id { get; internal set; }
     public StatusType Type { get; internal set; }
-    public string Title { get; internal set; }
-    public string? Description { get; internal set; }
+    [MaxLength(50)] public string Title { get; internal set; }
+    [MaxLength(300)] public string? Description { get; internal set; }
 }

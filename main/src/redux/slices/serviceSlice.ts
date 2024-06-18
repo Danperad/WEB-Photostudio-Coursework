@@ -6,7 +6,7 @@ interface State {
     hasMore: boolean
 }
 
-const initState : State = {
+const initState: State = {
     services: [],
     hasMore: true,
 }

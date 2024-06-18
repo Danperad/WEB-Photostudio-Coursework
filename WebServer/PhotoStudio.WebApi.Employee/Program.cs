@@ -18,7 +18,9 @@ builder.Services.AddDbContext<PhotoStudioContext>(conf =>
         .EnableDetailedErrors());
 
 builder.Services.AddAutoMapper(typeof(MapperConfig), typeof(AdditionMapperConfig));
+
 builder.Services.AddTransient<IRabbitMqService, RabbitMqService>();
+
 builder.Services.AddTransient<IClientService, ClientService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IServiceService, ServiceService>();

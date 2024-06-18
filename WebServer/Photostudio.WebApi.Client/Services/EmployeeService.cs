@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
@@ -12,27 +13,21 @@ public class EmployeeService(PhotoStudioContext context, IMapper mapper) : IEmpl
 {
     public async Task<IEnumerable<EmployeeDto>> GetAvailableEmployeesAsync(DateTime startDate, int duration, int serviceId)
     {
-        var employees = await PrepareAvailableEmployeesByServiceId(startDate, duration, serviceId);
-        return mapper.Map<List<Employee>, List<EmployeeDto>>(employees);
+        var employees = PrepareAvailableEmployeesByServiceId(startDate, duration, serviceId).ProjectTo<EmployeeDto>(mapper.ConfigurationProvider);
+        return await employees.ToListAsync();
     }
     
     private IQueryable<Employee> PrepareEmployeesByServiceId(int serviceId)
     {
         var employees = context.Employees.AsNoTracking();
-        employees = serviceId switch
-        {
-            2 => employees.Where(e => e.RoleId == 4),
-            12 => employees.Where(e => e.RoleId == 4),
-            13 => employees.Where(e => e.RoleId == 6),
-            _ => employees.Where(e => e.RoleId == 2)
-        };
+        employees = employees.Where(e => e.BoundServices.Any(s => s.Id == serviceId));
         return employees;
     }
     
-    private async Task<List<Employee>> PrepareAvailableEmployeesByServiceId(DateTime start, int duration, int serviceId)
+    private IQueryable<Employee> PrepareAvailableEmployeesByServiceId(DateTime start, int duration, int serviceId)
     {
         var items = PrepareEmployeesByServiceId(serviceId);
-        items = TimeUtils.GetAvailable(items, TimeSpan.FromMinutes(60), start, TimeSpan.FromMinutes(duration));
-        return await items.ToListAsync();
+        items = items.GetAvailable(TimeSpan.FromMinutes(60), start, TimeSpan.FromMinutes(duration));
+        return items;
     }
 }

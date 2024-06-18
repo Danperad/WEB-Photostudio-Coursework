@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using PhotoStudio.WebApi.Client.Dto;
 using PhotoStudio.WebApi.Lib.Dto;
 
 namespace PhotoStudio.WebApi.Client.Services.Interfaces;
@@ -12,4 +13,5 @@ public interface IClientService
     Task<ClientDto> UpdateClientAsync(ClientDto clientDto, PhotoStudio.DataBase.Models.Client client);
 
     Task<bool> AddOrderAsync(NewOrderModel cart, PhotoStudio.DataBase.Models.Client client);
+    Task<IEnumerable<OrderDto>> GetOrdersByClient(DataBase.Models.Client client);
 }

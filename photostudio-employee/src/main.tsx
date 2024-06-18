@@ -4,7 +4,7 @@ import './index.css'
 import Sidebar from "./components/Sidebar.tsx";
 import {Stack} from "@mui/material";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {Clients, Employees, EmployeeServices, Orders} from "./routes";
+import {Clients, Employees, EmployeeServices, Orders, Services} from "./routes";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs'
 import {ServiceWorker} from "./ServiceWorker.tsx";
@@ -20,6 +20,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route path={"clients"} element={<Clients/>}/>
             <Route path={"orders"} element={<Orders/>}/>
+            <Route path={"services"} element={<Services/>}/>
             <Route path={"employees"} element={<Employees/>}/>
             <Route path={"employeesServices"} element={<EmployeeServices/>}/>
           </Routes>

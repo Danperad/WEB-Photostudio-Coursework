@@ -1,9 +1,16 @@
-﻿using PhotoStudio.DataBase.Models;
-
-namespace PhotoStudio.WebApi.Lib.Dto;
+﻿namespace PhotoStudio.WebApi.Lib.Dto;
 
 public class ServicePackageDto
 {
+    public ServicePackageDto()
+    {
+        Id = 0;
+        Title = "";
+        Description = "";
+        Cost = 0;
+        Photos = new List<string>();
+        Duration = 0;
+    }
     private ServicePackageDto(int id, string title, string description, decimal cost, List<string> photos, int duration)
     {
         Id = id;
@@ -20,10 +27,4 @@ public class ServicePackageDto
     public decimal Cost { get; internal set; }
     public List<string> Photos { get; internal set; }
     public int Duration { get; set; }
-
-    
-    public static ServicePackageDto GetServiceModel(ServicePackage service)
-    {
-        return new ServicePackageDto(service.Id, service.Title, service.Description, service.Price, service.Photos, service.Duration);
-    }
 }

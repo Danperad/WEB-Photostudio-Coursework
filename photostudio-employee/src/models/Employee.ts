@@ -1,3 +1,5 @@
+import {Service} from "./Service.ts";
+
 interface Employee {
   id: number,
   lastName: string,
@@ -6,4 +8,14 @@ interface Employee {
   cost: number,
 }
 
-export type {Employee}
+interface Role {
+  id: number,
+  title: string
+}
+
+interface EmployeeWithRole extends Employee{
+  role: Role,
+  boundServices: Service[]
+}
+
+export type {Employee, Role, EmployeeWithRole}

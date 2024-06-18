@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
@@ -13,8 +14,8 @@ public class PackageService(PhotoStudioContext context, IMapper mapper) : IPacka
     {
         var packages = context.ServicePackages
             .AsNoTracking()
-            .OrderBy(p => p.Title);
+            .OrderBy(p => p.Title).ProjectTo<ServicePackageDto>(mapper.ConfigurationProvider);
         var res = await packages.ToListAsync();
-        return mapper.Map<List<ServicePackage>, List<ServicePackageDto>>(res);
+        return res;
     }
 }

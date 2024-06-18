@@ -1,5 +1,5 @@
 import axiosInstant from "../utils/axiosInstant.ts";
-import {Employee, EmployeeService} from "@models/*";
+import {Employee, EmployeeService, EmployeeWithRole} from "@models/*";
 import {Err, Ok, Result} from "ts-results";
 import {AxiosError} from "axios";
 
@@ -32,6 +32,16 @@ export async function getServicesByEmployee(employeeId: number, showAll?: boolea
 export async function updateServicesStatus(serviceId: number, statusId: number) : Promise<Result<EmployeeService, AxiosError>> {
   try {
     const res = await axiosInstant.post<EmployeeService>(`applications/update`, {orderServiceId: serviceId, statusId});
+    return Ok(res.data);
+  } catch (error) {
+    const err = error as AxiosError;
+    return Err(err);
+  }
+}
+
+export async function getAllEmployees() : Promise<Result<EmployeeWithRole[], AxiosError>> {
+  try {
+    const res = await axiosInstant.get('employees/')
     return Ok(res.data);
   } catch (error) {
     const err = error as AxiosError;

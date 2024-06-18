@@ -1,4 +1,4 @@
-import {Button, IconButton, Stack} from "@mui/material";
+import {Button, IconButton, Stack, Typography} from "@mui/material";
 import {FormContainer, TextFieldElement} from 'react-hook-form-mui'
 import {Client} from "@models/*";
 import {Close} from "@mui/icons-material";
@@ -21,13 +21,12 @@ type NewClientTabProps = {
 }
 
 function NewClientTab(props: NewClientTabProps) {
-  const {onClientCreated ,close} = props
+  const {onClientCreated, close} = props
   const handleAddClient = (c: Client) => {
     addClient(c).then(res => {
       if (res.ok) {
         onClientCreated()
-      }
-      else{
+      } else {
         console.log(res.val);
       }
     }).catch(err => console.log(err))
@@ -35,11 +34,14 @@ function NewClientTab(props: NewClientTabProps) {
 
   return (
     <Stack direction={"column"} width={"50%"}>
-      <IconButton onClick={close}>
-        <Close/>
-      </IconButton>
+      <Stack direction={"row"} sx={{alignItems: "center"}}>
+        <IconButton onClick={close}>
+          <Close/>
+        </IconButton>
+        <Typography>Новый клиент</Typography>
+      </Stack>
       <FormContainer defaultValues={clearClient()} onSuccess={handleAddClient}>
-        <Stack direction={"column"}>
+        <Stack direction={"column"} spacing={1} sx={{px: 2}}>
           <TextFieldElement label={"Фамилия"} name={"lastName"} size={'small'} required/>
           <TextFieldElement label={"Имя"} name={"firstName"} size={'small'} required/>
           <TextFieldElement label={"Отчество"} name={"middleName"} size={'small'}/>

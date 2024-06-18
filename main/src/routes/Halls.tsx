@@ -1,8 +1,27 @@
 import {useState} from 'react';
-import { styled } from '@mui/material/styles';
-import {FormGroup, FormControlLabel, Checkbox, Stack, Button, Typography, Box, TextField, InputLabel, MenuItem, FormControl, Select, Grid, Paper, Card, Modal, CardContent,CardMedia} from '@mui/material';
+import {styled} from '@mui/material/styles';
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CardMedia,
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    FormGroup,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Modal,
+    Paper,
+    Select,
+    Stack,
+    TextField,
+    Typography
+} from '@mui/material';
 
-const Item = styled(Paper)(({ theme }) => ({
+const Item = styled(Paper)(({theme}) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(1),
@@ -46,10 +65,13 @@ export default function Halls() {
 
     return (
         <div style={{width: "100%"}}>
-            <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2} width={"50%"} mt={1} ml={2}>
+            <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2} width={"50%"} mt={1}
+                   ml={2}>
                 <TextField label="Поиск" color='primary' size='small' sx={{width: '100%'}}></TextField>
                 <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label" style={{lineHeight: '0.4em', height: '20px', paddingTop: '3px'}}>Сортировать по</InputLabel>
+                    <InputLabel id="demo-simple-select-label"
+                                style={{lineHeight: '0.4em', height: '20px', paddingTop: '3px'}}>Сортировать
+                        по</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -62,7 +84,8 @@ export default function Halls() {
                     </Select>
                 </FormControl>
                 <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label" style={{lineHeight: '0.7em', height: '20px'}}>Услуга</InputLabel>
+                    <InputLabel id="demo-simple-select-label"
+                                style={{lineHeight: '0.7em', height: '20px'}}>Услуга</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -76,7 +99,8 @@ export default function Halls() {
                 </FormControl>
             </Stack>
             <Box sx={{width: "90%", margin: '0 auto', marginTop: '40px'}}>
-                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} justifyContent="center" alignItems="center" >
+                <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}} justifyContent="center"
+                      alignItems="center">
                     {Array.from(Array(6)).map((_, index) => (
                         <Grid item xs={2} sm={4} md={4} key={index}>
                             <Item sx={{padding: 0}}>
@@ -96,11 +120,13 @@ export default function Halls() {
                                             species, ranging across all continents except Antarctica
                                         </Typography>
                                     </CardContent>
-                                    <Stack direction="row" justifyContent="space-between" alignItems="center" mr={2} ml={2} pb={1}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center" mr={2}
+                                           ml={2} pb={1}>
                                         <Typography variant="subtitle1">
                                             Стоимость: 50 рублей
                                         </Typography>
-                                        <Button size="medium" variant="contained" color="secondary" onClick={handleInfoModalOpen}>Подробнее</Button>
+                                        <Button size="medium" variant="contained" color="secondary"
+                                                onClick={handleInfoModalOpen}>Подробнее</Button>
                                     </Stack>
                                 </Card>
                             </Item>
@@ -114,9 +140,10 @@ export default function Halls() {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style} >
+                <Box sx={style}>
                     <Stack spacing={2} width={"100%"} mt={2} alignItems="center" justifyContent={"center"}>
-                        <Stack alignItems="center" justifyContent={"center"} style={{height: "400px", width: "600px", borderRadius:"10px" }}>
+                        <Stack alignItems="center" justifyContent={"center"}
+                               style={{height: "400px", width: "600px", borderRadius: "10px"}}>
                             <img
                                 src="../../../public/image/background.png"
                                 alt="avatar"
@@ -138,7 +165,8 @@ export default function Halls() {
                                 <Typography variant="subtitle1">
                                     Стоимость: 50 рублей
                                 </Typography>
-                                <Button variant="contained" color="secondary" size="medium" disableElevation sx={{ borderRadius: '10px'}} onChange={handlePayModalOpen}>
+                                <Button variant="contained" color="secondary" size="medium" disableElevation
+                                        sx={{borderRadius: '10px'}} onChange={handlePayModalOpen}>
                                     Купить
                                 </Button>
                             </Stack>
@@ -152,8 +180,9 @@ export default function Halls() {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style} >
-                    <Stack direction="row" ml={16} spacing={2} width={"70%"} mt={2} justifyContent="space-between" alignItems="center">
+                <Box sx={style}>
+                    <Stack direction="row" ml={16} spacing={2} width={"70%"} mt={2} justifyContent="space-between"
+                           alignItems="center">
                         <Stack spacing={2}>
                             <Typography variant="subtitle1">
                                 Название:
@@ -172,12 +201,13 @@ export default function Halls() {
                             />
                             <TextField label="Период" color='primary' size='small' sx={{width: '100%'}}/>
                             <FormGroup>
-                                <FormControlLabel control={<Checkbox defaultChecked />} label="На все время?" />
+                                <FormControlLabel control={<Checkbox defaultChecked/>} label="На все время?"/>
                             </FormGroup>
                         </Stack>
                         <Stack spacing={2}>
                             <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label" style={{lineHeight: '0.7em', height: '20px'}}>Услуга</InputLabel>
+                                <InputLabel id="demo-simple-select-label"
+                                            style={{lineHeight: '0.7em', height: '20px'}}>Услуга</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
@@ -196,7 +226,8 @@ export default function Halls() {
                                     <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
                                         Стоимость: 50 рублей
                                     </Typography>
-                                    <Button variant="contained" color="secondary" size="medium" disableElevation sx={{ borderRadius: '10px'}} onChange={handlePayModalOpen}>
+                                    <Button variant="contained" color="secondary" size="medium" disableElevation
+                                            sx={{borderRadius: '10px'}} onChange={handlePayModalOpen}>
                                         Купить
                                     </Button>
                                 </Stack>

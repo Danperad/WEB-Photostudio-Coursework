@@ -35,11 +35,12 @@ function OrderInfo(props: OrderInfoProps) {
     getServicesByOrders(order).then(res => {
       if (res.ok) {
         setOrderServices(res.val)
+        setSelectedStatus(order.status!)
+        setOrderStatusesRender()
       } else {
         console.log(res.val)
       }
     })
-    setOrderStatusesRender()
   }, [order]);
 
   const getEmployeeFullName = (employee: Employee) => {
@@ -98,16 +99,15 @@ function OrderInfo(props: OrderInfoProps) {
 
   return (
     <Stack>
-      <Stack direction={"row"} width={"100%"}>
+      <Stack direction={"row"} width={"100%"} sx={{alignItems: "center"}} spacing={2}>
         <IconButton onClick={close}>
           <ArrowBack/>
         </IconButton>
-        <Typography>Заявка №{order.number}</Typography>
+        <Typography variant={"h6"}>Заявка №{order.number}</Typography>
       </Stack>
-      <Typography>Услуги</Typography>
       <List>
         {order.servicePackage && (
-          <Paper>
+          <Paper sx={{p: 2}}>
             <Typography>Пакет услуг</Typography>
             <Typography>{(order.servicePackage.servicePackage as ServicePackage).title}</Typography>
             <Typography>Начало: {dayjs(order.servicePackage.startDateTime).format("DD-MM-YY HH:mm")}</Typography>
@@ -116,8 +116,8 @@ function OrderInfo(props: OrderInfoProps) {
         )}
         {orderServices.map((service: OrderService) => (
           <ListItem key={service.id}>
-            <Paper>
-              <Typography>{(service.service as Service).title}</Typography>
+            <Paper sx={{p: 2, width: "100%"}}>
+              <Typography variant={"h6"}>{(service.service as Service).title}</Typography>
               {service.employee && (
                 <Typography>Сотрудник: {getEmployeeFullName(service.employee as Employee)}</Typography>
               )}
@@ -144,7 +144,7 @@ function OrderInfo(props: OrderInfoProps) {
         ))}
       </List>
       {allowedStatuses.length !== 0 && (
-        <Stack direction={"row"}>
+        <Stack direction={"row"} spacing={2} ml={2}>
           <FormControl>
             <InputLabel id="status-select-label">Статус</InputLabel>
             <Select value={selectedStatus.id} onChange={handleSelectStatus} label={"Статус"}

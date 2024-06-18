@@ -1,7 +1,7 @@
 declare interface ICostable {
     id: number,
     title: string,
-    cost: number,
+    pricePerHour: number,
 }
 
 export default ICostable;

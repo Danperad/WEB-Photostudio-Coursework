@@ -1,16 +1,17 @@
-import {useEffect, useState, useRef, MouseEvent} from 'react';
+import {MouseEvent, useEffect, useRef, useState} from 'react';
 import {
     AppBar,
+    Avatar,
+    Badge,
+    Box,
     Button,
     Container,
-    Toolbar,
-    Typography,
-    Tooltip,
     IconButton,
-    Avatar,
     Menu,
     MenuItem,
-    Box, Badge
+    Toolbar,
+    Tooltip,
+    Typography
 } from "@mui/material";
 import WbSunnyRoundedIcon from '@mui/icons-material/WbSunnyRounded';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -23,10 +24,7 @@ import ClientService from "../services/ClientService";
 import {CloseModal, OpenModal} from "../redux/actions/authModalActions";
 
 const settings = [{title: 'Профиль', click: 'profile'}, {title: 'Выход', click: 'logout'}];
-const pages = [{title: 'Услуги', click: '/'}, {title: 'Комплекты', click: 'packages'}, {
-    title: 'Залы',
-    click: 'halls'
-}];
+const pages = [{title: 'Услуги', click: '/'}, {title: 'Комплекты', click: 'packages'}];
 
 function Header() {
     const navigate = useNavigate();
@@ -40,7 +38,7 @@ function Header() {
         if (key.current) return;
         key.current = true;
         const result = ClientService.loadClient();
-        if (result){
+        if (result) {
             result.then((res) => {
                 dispatch(res);
             })
@@ -99,7 +97,7 @@ function Header() {
     }
 
     const cartLength = () => {
-        return  user.cart.servicePackage !== null ? user.cart.serviceModels.length + 1 : user.cart.serviceModels.length
+        return user.cart.servicePackage !== undefined ? user.cart.serviceModels.length + 1 : user.cart.serviceModels.length
     }
 
     return (
@@ -149,7 +147,7 @@ function Header() {
                         <Box sx={{flexGrow: 0, display: {md: 'flex'}}}>
                             <IconButton onClick={() => onClick("cart")} sx={{mr: 1}}>
                                 <Badge badgeContent={cartLength()} color="secondary">
-                                    <ShoppingCartIcon />
+                                    <ShoppingCartIcon/>
                                 </Badge>
                             </IconButton>
                             {user.client.isAuth && user.client.client !== null ? (
@@ -174,7 +172,8 @@ function Header() {
                                 </>
                             ) : (
                                 <>
-                                    <Button name={"auth"} onClick={() => dispatch(OpenModal(true))} sx={{my: 2, display: 'block'}}
+                                    <Button name={"auth"} onClick={() => dispatch(OpenModal(true))}
+                                            sx={{my: 2, display: 'block'}}
                                             color={"inherit"}>
                                         Авторизация
                                     </Button>

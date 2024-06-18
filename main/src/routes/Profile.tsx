@@ -4,6 +4,9 @@ import {useNavigate} from 'react-router-dom';
 import {useSelector} from "react-redux";
 import {RootState} from "../redux/store";
 import {styled} from "@mui/material/styles";
+import {Order} from "../models/Order.ts";
+import ClientService from "../services/ClientService.ts";
+import {format} from "date-fns";
 
 const Item = styled(Paper)(({theme}) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -17,12 +20,17 @@ export default function Profile() {
     const user = useSelector((state: RootState) => state.client);
     const navigate = useNavigate();
     const [key, setKey] = useState<boolean>(false);
+    const [orders, setOrders] = useState<Order[]>([])
 
     useEffect(() => {
         if (key) return;
         if (!user.isAuth) {
             navigate("/")
+            return;
         }
+        ClientService.getOrders().then(res => {
+            setOrders(res);
+        })
         setKey(true);
     }, [user]);
 
@@ -52,48 +60,16 @@ export default function Profile() {
                     <Stack direction="row" spacing={2} justifyContent="center" alignItems="center" mt={2} ml={12}>
                         <Button variant="contained" color="secondary" size="medium" disableElevation
                                 sx={{borderRadius: '10px'}}>
-                            Выбрать аватар
-                        </Button>
-                        <Button variant="contained" color="secondary" size="medium" disableElevation
-                                sx={{borderRadius: '10px'}}>
                             Сохранить
                         </Button>
                     </Stack>
                 </Box>
-                <img
-                    src={user.client?.avatar}
-                    alt="avatar"
-                    width="100%"
-                    height="100%"
-                />
             </Stack>
             <Box mt={3} sx={{backgroundColor: '#F0EDE8', pt: '20px', pb: '20px'}}>
-                <Stack direction="row" spacing={2} alignItems="center" ml={4}>
-                    <TextField
-                        id="datetime-local"
-                        label="Дата и время"
-                        type="datetime-local"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                    <TextField
-                        id="datetime-local"
-                        label="Дата и время"
-                        type="datetime-local"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                    <Button variant="contained" color="secondary" size="medium" disableElevation
-                            sx={{borderRadius: '10px', height: "40px"}}>
-                        Сформировать отчет
-                    </Button>
-                </Stack>
                 <Box sx={{flexGrow: 1}}>
                     <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
-                        {Array.from(Array(2)).map((_, index) => (
-                            <Grid item xs={2} sm={4} md={4} key={index}>
+                        {orders.map((order) => (
+                            <Grid item xs={2} sm={4} md={4} key={order.number}>
                                 <Item sx={{padding: 0, borderRadius: "10px"}}>
                                     <Card sx={{
                                         display: 'flex',
@@ -109,19 +85,30 @@ export default function Profile() {
                                         }}>
                                             <CardContent sx={{flex: '1 0 auto'}}>
                                                 <Typography variant="subtitle1">
-                                                    Номер заказа:
+                                                    Номер заказа: {order.number}
                                                 </Typography>
                                                 <Typography variant="subtitle1">
-                                                    Дата и время:
+                                                    Дата и время: {format(order.dateTime, "dd-MM-yyyy HH:mm")}
                                                 </Typography>
-                                                <Stack direction="row">
-                                                    <Typography variant="subtitle1">Услуги:</Typography>
-                                                    <Typography>услуга1, </Typography>
-                                                </Stack>
+                                                {order.servicePackage && (
+                                                    <Stack direction="row">
+                                                        <Typography variant="subtitle1">Пакет
+                                                            услуг: {order.servicePackage.title}</Typography>
+                                                    </Stack>
+                                                )}
+                                                {order.services.length !== 0 && (
+                                                    <Stack direction="row">
+                                                        <Typography variant="subtitle1">Услуги: </Typography>
+                                                        {order.services.map((service, index) => (
+                                                            <Typography>{service.service.title}{order.services.length - 1 > index ? ", " : ""}</Typography>
+                                                        ))
+                                                        }
+                                                    </Stack>
+                                                )}
                                                 <Stack direction="row" justifyContent="space-between"
                                                        alignItems="center">
                                                     <Typography variant="subtitle1">
-                                                        Стоимость:
+                                                        Стоимость: {order.totalPrice}
                                                     </Typography>
                                                 </Stack>
                                             </CardContent>

@@ -25,8 +25,8 @@ function Reports(){
   };
 
   return (
-    <Stack>
-      <Stack direction={"row"}>
+    <Stack sx={{p: 2}}>
+      <Stack direction={"row"} spacing={1} sx={{mb: 2}}>
         <DatePicker label={"Дата"} format={"DD-MM-YYYY"} defaultValue={dayjs()} value={startDate}
                     onChange={startDateSelectHandler} sx={{width: "8vw"}}/>
         <DatePicker label={"Дата"} format={"DD-MM-YYYY"} defaultValue={dayjs()} value={endDate}

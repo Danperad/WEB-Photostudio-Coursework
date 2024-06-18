@@ -58,7 +58,7 @@ function Orders() {
   return (
     <Stack direction={"row"} width={"100%"}>
       <Stack direction={"column"} width={"50%"}>
-        <Stack direction={"row"}>
+        <Stack direction={"row"} sx={{pl: 2, mt: 1}} spacing={2}>
           <TextField label={"Поиск"} size={"small"} value={search} onChange={e => {
             setSearch(e.target.value)
           }}></TextField>

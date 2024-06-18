@@ -1,4 +1,4 @@
-﻿namespace PhotoStudio.WebApi.Employee.Dto;
+﻿namespace PhotoStudio.WebApi.Lib.Dto;
 
 public class SimpleServiceDto
 {

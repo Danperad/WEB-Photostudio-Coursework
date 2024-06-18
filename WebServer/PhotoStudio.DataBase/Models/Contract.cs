@@ -2,33 +2,6 @@
 
 public class Contract
 {
-    #region Methods
-
-    public bool Check()
-    {
-        try
-        {
-            var c = Client;
-            var e = Employee;
-            if (StartDate > EndDate) return false;
-        }
-        catch
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /*public bool AddContract(Order order)
-    {
-        if (!Check()) return false;
-        order.Contract = this;
-        return DbWorker.Save();
-    }*/
-
-    #endregion
-
     #region Props
 
     public int Id { get; internal set; }

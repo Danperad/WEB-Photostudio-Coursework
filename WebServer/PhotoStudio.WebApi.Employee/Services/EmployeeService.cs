@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using PhotoStudio.DataBase;
+using PhotoStudio.WebApi.Employee.Dto;
 using PhotoStudio.WebApi.Employee.Services.Interfaces;
 using PhotoStudio.WebApi.Lib;
 using PhotoStudio.WebApi.Lib.Dto;
@@ -16,5 +17,10 @@ public class EmployeeService(PhotoStudioContext context, IMapper mapper) : IEmpl
             .Include(h => h.Services).AsQueryable();
         employees = employees.GetAvailable(TimeSpan.FromMinutes(90), start, duration);
         return employees.ProjectTo<EmployeeDto>(mapper.ConfigurationProvider).AsAsyncEnumerable();
+    }
+
+    public IAsyncEnumerable<EmployeeWithRoleDto> GetAllEmployees()
+    {
+        return context.Employees.AsQueryable().ProjectTo<EmployeeWithRoleDto>(mapper.ConfigurationProvider).AsAsyncEnumerable();
     }
 }

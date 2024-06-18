@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Employee.Dto;
+using PhotoStudio.WebApi.Lib.Dto;
+using RentedItemDto = PhotoStudio.WebApi.Employee.Dto.RentedItemDto;
 
 namespace PhotoStudio.WebApi.Employee.Config;
 
@@ -8,6 +10,7 @@ public class AdditionMapperConfig : Profile
 {
     public AdditionMapperConfig()
     {
+        CreateMap<Role, RoleDto>();
         CreateMap<RentedItem, RentedItemDto>();
         CreateMap<Order, OrderDto>().ForMember(o => o.Number, od => od.MapFrom(src => src.Id));
         CreateMap<ApplicationService, OrderServiceWithClientDto>().ForMember(o => o.Duration, od => od.MapFrom(src =>
@@ -15,7 +18,6 @@ public class AdditionMapperConfig : Profile
             src.Order.Client)).ForMember(o => o.OrderStatus, od => od.MapFrom(src =>
             src.Order.StatusId));
         CreateMap<Status, StatusDto>();
-        CreateMap<Service, SimpleServiceDto>();
         CreateMap<ServicePackage, ServicePackageWithoutPhotosDto>().ForMember(o => o.Cost, od => od.MapFrom(src => src.Price));
 
         CreateMap<Client, ClientReportDto>();
@@ -28,6 +30,7 @@ public class AdditionMapperConfig : Profile
             .ForMember(o => o.Status, od => od.MapFrom(src => src.Status.Title));
         CreateMap<Order, OrderReportDto>().ForMember(o => o.Number, od => od.MapFrom(src => src.Id))
             .ForMember(o => o.Status, od => od.MapFrom(src => src.Status.Title));
+        CreateMap<DataBase.Models.Employee, EmployeeWithRoleDto>().ForMember(e => e.Cost, ed => ed.MapFrom(src => src.Price));
     }
 
     private static int? TimeSpanToMinutes(TimeSpan? span) => (int?)span?.TotalMinutes;
