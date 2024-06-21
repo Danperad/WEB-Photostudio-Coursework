@@ -61,7 +61,7 @@ function OrderServiceInfo(props: OrderServiceInfoProps) {
   };
 
   return (
-    <Stack direction={"column"} spacing={1}>
+    <Stack direction={"column"} spacing={1} px={1}>
       <Container>
         <IconButton onClick={onClose}>
           <ArrowBack/>

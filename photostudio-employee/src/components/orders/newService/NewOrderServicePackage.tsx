@@ -21,7 +21,7 @@ function NewOrderServicePackage(props: NewOrderServicePackageProps) {
   }
 
   return (
-    <Stack>
+    <Stack spacing={1}>
       <Typography variant={"body2"}>{servicePackage.description}</Typography>
       <Button variant={"contained"} onClick={handleComplete} disabled={!isAllowSelect()}>Добавить</Button>
     </Stack>

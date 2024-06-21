@@ -51,7 +51,7 @@ function StyleService(props: NewServiceProps) {
   }
 
   return (
-    <Stack direction={"column"}>
+    <Stack direction={"column"} spacing={1}>
       <Typography variant={"body2"}>{service.description}</Typography>
       <Stack direction={"row"}>
         <FormGroup row>

@@ -18,15 +18,6 @@ function ServiceWorker() {
       } else {
         isAllowNotification.current = Notification.permission === "granted"
       }
-      connection.current?.on("NewClient", () => {
-        console.log("NewClient")
-        if (isAllowNotification.current) {
-          registration!.showNotification("Новый клиент", {
-            body: "В базе новый клиент",
-            tag: "new-client",
-          })
-        }
-      })
       connection.current?.on("NewOrder", () => {
         if (isAllowNotification.current) {
           registration!.showNotification("Новая заявка", {

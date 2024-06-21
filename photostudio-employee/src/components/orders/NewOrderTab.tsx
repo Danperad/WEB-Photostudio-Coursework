@@ -12,6 +12,7 @@ import {
 } from "@models/*";
 import {ArrowBack, Close} from '@mui/icons-material';
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -214,22 +215,22 @@ function NewOrderTab(props: NewOrderTabProps) {
   }
 
   return (
-    <Stack width={"50%"} direction={"column"}>
-      <Stack direction={"row"} width={"100%"}>
+    <Stack width={"50%"} direction={"column"} spacing={1} px={1}>
+      <Stack direction={"row"} width={"100%"} sx={{alignItems: "center", pr: 1}} spacing={2}>
         <IconButton onClick={close}>
           <ArrowBack/>
         </IconButton>
         <Typography>Новая заявка для {fullName()}</Typography>
       </Stack>
-      <Stack direction={"row"}>
+      <Stack direction={"row"} spacing={1}>
         <DatePicker label={"Дата"} format={"DD-MM-YYYY"} defaultValue={dayjs().add(1, "day")} value={selectedDate}
-                    onChange={dateSelectHandler} sx={{width: "8vw"}} minDate={dayjs()} maxDate={endDate}/>
-        <TimePicker label={"Время"} ampm={false} value={selectedTime} onChange={timeSelectHandler} sx={{width: "6vw"}}
+                    onChange={dateSelectHandler} sx={{width: "110pt"}} minDate={dayjs()} maxDate={endDate}/>
+        <TimePicker label={"Время"} ampm={false} value={selectedTime} onChange={timeSelectHandler} sx={{width: "80pt"}}
                     minTime={startTime} maxTime={endTime}/>
         <TextField label={"Длительность (мин.)"} inputProps={{inputMode: "numeric", pattern: "[0-9]{1,4}"}}
-                   value={selectedDuration} onChange={durationSelectHandler} sx={{width: "10vw"}}/>
+                   value={selectedDuration} onChange={durationSelectHandler} sx={{width: "110pt"}}/>
       </Stack>
-      <Stack direction={"row"} width={"100%"}>
+      <Stack direction={"row"} width={"100%"} spacing={1}>
         <FormControl fullWidth>
           <InputLabel id="service-select-label">Услуги</InputLabel>
           <Select value={selectedService ? String(selectedService.id) : ``} labelId={"service-select-label"}
@@ -257,9 +258,9 @@ function NewOrderTab(props: NewOrderTabProps) {
           </Select>
         </FormControl>
       </Stack>
-      <Divider variant={"middle"} orientation={"horizontal"}/>
       {(selectedPackage || selectedService) && (
         <>
+          <Divider variant={"middle"} orientation={"horizontal"}/>
           {selectedPackage && (
             <NewOrderServicePackage servicePackage={selectedPackage} startTime={getStartTime()}
                                     isAllowSelect={isAllowAddPackage} onComplete={addPackageHandler}/>
@@ -287,7 +288,7 @@ function NewOrderTab(props: NewOrderTabProps) {
         </>
       )}
       <Divider variant={"middle"} orientation={"horizontal"}/>
-      <Stack direction={"column"}>
+      <Stack direction={"column"} spacing={1}>
         {addedPackage && (
           <Card>
             <CardHeader title={(addedPackage.servicePackage as ServicePackage).title} action={(
@@ -335,11 +336,14 @@ function NewOrderTab(props: NewOrderTabProps) {
             </CardContent>
           </Card>
         ))}
-        <Divider variant={"middle"} orientation={"horizontal"}/>
-        <Typography>Итоговая стоимость: {getTotalPrice()} Р.</Typography>
-        <Button variant={"contained"} disabled={!addedPackage && addedServices.length === 0}
-                onClick={handleBuy}>Оформить</Button>
       </Stack>
+      <Divider variant={"middle"} orientation={"horizontal"}/>
+      <Box width={"100%"} display={"flex"} justifyContent={"center"} alignItems={"center"} flexDirection={"column"}
+           gap={1}>
+        <Typography>Итоговая стоимость: {getTotalPrice()} Р.</Typography>
+        <Button variant={"contained"} sx={{width: 200}} disabled={!addedPackage && addedServices.length === 0}
+                onClick={handleBuy}>Оформить</Button>
+      </Box>
     </Stack>
   )
 }

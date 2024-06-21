@@ -15,7 +15,7 @@ import {Item, OrderService} from "@models/*";
 import {getAvailableItems} from "../../../services/rentedItemService.ts";
 
 function ItemRentService(props: NewServiceProps) {
-  const {service, startTime, duration,isAllowSelect, onComplete} = props
+  const {service, startTime, duration, isAllowSelect, onComplete} = props
   const [items, setItems] = useState<Item[]>([])
 
   const [selectedCount, setSelectedCount] = useState<number>(0)
@@ -25,10 +25,9 @@ function ItemRentService(props: NewServiceProps) {
     if (!isAllowSelect())
       return
     getAvailableItems(startTime, duration).then(res => {
-      if (res.ok){
+      if (res.ok) {
         setItems(res.val)
-      }
-      else {
+      } else {
         console.log(res.val)
       }
     }).catch(err => console.log(err))
@@ -59,22 +58,20 @@ function ItemRentService(props: NewServiceProps) {
   }
 
   return (
-    <Stack direction={"column"}>
+    <Stack direction={"column"} spacing={1}>
       <Typography variant={"body2"}>{service.description}</Typography>
-      <Stack direction={"row"}>
+      <Stack direction={"row"} spacing={1}>
         <TextField label={"Количество"} inputProps={{inputMode: "numeric", pattern: "[0-9]{1,4}"}}
                    value={selectedCount} onChange={countSelectHandler} sx={{width: "10vw"}}/>
-      </Stack>
-      <Stack direction={"row"}>
         <FormControl fullWidth>
           <InputLabel id="item-select-label">Предметы</InputLabel>
-          <Select value={selectedItem ? String(selectedItem.id) : ``} label={"Сотрудники"}
+          <Select value={selectedItem ? String(selectedItem.id) : ``} label={"Предметы"}
                   labelId={"item-select-label"} onChange={handleSelectItem} disabled={!isAllowSelect()}>
             <MenuItem value={``}>
               <em>None</em>
             </MenuItem>
             {items.map((item) => (
-              <MenuItem key={item.id} value={item.id}>{item.title}</MenuItem>
+              <MenuItem key={item.id} value={item.id}>{item.title} ({item.costPerHour} руб./ч.)</MenuItem>
             ))}
           </Select>
         </FormControl>

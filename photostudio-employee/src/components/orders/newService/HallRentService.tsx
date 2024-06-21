@@ -37,7 +37,7 @@ function HallRentService(props: NewServiceProps) {
   }
 
   return (
-    <Stack direction={"column"}>
+    <Stack direction={"column"} spacing={1}>
       <Typography variant={"body2"}>{service.description}</Typography>
       <Stack direction={"row"}>
         <FormControl fullWidth>
@@ -48,7 +48,7 @@ function HallRentService(props: NewServiceProps) {
               <em>None</em>
             </MenuItem>
             {halls.map((hall) => (
-              <MenuItem key={hall.id} value={hall.id}>{hall.title}</MenuItem>
+              <MenuItem key={hall.id} value={hall.id}>{hall.title} ({hall.pricePerHour} руб./ч.)</MenuItem>
             ))}
           </Select>
         </FormControl>

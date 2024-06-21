@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const url = import.meta.env.VITE_API_URL === undefined ? `` : import.meta.env.VITE_API_URL;
-
-export default axios.create({
-    baseURL: `${url}`
+const baseUrl = import.meta.env.VITE_API_URL;
+const instant = axios.create({
+    baseURL: baseUrl ? baseUrl : `/api/`
 })
+export default instant

@@ -41,7 +41,7 @@ function EmployeeServices() {
                             label="Показывать завершенные"/>
         </FormGroup>
         {services.map(service => (
-          <Paper key={service.id} sx={{p:1}} elevation={1} onClick={() => {
+          <Paper key={service.id} sx={{p:1, cursor: "pointer"}} elevation={1} onClick={() => {
             handleServiceSelected(service)
           }}>
             <Typography>{(service.service as Service).title}</Typography>

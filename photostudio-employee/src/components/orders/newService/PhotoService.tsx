@@ -1,20 +1,11 @@
 import {NewServiceProps} from "./newServiceProps.ts";
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Stack,
-  Typography
-} from "@mui/material";
+import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
 import {Employee, OrderService} from "@models/*";
 import {getAvailableEmployees} from "../../../services/employeeService.ts";
 
 function PhotoService(props: NewServiceProps) {
-  const {service, startTime, duration,isAllowSelect, onComplete} = props
+  const {service, startTime, duration, isAllowSelect, onComplete} = props
   const [employees, setEmployees] = useState<Employee[]>([])
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | undefined>(undefined)
 
@@ -22,10 +13,9 @@ function PhotoService(props: NewServiceProps) {
     if (!isAllowSelect())
       return
     getAvailableEmployees(startTime, duration, service.id).then(res => {
-      if (res.ok){
-      setEmployees(res.val)
-      }
-      else {
+      if (res.ok) {
+        setEmployees(res.val)
+      } else {
         console.log(res.val)
       }
     }).catch(err => console.log(err))
@@ -46,7 +36,7 @@ function PhotoService(props: NewServiceProps) {
   }
 
   return (
-    <Stack direction={"column"}>
+    <Stack direction={"column"} spacing={1}>
       <Typography variant={"body2"}>{service.description}</Typography>
       <Stack direction={"row"}>
         <FormControl fullWidth>
@@ -57,12 +47,13 @@ function PhotoService(props: NewServiceProps) {
               <em>None</em>
             </MenuItem>
             {employees.map((employee) => (
-              <MenuItem key={employee.id} value={employee.id}>{employee.lastName}</MenuItem>
+              <MenuItem key={employee.id} value={employee.id}>{employee.lastName} {employee.firstName} {employee.middleName} ({employee.cost} руб./ч)</MenuItem>
             ))}
           </Select>
         </FormControl>
       </Stack>
-      <Button variant={"contained"} onClick={handleComplete} disabled={!isAllowSelect() || !selectedEmployee}>Добавить</Button>
+      <Button variant={"contained"} onClick={handleComplete}
+              disabled={!isAllowSelect() || !selectedEmployee}>Добавить</Button>
     </Stack>
   )
 }
