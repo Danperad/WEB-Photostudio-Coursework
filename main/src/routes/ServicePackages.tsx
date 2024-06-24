@@ -37,16 +37,16 @@ export default function ServicePackages() {
             <Box sx={{width: "90%", margin: '0 auto', marginTop: '40px'}}>
                 <Stack spacing={2}>
                     {rootState.map((pack, index) => (
-                        <Card key={index}>
+                        <Card key={index} sx={{mt: 2, bgcolor: '#FFE2E2'}}>
                             <Stack direction={'row'}>
                                 <CardMedia
                                     component={"img"}
                                     height={"140"}
-                                    sx={{width: '40%'}}
+                                    sx={{width: '60%'}}
                                     image={pack.photos[0]}
                                     alt="photo"
                                 />
-                                <CardContent>
+                                <CardContent sx={{width: "100%"}}>
                                     <Typography gutterBottom variant="h5" component="div">
                                         {pack.title}
                                     </Typography>
@@ -54,7 +54,7 @@ export default function ServicePackages() {
                                         {pack.description}
                                     </Typography>
                                 </CardContent>
-                                <Stack direction="row" justifyContent="space-between" alignItems={'flex-end'} mr={2}
+                                <Stack direction="row" justifyContent={'right'} alignItems={'end'} mr={2}
                                        ml={2}
                                        pb={1} spacing={1}>
                                     <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>

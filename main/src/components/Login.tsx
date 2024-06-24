@@ -36,7 +36,7 @@ function Login() {
         <Stack spacing={1}>
             <Typography variant={"h5"} component={"h5"}>Авторизация</Typography>
             <TextField value={values.login} onChange={handleChange('login')} type={"email"} variant={"standard"}
-                       size={"small"} label={"Логин"}/>
+                       size={"small"} label={"Почта"}/>
             <TextField value={values.password} onChange={handleChange('password')} type={"password"}
                        variant={"standard"} size={"small"} label={"Пароль"}/>
             <Button type={"button"} variant={"contained"} onClick={onClick}>Авторизоваться</Button>

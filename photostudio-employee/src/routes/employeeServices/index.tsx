@@ -10,7 +10,7 @@ function EmployeeServices() {
   const [selectedService, setSelectedService] = useState<EmployeeService | undefined>()
 
   useEffect(() => {
-    getServicesByEmployee(2, isShowClosed).then(res => {
+    getServicesByEmployee(4, isShowClosed).then(res => {
       if (res.ok){
         setServices(res.val)
       }

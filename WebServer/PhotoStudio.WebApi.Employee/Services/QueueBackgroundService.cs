@@ -1,12 +1,13 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.SignalR;
 using PhotoStudio.WebApi.Employee.Hubs;
+using PhotoStudio.WebApi.Employee.Services.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
 namespace PhotoStudio.WebApi.Employee.Services;
 
-public class QueueBackgroundService(IConfiguration configuration, IHubContext<MainHub> mainHub) : BackgroundService
+public class QueueBackgroundService(IConfiguration configuration, IHubContext<MainHub> mainHub, IMailService mailService) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -32,13 +33,16 @@ public class QueueBackgroundService(IConfiguration configuration, IHubContext<Ma
             var body = Encoding.UTF8.GetString(ea.Body.ToArray());
             if (body.StartsWith("New_Order"))
             {
+                var @params = body.Split(' ');
                 await mainHub.Clients.All.SendAsync("NewOrder", stoppingToken);
+                await mailService.NotifyClientNewOrder(int.Parse(@params[1]), stoppingToken);
             }
 
             if (body.StartsWith("Order_Status_Changed"))
             {
                 var @params = body.Split(' ');
                 await mainHub.Clients.All.SendAsync("StatusChanged", @params[1], stoppingToken);
+                await mailService.NotifyClientOrderStatusChanged(int.Parse(@params[1]), stoppingToken);
             }
 
             await Task.Yield();

@@ -22,7 +22,6 @@ function ServiceWorker() {
         if (isAllowNotification.current) {
           registration!.showNotification("Новая заявка", {
             body: "В базе новая заявка",
-            tag: "new-order",
           })
         }
       })
@@ -30,7 +29,6 @@ function ServiceWorker() {
         if (isAllowNotification.current) {
           registration!.showNotification("Новый статус заявки", {
             body: `У заявки ${data} изменился статус`,
-            tag: "order-status-changed",
           })
         }
       })

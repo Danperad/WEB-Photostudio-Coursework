@@ -1,5 +1,5 @@
 import {Box, Button, List} from "@mui/material";
-import {ContactMail, Menu, Person} from '@mui/icons-material';
+import {ContactMail, Menu, Person, LibraryBooks, StickyNote2, Photo} from '@mui/icons-material';
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 
@@ -26,7 +26,7 @@ export default function Sidebar() {
         <Button variant={"text"} onClick={() => {
           navigate("orders")
         }}>
-          <Person color={'primary'}/>
+          <LibraryBooks color={'primary'}/>
           {isFullSize && `Заявки`}
         </Button>
         <Button variant={"text"} onClick={() => {
@@ -38,13 +38,13 @@ export default function Sidebar() {
         <Button variant={"text"} onClick={() => {
           navigate("services")
         }}>
-          <ContactMail color={'primary'}/>
+          <Photo color={'primary'}/>
           {isFullSize && `Услуги`}
         </Button>
         <Button variant={"text"} onClick={() => {
           navigate("employeesServices")
         }}>
-          <ContactMail color={'primary'}/>
+          <StickyNote2 color={'primary'}/>
           {isFullSize && `Мои услуги`}
         </Button>
       </List>

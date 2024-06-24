@@ -66,7 +66,7 @@ export default function Profile() {
                 </Box>
             </Stack>
             <Box mt={3} sx={{backgroundColor: '#F0EDE8', pt: '20px', pb: '20px'}}>
-                <Box sx={{flexGrow: 1}}>
+                <Box sx={{flexGrow: 1}} px={1}>
                     <Grid container spacing={{xs: 2, md: 3}} columns={{xs: 4, sm: 8, md: 12}}>
                         {orders.map((order) => (
                             <Grid item xs={2} sm={4} md={4} key={order.number}>

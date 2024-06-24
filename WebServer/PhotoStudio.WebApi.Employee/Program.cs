@@ -30,6 +30,7 @@ builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IRentedItemService, RentedItemService>();
 builder.Services.AddTransient<IApplicationOrderService, ApplicationOrderService>();
 builder.Services.AddTransient<IReportService, ReportService>();
+builder.Services.AddTransient<IMailService, MailService>();
 
 builder.Services.AddHostedService<QueueBackgroundService>();
 
