@@ -3,14 +3,13 @@ import {NewService, NewServicePackage} from "../../models/Models";
 
 interface State {
     serviceModels: NewService[],
-    servicePackage: NewServicePackage | null
+    servicePackage?: NewServicePackage
 }
 
 const cart = localStorage.getItem('cart');
 
 const initState: State = cart === null ? {
     serviceModels: [],
-    servicePackage: null
 } : JSON.parse(cart);
 
 const cartSlice = createSlice({
@@ -29,12 +28,12 @@ const cartSlice = createSlice({
             state.servicePackage = action.payload;
             localStorage.setItem('cart', JSON.stringify(state))
         },
-        PackageRemoved: (state, _: PayloadAction<NewServicePackage>) => {
-            state.servicePackage = null;
+        PackageRemoved: (state) => {
+            state.servicePackage = undefined;
             localStorage.setItem('cart', JSON.stringify(state))
         },
-        ClearCart: (state, _: PayloadAction<number>) => {
-            state.servicePackage = null;
+        ClearCart: (state) => {
+            state.servicePackage = undefined;
             state.serviceModels = [] as NewService[];
             localStorage.removeItem('cart');
         }

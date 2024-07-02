@@ -1,6 +1,8 @@
 declare type EmployeeModel = {
     id: number,
-    title: string,
+    lastName: string,
+    firstName: string,
+    middleName?: string,
     cost: number,
 }
 

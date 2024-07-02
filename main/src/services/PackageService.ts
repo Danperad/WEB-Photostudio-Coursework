@@ -7,10 +7,10 @@ import {ServicesPackageLoaded} from "../redux/actions/packagesActions";
 const API_URL = "package/"
 
 class PackageService {
-    getServices(){
+    getServices() {
         return axios.get(API_URL + 'get').then((res) => {
             const data: Answer = res.data;
-            if (data.status){
+            if (data.status) {
                 console.log(data.answer.packages);
                 return ServicesPackageLoaded(data.answer.packages as ServicePackage[]);
             }

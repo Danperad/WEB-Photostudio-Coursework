@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {Box, Button, Modal, Stack, Typography} from "@mui/material";
 import {NewService, Service} from "../models/Models";
 import AddServiceModal from "./AddServiceModal";
@@ -15,18 +15,10 @@ interface ServiceModalProps {
 
 export default function ServiceModal(props: ServiceModalProps) {
     const handlePayModalOpen = () => {
-        if (props.service!.serviceType === 1) {
+        if (props.service!.type === 1) {
             const service: NewService = {
                 id: new Date().getTime() + Math.random(),
-                service: props.service!,
-                startTime: null,
-                duration: null,
-                hall: null,
-                employee: null,
-                address: null,
-                rentedItem: null,
-                number: null,
-                isFullTime: null,
+                service: props.service!
             }
             dispatch(cartActions.ServiceAdded(service));
             props.handlerClose();
@@ -53,7 +45,7 @@ export default function ServiceModal(props: ServiceModalProps) {
     }, [props])
 
     const style = {
-        position: 'absolute' as 'absolute',
+        position: 'absolute' as const,
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',

@@ -1,18 +1,14 @@
-import {useState, useEffect, ChangeEvent, useRef} from 'react';
+import {ChangeEvent, useEffect, useRef, useState} from 'react';
 import {
-    Stack,
-    Button,
-    Typography,
     Box,
-    TextField,
+    FormControl,
     InputLabel,
     MenuItem,
-    FormControl,
     Select,
-    Card,
-    CardContent,
-    CardMedia,
-    SelectChangeEvent
+    SelectChangeEvent,
+    Stack,
+    TextField,
+    Typography
 } from '@mui/material';
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../redux/store";
@@ -21,16 +17,16 @@ import ServiceModal from "../components/ServiceModal";
 import {Service} from "../models/Models";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {serviceActions} from '../redux/slices/serviceSlice';
+import {ServiceCart} from "../components/ServiceCart.tsx";
 
 interface State {
     search: string,
-    sort: string,
     type: string
 }
 
 export default function Services() {
     const key = useRef(false)
-    const [filterState, setFilter] = useState<State>({search: "", sort: '1', type: '0'})
+    const [filterState, setFilter] = useState<State>({search: "", type: ''})
     const [selectedService, setSelected] = useState<Service | null>(null);
     const rootState = useSelector((state: RootState) => state.services);
     const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +35,7 @@ export default function Services() {
         if (key.current)
             return;
         key.current = true;
-        ServicesService.getServices("","1","1", 0).then((res) => {
+        ServicesService.getServices("", "", 0).then((res) => {
             dispatch(res);
         })
     }, [])
@@ -58,14 +54,14 @@ export default function Services() {
 
     const filter = (prop: keyof State, value: string) => {
         dispatch(serviceActions.ClearService("hehe"));
-        const tmp: State = {...filterState, [prop]: value}
-        ServicesService.getServices(tmp.search, tmp.sort, tmp.type, 0).then((res) => {
+        const tmp: State = {...filterState, [prop]: value.toString()}
+        ServicesService.getServices(tmp.search, tmp.type, 0).then((res) => {
             dispatch(res);
         })
     }
 
     const loadMore = () => {
-        ServicesService.getServices(filterState.search, filterState.sort, filterState.type, rootState.services.length).then((res) => {
+        ServicesService.getServices(filterState.search, filterState.type, rootState.services.length).then((res) => {
             dispatch(res);
         })
     }
@@ -82,7 +78,7 @@ export default function Services() {
 
     return (
         <div style={{width: "100%"}}>
-            <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2} width={"50%"} mt={1}
+            <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2} width={"50%"} mt={2}
                    ml={2}>
                 <TextField label="Поиск" value={filterState.search} onChange={handleChange("search")} color='primary'
                            size='small' sx={{width: '100%'}}/>
@@ -105,58 +101,16 @@ export default function Services() {
                         <MenuItem value={1}>Дополнительные услуги</MenuItem>
                     </Select>
                 </FormControl>
-                <FormControl sx={{width: '70%'}}>
-                    <InputLabel id="demo-simple-select-label"
-                                style={{lineHeight: '0.4em', height: '20px', paddingTop: '3px'}}>Сортировать
-                        по</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        label="Сортировать по"
-                        sx={{height: '40px'}}
-                        value={filterState.sort}
-                        onChange={handleChangeSelect('sort')}
-                    >
-                        <MenuItem value={1}>Алфавиту</MenuItem>
-                        <MenuItem value={2}>Цене</MenuItem>
-                        <MenuItem value={3}>Рейтингу</MenuItem>
-                    </Select>
-                </FormControl>
             </Stack>
-            <Box sx={{width: "90%", margin: '0 auto', marginTop: '40px'}}>
+            <Box sx={{width: "95%", margin: '0 auto', marginTop: '40px'}}>
                 <Stack>
-                    <InfiniteScroll next={loadMore} hasMore={rootState.hasMore} loader={<Typography>Загрузка...</Typography>} dataLength={rootState.services.length}>
+                    <InfiniteScroll next={loadMore} hasMore={rootState.hasMore}
+                                    loader={<Typography>Загрузка...</Typography>}
+                                    dataLength={rootState.services.length}>
                         {rootState.services.map((service) => (
-                            <Card key={service.id} sx={{mt: 2}}>
-                                <Stack direction={'row'}>
-                                    <CardMedia
-                                        component={"img"}
-                                        height={"140"}
-                                        sx={{width: '30%'}}
-                                        image={service.photos[0]}
-                                        alt="photo"
-                                    />
-                                    <CardContent>
-                                        <Typography gutterBottom variant="h5" component="div">
-                                            {service.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {service.description}
-                                        </Typography>
-                                    </CardContent>
-                                    <Stack direction="row" justifyContent="space-between" alignItems={'flex-end'} mr={2}
-                                           ml={2}
-                                           pb={1} spacing={1}>
-                                        <Typography variant="subtitle1" style={{whiteSpace: "nowrap"}}>
-                                            Стоимость: {service.cost} рублей
-                                        </Typography>
-                                        <Button size="medium" variant="contained" color="secondary"
-                                                onClick={() => {
-                                                    handleInfoModalOpen(service)
-                                                }}>Подробнее</Button>
-                                    </Stack>
-                                </Stack>
-                            </Card>
+                            <ServiceCart service={service} handleInfoModalOpen={() => {
+                                handleInfoModalOpen(service)
+                            }}/>
                         ))}
                     </InfiniteScroll>
                 </Stack>

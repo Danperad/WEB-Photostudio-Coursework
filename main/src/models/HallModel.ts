@@ -3,7 +3,7 @@ declare type HallModel = {
     title: string,
     description: string,
     addressId: number,
-    cost: number,
+    pricePerHour: number,
     photos: string[]
 }
 

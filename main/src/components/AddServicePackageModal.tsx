@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {NewServicePackage, ServicePackage} from "../models/Models";
 import {Box, Button, Modal, Stack, TextField, Typography} from "@mui/material";
 import {useDispatch} from "react-redux";
@@ -25,7 +25,7 @@ export default function AddServicePackageModal(props: ServicePackageModalProps) 
         setEnabled(true);
     }
     const style = {
-        position: 'absolute' as 'absolute',
+        position: 'absolute' as const,
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
