@@ -18,6 +18,6 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
         }
 
         var employees = await employeeService.GetAvailableEmployeesAsync(start, duration, service);
-        return Ok(new AnswerDto(true, new { employees = employees }, null));
+        return Ok(new AnswerDto(true, new { employees }, null));
     }
 }

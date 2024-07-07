@@ -19,11 +19,12 @@ import dayjs from "dayjs";
 
 type OrderServiceInfoProps = {
   orderService: EmployeeService,
-  onClose: () => void
+  onClose: () => void,
+  onOrderServiceStatusChange: () => void
 }
 
 function OrderServiceInfo(props: OrderServiceInfoProps) {
-  const {orderService, onClose} = props
+  const {orderService, onClose, onOrderServiceStatusChange} = props
   const [allowedStatuses, setAllowedStatuses] = useState<Status[]>([])
   const [selectedStatus, setSelectedStatus] = useState<Status>(orderService.status as Status)
 
@@ -56,6 +57,8 @@ function OrderServiceInfo(props: OrderServiceInfoProps) {
     updateServicesStatus(orderService.id!, selectedStatus.id).then(res => {
       if (!res.ok){
         console.log(res.val)
+      } else {
+        onOrderServiceStatusChange()
       }
     }).catch(err => console.log(err))
   };

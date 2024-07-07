@@ -9,7 +9,7 @@ using PhotoStudio.WebApi.Lib.Dto;
 
 namespace PhotoStudio.WebApi.Employee.Services;
 
-public class ClientService(PhotoStudioContext context, IRabbitMqService rabbitMqService, IMapper mapper) : IClientService
+public class ClientService(PhotoStudioContext context, IMapper mapper) : IClientService
 {
     public IAsyncEnumerable<ClientDto> GetClients(string? search, int count, int start)
     {

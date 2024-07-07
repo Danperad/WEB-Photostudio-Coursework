@@ -231,7 +231,7 @@ public class ClientService(
         
         var order = new Order(client, DateTime.Now, services, orderStatus, servicePackage);
         
-        await context.Orders.AddAsync(order);
+        var newAddedOrder = await context.Orders.AddAsync(order);
         try
         {
             await context.SaveChangesAsync();
@@ -240,7 +240,7 @@ public class ClientService(
         {
             return false;
         }
-        rabbitMqService.SendMessage("New_Order");
+        rabbitMqService.SendMessage($"New_Order {newAddedOrder.Entity.Id}");
         return true;
     }
 

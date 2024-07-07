@@ -38,13 +38,17 @@ function AboutClient(props: AboutClientProps) {
     setTabStatus(TabStatus.Orders)
   }, [client])
 
-  const searchOrders = () => {
+  useEffect(() => {
+    if (selectedOrder) {
+      setSelectedOrder(prevOrder => orders[orders.findIndex(order => order.number === prevOrder?.number)])
+    }
+  }, [orders]);
 
+  const searchOrders = () => {
     getOrdersByClient(client).then(res => {
-      if (res.ok){
+      if (res.ok) {
         setOrders(res.val)
-      }
-      else {
+      } else {
         console.log(res.val)
       }
     }).catch(err => console.log(err))
@@ -102,7 +106,8 @@ function AboutClient(props: AboutClientProps) {
         <NewOrderTab client={client} close={closeNewOrderHandler} onOrderCreated={orderCreatedHandler}/>
       )}
       {currentTabStatus === TabStatus.OrderInfo && selectedOrder && (
-        <OrderInfo order={selectedOrder} close={closeOrderInfoHandler} onOrderStatusChanged={orderStatusChangedHandler}/>
+        <OrderInfo order={selectedOrder} close={closeOrderInfoHandler}
+                   onOrderStatusChanged={orderStatusChangedHandler}/>
       )}
     </>
   )

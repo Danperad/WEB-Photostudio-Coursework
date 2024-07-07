@@ -4,6 +4,10 @@ namespace PhotoStudio.WebApi.Employee.Dto;
 
 public class OrderDto
 {
+    public OrderDto()
+    {
+        Client = new ClientDto();
+    }
     public int Number { get; set; }
     public ClientDto Client { get; set; }
     public DateTime DateTime { get; set; }

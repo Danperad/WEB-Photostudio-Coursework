@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
-using PhotoStudio.WebApi.Employee.Dto;
 using PhotoStudio.WebApi.Employee.Services.Interfaces;
 using PhotoStudio.WebApi.Lib.Dto;
 

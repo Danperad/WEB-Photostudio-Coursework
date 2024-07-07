@@ -28,9 +28,9 @@ function Reports(){
     <Stack sx={{p: 2}}>
       <Stack direction={"row"} spacing={1} sx={{mb: 2}}>
         <DatePicker label={"Дата"} format={"DD-MM-YYYY"} defaultValue={dayjs()} value={startDate}
-                    onChange={startDateSelectHandler} sx={{width: "8vw"}}/>
+                    onChange={startDateSelectHandler} sx={{width: "150px"}}/>
         <DatePicker label={"Дата"} format={"DD-MM-YYYY"} defaultValue={dayjs()} value={endDate}
-                    onChange={endDateSelectHandler} sx={{width: "8vw"}}/>
+                    onChange={endDateSelectHandler} sx={{width: "150px"}}/>
       </Stack>
       <Button variant={"contained"} onClick={handleReportDownloadClick}>Скачать отчет</Button>
     </Stack>

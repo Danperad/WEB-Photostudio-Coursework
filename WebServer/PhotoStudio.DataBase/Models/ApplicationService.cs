@@ -48,6 +48,7 @@ public class ApplicationService
         Status = status;
         Order = new Order();
         Cost = Service.Cost;
+        Cost = Math.Round(Cost);
     }
 
     /// <summary>
@@ -76,7 +77,8 @@ public class ApplicationService
         Hall hall, Status status) : this(service, startDateTime, duration, status)
     {
         Hall = hall;
-        Cost += hall.PricePerHour * duration.Hours;
+        Cost += hall.PricePerHour * (decimal)(duration.TotalMinutes / 60.0);
+        Cost = Math.Round(Cost);
     }
 
     /// <summary>
@@ -94,7 +96,8 @@ public class ApplicationService
         Employee = employee;
         if (!employee.Price.HasValue) return;
         
-        Cost += employee.Price.Value * duration.Hours;
+        Cost += employee.Price.Value * (decimal)(duration.TotalMinutes / 60.0);
+        Cost = Math.Round(Cost);
     }
 
     /// <summary>
@@ -111,7 +114,8 @@ public class ApplicationService
     {
         Number = number;
         RentedItem = rentedItem;
-        Cost += rentedItem.Cost * number * duration.Hours;
+        Cost += rentedItem.Cost * number * (decimal)(duration.TotalMinutes / 60.0);
+        Cost = Math.Round(Cost);
     }
 
     /// <summary>
@@ -128,8 +132,9 @@ public class ApplicationService
         IsFullTime = isFullTime;
         if (!employee.Price.HasValue) return;
 
-        Cost -= employee.Price.Value * duration.Hours;
-        Cost += employee.Price.Value * duration.Hours * (decimal)1.5;
+        Cost -= employee.Price.Value * (decimal)(duration.TotalMinutes / 60.0);
+        Cost += employee.Price.Value * (decimal)(duration.TotalMinutes / 60.0) * (decimal)1.5;
+        Cost = Math.Round(Cost);
     }
 
     #endregion

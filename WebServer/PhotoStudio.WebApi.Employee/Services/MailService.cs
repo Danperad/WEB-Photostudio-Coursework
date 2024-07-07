@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using PhotoStudio.DataBase;
 using PhotoStudio.WebApi.Employee.Services.Interfaces;
 
@@ -6,29 +7,31 @@ namespace PhotoStudio.WebApi.Employee.Services;
 
 public class MailService : IMailService
 {
-    private PhotoStudioContext _context { get; set; }
-    private IServiceScope _scope { get; set; }
+    private PhotoStudioContext Context { get; set; }
+    private IServiceScope Scope { get; set; }
 
     public MailService(IServiceScopeFactory scopeFactory)
     {
-        _scope = scopeFactory.CreateScope();
-        _context = _scope.ServiceProvider.GetRequiredService<PhotoStudioContext>();
+        Scope = scopeFactory.CreateScope();
+        Context = Scope.ServiceProvider.GetRequiredService<PhotoStudioContext>();
     }
 
     ~MailService()
     {
-        _scope.Dispose();
+        Scope.Dispose();
     }
 
     public Task NotifyClientNewOrder(int orderId, CancellationToken stoppingToken)
     {
-        var order = _context.Orders.AsNoTracking().Where(o => o.Id == orderId);
+        var order = Context.Orders.AsNoTracking().Where(o => o.Id == orderId);
+        Debug.WriteLine(order.ToString());
         return Task.CompletedTask;
     }
 
     public Task NotifyClientOrderStatusChanged(int orderId, CancellationToken stoppingToken)
     {
-        var order = _context.Orders.AsNoTracking().Where(o => o.Id == orderId);
+        var order = Context.Orders.AsNoTracking().Where(o => o.Id == orderId);
+        Debug.WriteLine(order.ToString());
         return Task.CompletedTask;
     }
 }

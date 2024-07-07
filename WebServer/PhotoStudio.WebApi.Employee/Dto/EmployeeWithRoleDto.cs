@@ -4,6 +4,11 @@ namespace PhotoStudio.WebApi.Employee.Dto;
 
 public class EmployeeWithRoleDto : EmployeeDto
 {
+    public EmployeeWithRoleDto()
+    {
+        Role = new RoleDto();
+        BoundServices = new List<SimpleServiceDto>();
+    }
     public RoleDto Role { get; set; } 
-    public List<SimpleServiceDto> BoundServices { get; set; }
+    public IReadOnlyList<SimpleServiceDto> BoundServices { get; set; }
 }

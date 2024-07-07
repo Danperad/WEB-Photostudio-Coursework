@@ -28,7 +28,7 @@ public class ReportService(PhotoStudioContext context, IMapper mapper) : IReport
             row = sheet.CreateRow(rowNum++);
             row.CreateCell(0).SetCellValue(i + 1);
             row.CreateCell(1).SetCellValue(order.Number);
-            row.CreateCell(2).SetCellValue(order.DateTime.ToLocalTime().ToString("dd-MM-yy"));
+            row.CreateCell(2).SetCellValue(order.DateTime.ToLocalTime().ToString("dd.MM.yyyy"));
             row.CreateCell(3).SetCellValue(order.Client.LastName);
             row.CreateCell(4).SetCellValue(order.Status);
             row.CreateCell(5).SetCellValue(order.ServicePackage?.Title ?? "-");
@@ -37,7 +37,7 @@ public class ReportService(PhotoStudioContext context, IMapper mapper) : IReport
             {
                 row = sheet.CreateRow(rowNum++);
                 row.CreateCell(7).SetCellValue(service.Service);
-                row.CreateCell(8).SetCellValue(service.Employee.LastName);
+                row.CreateCell(8).SetCellValue(service.Employee != null ? service.Employee.LastName : "-");
                 row.CreateCell(9).SetCellValue(service.Status);
                 row.CreateCell(10).SetCellValue(service.Hall ?? "-");
                 row.CreateCell(11).SetCellValue(service.Item ?? "-");
@@ -51,7 +51,7 @@ public class ReportService(PhotoStudioContext context, IMapper mapper) : IReport
                 {
                     var cell = row.CreateCell(13);
                     cell.SetCellValue(service.StartDateTime.HasValue
-                        ? service.StartDateTime.Value.ToLocalTime().ToString("dd-MM-yy hh:mm")
+                        ? service.StartDateTime.Value.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
                         : "-");
                 }
                 {

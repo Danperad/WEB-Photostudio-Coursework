@@ -182,7 +182,7 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
         var newAddedOrder = await context.Orders.AddAsync(newOrder);
 
         await context.SaveChangesAsync();
-        rabbitMqService.SendMessage("New_Order");
+        rabbitMqService.SendMessage($"New_Order {newAddedOrder.Entity.Id}");
         return mapper.Map<Order, OrderDto>(newAddedOrder.Entity);
     }
 
@@ -230,9 +230,9 @@ public class OrderService(PhotoStudioContext context, IRabbitMqService rabbitMqS
             default:
                 throw new ArgumentOutOfRangeException(nameof(statusId), statusId, null);
         }
-
         var newOrder = context.Orders.Entry(order);
         await context.SaveChangesAsync();
+        rabbitMqService.SendMessage($"Order_Status_Changed {newOrder.Entity.Id}");
         return mapper.Map<Order, OrderDto>(newOrder.Entity);
     }
 }

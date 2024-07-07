@@ -22,12 +22,17 @@ function Orders() {
     return () => clearTimeout(timer)
   }, [search])
 
+  useEffect(() => {
+    if (selectedOrder) {
+      setSelectedOrder(prevOrder => orders[orders.findIndex(order => order.number === prevOrder?.number)])
+    }
+  }, [orders]);
+
   const searchOrders = () => {
     getAllOrders(search ? search : undefined).then(res => {
-      if (res.ok){
+      if (res.ok) {
         setOrders(res.val)
-      }
-      else {
+      } else {
         console.log(res.val)
       }
     })
@@ -74,7 +79,8 @@ function Orders() {
       <Divider orientation={"vertical"} variant={"middle"} flexItem/>
       <Stack direction={"column"} width={"50%"}>
         {selectedOrder && (
-          <OrderInfo order={selectedOrder} close={handleOrderInfoClose} onOrderStatusChanged={orderStatusChangedHandler}/>
+          <OrderInfo order={selectedOrder} close={handleOrderInfoClose}
+                     onOrderStatusChanged={orderStatusChangedHandler}/>
         )}
         {isReportsOpen && (
           <Reports/>

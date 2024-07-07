@@ -8,15 +8,15 @@ import {authModalReducer} from './reducers/authModalReducer'
 import {packageReducer} from "./reducers/packageReducer";
 
 export const store = configureStore({
-    reducer: {
-        client: clientReducer,
-        services: serviceReducer,
-        halls: hallReducer,
-        messages: snackbarReducer,
-        cart: cartReducer,
-        authModal: authModalReducer,
-        packages: packageReducer
-    },
+  reducer: {
+    client: clientReducer,
+    services: serviceReducer,
+    halls: hallReducer,
+    messages: snackbarReducer,
+    cart: cartReducer,
+    authModal: authModalReducer,
+    packages: packageReducer
+  },
 })
 
 export type RootState = ReturnType<typeof store.getState>

@@ -2,6 +2,11 @@
 
 public class SimpleServiceDto
 {
+    public SimpleServiceDto()
+    {
+        Title = "";
+        Description = "";
+    }
     public int Id { get; set; }
     public string Title { get; internal set; }
     public string Description { get; internal set; }

@@ -2,18 +2,12 @@
 
 public class ClientDto
 {
-    private ClientDto(int id, string lastName, string firstName, string? middleName, string eMail, string phone,
-        string? avatar)
+    public ClientDto()
     {
-        Id = id;
-        LastName = lastName;
-        FirstName = firstName;
-        MiddleName = middleName;
-        EMail = eMail;
-        Phone = phone;
-        Avatar = avatar;
+        LastName = FirstName = "";
+        EMail = Phone = "";
     }
-
+    
     public int Id { get; set; }
     public string LastName { get; set; }
     public string FirstName { get; set; }

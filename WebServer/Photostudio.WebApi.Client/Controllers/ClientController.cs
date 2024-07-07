@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PhotoStudio.WebApi.Client.Dto;
 using PhotoStudio.WebApi.Lib.Dto;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
 

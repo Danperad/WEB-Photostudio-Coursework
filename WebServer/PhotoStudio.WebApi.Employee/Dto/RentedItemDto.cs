@@ -9,6 +9,11 @@ public enum ItemType
 
 public class RentedItemDto
 {
+    public RentedItemDto()
+    {
+        Title = "";
+        Description = "";
+    }
     public int Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }

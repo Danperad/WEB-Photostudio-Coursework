@@ -5,9 +5,9 @@ import {ClearServicesPackage, ServicesPackageLoaded} from "../actions/packagesAc
 const state: ServicePackage[] = []
 
 export const packageReducer = createReducer(state, (builder) => {
-    builder.addCase(ServicesPackageLoaded, (_, action: PayloadAction<ServicePackage[]>) => {
-        return action.payload;
-    }).addCase(ClearServicesPackage, (_, __) => {
-        return [];
-    })
+  builder.addCase(ServicesPackageLoaded, (_, action: PayloadAction<ServicePackage[]>) => {
+    return action.payload;
+  }).addCase(ClearServicesPackage, () => {
+    return [];
+  })
 })

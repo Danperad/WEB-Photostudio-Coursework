@@ -4,6 +4,7 @@ namespace PhotoStudio.WebApi.Lib.Dto;
 
 public class NewOrderModel
 {
-    [JsonPropertyName("serviceModels")] public List<NewServiceModel> ServiceModels { get; set; } = new();
+    [JsonPropertyName("serviceModels")]
+    public IReadOnlyList<NewServiceModel> ServiceModels { get; set; } = new List<NewServiceModel>();
     [JsonPropertyName("servicePackage")] public NewServicePackageModel? ServicePackage { get; set; }
 }

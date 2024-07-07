@@ -2,13 +2,13 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Service} from "../../models/Models";
 
 interface State {
-    services: Service[],
-    hasMore: boolean
+  services: Service[],
+  hasMore: boolean
 }
 
 const initState: State = {
-    services: [],
-    hasMore: true,
+  services: [],
+  hasMore: true,
 }
 
 const serviceSlice = createSlice({
@@ -21,7 +21,7 @@ const serviceSlice = createSlice({
             });
             state.hasMore = action.payload.hasMore;
         },
-        ClearService: (state, _: PayloadAction<string>) => {
+        ClearService: (state) => {
             state.services.splice(0, state.services.length);
             state.hasMore = true;
         }
