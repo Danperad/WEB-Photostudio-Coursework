@@ -13,7 +13,9 @@ function SimpleService(props: NewServiceProps) {
   return (
     <Stack spacing={1}>
       <Typography variant={"body2"}>{service.description}</Typography>
-      <Button variant={"contained"} onClick={() => {onComplete(orderService)}}>Добавить</Button>
+      <Button variant={"contained"} onClick={() => {
+        onComplete(orderService)
+      }}>Добавить</Button>
     </Stack>
   )
 }

@@ -47,7 +47,8 @@ function PhotoService(props: NewServiceProps) {
               <em>None</em>
             </MenuItem>
             {employees.map((employee) => (
-              <MenuItem key={employee.id} value={employee.id}>{employee.lastName} {employee.firstName} {employee.middleName} ({employee.cost} руб./ч)</MenuItem>
+              <MenuItem key={employee.id}
+                        value={employee.id}>{employee.lastName} {employee.firstName} {employee.middleName} ({employee.cost} руб./ч)</MenuItem>
             ))}
           </Select>
         </FormControl>

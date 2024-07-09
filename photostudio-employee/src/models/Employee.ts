@@ -13,7 +13,7 @@ interface Role {
   title: string
 }
 
-interface EmployeeWithRole extends Employee{
+interface EmployeeWithRole extends Employee {
   role: Role,
   boundServices: Service[]
 }

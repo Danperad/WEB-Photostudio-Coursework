@@ -7,7 +7,8 @@ import {
   InputLabel,
   OutlinedInput,
   Paper,
-  TextField, Typography
+  TextField,
+  Typography
 } from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {useState} from "react";

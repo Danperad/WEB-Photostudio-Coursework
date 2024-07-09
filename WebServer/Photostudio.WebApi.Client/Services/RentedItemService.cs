@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using PhotoStudio.DataBase;
 using PhotoStudio.DataBase.Models;
 using PhotoStudio.WebApi.Lib.Dto;
 using PhotoStudio.WebApi.Client.Services.Interfaces;
-using PhotoStudio.WebApi.Lib;
 
 namespace PhotoStudio.WebApi.Client.Services;
 
@@ -39,6 +39,8 @@ public class RentedItemService(PhotoStudioContext context, IMapper mapper) : IRe
     private IQueryable<RentedItem> PrepareAvailableItemsByServiceType(DateTime start, int duration, int type)
     {
         var items = PrepareItemsByServiceType(type);
+        Debug.Write(start);
+        Debug.Write(duration);
         // items = items.GetAvailable(TimeSpan.FromMinutes(90), start, TimeSpan.FromMinutes(duration));
         return items;
     }

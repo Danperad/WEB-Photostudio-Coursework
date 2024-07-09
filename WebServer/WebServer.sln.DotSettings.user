@@ -6,6 +6,7 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\8.0.1\ref\net8.0\Microsoft.AspNetCore.SignalR.Protocols.Json.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
+	<s:Boolean x:Key="/Default/Environment/EntityFramework/EntityFrameworkDisabledQueryInspectionsContexts/=PhotoStudio_002EDataBase_002EPhotoStudioContext/@EntryIndexedValue">True</s:Boolean>
 	
 	<s:Boolean x:Key="/Default/Environment/InlayHints/GeneralInlayHintsOptions/EnableInlayHints/@EntryValue">True</s:Boolean>
 	

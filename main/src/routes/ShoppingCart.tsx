@@ -74,7 +74,14 @@ export default function ShoppingCart() {
   }
 
   return (
-    <div style={{backgroundColor: '#F0EDE8', borderRadius: '20px', paddingTop: "22px", paddingBottom: "22px", width: '100%', height: '100%'}}>
+    <div style={{
+      backgroundColor: '#F0EDE8',
+      borderRadius: '20px',
+      paddingTop: "22px",
+      paddingBottom: "22px",
+      width: '100%',
+      height: '100%'
+    }}>
       <Stack direction="row" spacing={8} alignItems='center' justifyContent="center">
         <Typography variant="h6" color="primary" align='center'>Корзина</Typography>
         <Stack direction="row" spacing={2}>

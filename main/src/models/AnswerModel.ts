@@ -1,6 +1,6 @@
 declare type Answer = {
   status: boolean,
-  answer: any,
+  answer: any, // eslint-disable-line
   error: number | null,
 }
 

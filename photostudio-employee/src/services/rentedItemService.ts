@@ -3,7 +3,7 @@ import {Item} from "@models/*";
 import {AxiosError} from "axios";
 import {Err, Ok, Result} from "ts-results";
 
-export async function getAvailableItems(start: Date, duration: number) : Promise<Result<Item[], AxiosError>> {
+export async function getAvailableItems(start: Date, duration: number): Promise<Result<Item[], AxiosError>> {
   try {
     const res = await axiosInstant.get<Item[]>('items/available', {
       params: {

@@ -17,7 +17,7 @@ import {Employee, OrderService} from "@models/*";
 import {getAvailableEmployees} from "../../../services/employeeService.ts";
 
 function StyleService(props: NewServiceProps) {
-  const {service, startTime, duration,isAllowSelect, onComplete} = props
+  const {service, startTime, duration, isAllowSelect, onComplete} = props
   const [employees, setEmployees] = useState<Employee[]>([])
   const [isFullTime, setIsFullTime] = useState<boolean>(false)
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | undefined>(undefined)
@@ -26,10 +26,9 @@ function StyleService(props: NewServiceProps) {
     if (!isAllowSelect())
       return
     getAvailableEmployees(startTime, duration, service.id).then(res => {
-      if (res.ok){
+      if (res.ok) {
         setEmployees(res.val)
-      }
-      else {
+      } else {
         console.log(res.val)
       }
     }).catch(err => console.log(err))

@@ -37,6 +37,7 @@ public class ReportService(PhotoStudioContext context, IMapper mapper) : IReport
             {
                 row = sheet.CreateRow(rowNum++);
                 row.CreateCell(7).SetCellValue(service.Service);
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
                 row.CreateCell(8).SetCellValue(service.Employee != null ? service.Employee.LastName : "-");
                 row.CreateCell(9).SetCellValue(service.Status);
                 row.CreateCell(10).SetCellValue(service.Hall ?? "-");

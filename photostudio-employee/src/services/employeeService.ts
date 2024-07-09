@@ -3,7 +3,7 @@ import {Employee, EmployeeService, EmployeeWithRole} from "@models/*";
 import {Err, Ok, Result} from "ts-results";
 import {AxiosError} from "axios";
 
-export async function getAvailableEmployees(start: Date, duration: number, serviceId: number) : Promise<Result<Employee[], AxiosError>> {
+export async function getAvailableEmployees(start: Date, duration: number, serviceId: number): Promise<Result<Employee[], AxiosError>> {
   try {
     const res = await axiosInstant.get('employees/available', {
       params: {
@@ -19,7 +19,7 @@ export async function getAvailableEmployees(start: Date, duration: number, servi
   }
 }
 
-export async function getServicesByEmployee(employeeId: number, showAll?: boolean) : Promise<Result<EmployeeService[], AxiosError>> {
+export async function getServicesByEmployee(employeeId: number, showAll?: boolean): Promise<Result<EmployeeService[], AxiosError>> {
   try {
     const res = await axiosInstant.get<EmployeeService[]>(`applications/`, {params: {employeeId, showAll}});
     return Ok(res.data);
@@ -29,7 +29,7 @@ export async function getServicesByEmployee(employeeId: number, showAll?: boolea
   }
 }
 
-export async function updateServicesStatus(serviceId: number, statusId: number) : Promise<Result<EmployeeService, AxiosError>> {
+export async function updateServicesStatus(serviceId: number, statusId: number): Promise<Result<EmployeeService, AxiosError>> {
   try {
     const res = await axiosInstant.post<EmployeeService>(`applications/update`, {orderServiceId: serviceId, statusId});
     return Ok(res.data);
@@ -39,7 +39,7 @@ export async function updateServicesStatus(serviceId: number, statusId: number) 
   }
 }
 
-export async function getAllEmployees() : Promise<Result<EmployeeWithRole[], AxiosError>> {
+export async function getAllEmployees(): Promise<Result<EmployeeWithRole[], AxiosError>> {
   try {
     const res = await axiosInstant.get('employees/')
     return Ok(res.data);

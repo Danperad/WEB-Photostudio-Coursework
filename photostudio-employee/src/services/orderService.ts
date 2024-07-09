@@ -3,7 +3,7 @@ import {Client, Order, OrderService, Status} from "@models/*";
 import {AxiosError} from "axios";
 import {Err, Ok, Result} from "ts-results";
 
-export async function getOrdersByClient(client: Client) : Promise<Result<Order[], AxiosError>> {
+export async function getOrdersByClient(client: Client): Promise<Result<Order[], AxiosError>> {
   try {
     const res = await axiosInstant.get<Order[]>(`orders/client/${client.id}`);
     return Ok(res.data);
@@ -13,7 +13,7 @@ export async function getOrdersByClient(client: Client) : Promise<Result<Order[]
   }
 }
 
-export async function getAllOrders(search?: string) : Promise<Result<Order[], AxiosError>> {
+export async function getAllOrders(search?: string): Promise<Result<Order[], AxiosError>> {
   try {
     const res = await axiosInstant.get<Order[]>(`orders/`, {
       params: {
@@ -27,7 +27,7 @@ export async function getAllOrders(search?: string) : Promise<Result<Order[], Ax
   }
 }
 
-export async function getServicesByOrders(order: Order) : Promise<Result<OrderService[], AxiosError>> {
+export async function getServicesByOrders(order: Order): Promise<Result<OrderService[], AxiosError>> {
   try {
     const res = await axiosInstant.get<OrderService[]>(`applications/order/${order.number}`);
     return Ok(res.data);
@@ -37,7 +37,7 @@ export async function getServicesByOrders(order: Order) : Promise<Result<OrderSe
   }
 }
 
-export async function addNewOrder(order: Order) : Promise<Result<Order, AxiosError>> {
+export async function addNewOrder(order: Order): Promise<Result<Order, AxiosError>> {
   try {
     const res = await axiosInstant.post<Order>(`orders`, order);
     return Ok(res.data);
@@ -47,7 +47,7 @@ export async function addNewOrder(order: Order) : Promise<Result<Order, AxiosErr
   }
 }
 
-export async function updateOrderStatus(order: Order, status: Status) : Promise<Result<Order, AxiosError>> {
+export async function updateOrderStatus(order: Order, status: Status): Promise<Result<Order, AxiosError>> {
   try {
     const res = await axiosInstant.post<Order>(`orders/update`, {orderId: order.number, statusId: status.id});
     return Ok(res.data);

@@ -1,3 +1,8 @@
 ﻿namespace PhotoStudio.WebApi.Lib.Dto;
 
-public record AuthAnswerDto(string AccessToken, string RefreshToken, ClientDto User);
+public class AuthAnswerDto(string accessToken, string refreshToken, ClientDto user)
+{
+    public string AccessToken { get; set; } = accessToken;
+    public string RefreshToken { get; set; } = refreshToken;
+    public ClientDto User { get; set; } = user;
+};

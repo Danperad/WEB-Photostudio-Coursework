@@ -3,7 +3,9 @@ import {NewService, NewServicePackage} from "../../models/Models";
 
 interface State {
   serviceModels: NewService[],
-  servicePackage?: NewServicePackage
+  servicePackage?: NewServicePackage,
+  lastDate?: Date,
+  lastDuration?: number
 }
 
 const cart = localStorage.getItem('cart');
@@ -18,6 +20,10 @@ const cartSlice = createSlice({
   reducers: {
     ServiceAdded: (state, action: PayloadAction<NewService>) => {
       state.serviceModels.push(action.payload);
+      if (action.payload.startDateTime) {
+        state.lastDate = action.payload.startDateTime;
+        state.lastDuration = action.payload.duration;
+      }
       localStorage.setItem('cart', JSON.stringify(state))
     },
     ServiceRemoved: (state, action: PayloadAction<NewService>) => {
@@ -35,6 +41,8 @@ const cartSlice = createSlice({
     ClearCart: (state) => {
       state.servicePackage = undefined;
       state.serviceModels = [] as NewService[];
+      state.lastDate = undefined;
+      state.lastDuration = undefined;
       localStorage.removeItem('cart');
     }
   }
