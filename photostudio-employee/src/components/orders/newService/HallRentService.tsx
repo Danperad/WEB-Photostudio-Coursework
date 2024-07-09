@@ -5,7 +5,7 @@ import {Hall, OrderService} from "@models/*";
 import {getAvailableHalls} from "../../../services/hallService.ts";
 
 function HallRentService(props: NewServiceProps) {
-  const {service, startTime, duration,isAllowSelect, onComplete} = props
+  const {service, startTime, duration, isAllowSelect, onComplete} = props
   const [halls, setHalls] = useState<Hall[]>([])
   const [selectedHall, setSelectedHall] = useState<Hall | undefined>(undefined)
 
@@ -13,10 +13,9 @@ function HallRentService(props: NewServiceProps) {
     if (!isAllowSelect())
       return
     getAvailableHalls(startTime, duration).then(res => {
-      if (res.ok){
+      if (res.ok) {
         setHalls(res.val)
-      }
-      else {
+      } else {
         console.log(res.val)
       }
     }).catch(err => console.log(err))

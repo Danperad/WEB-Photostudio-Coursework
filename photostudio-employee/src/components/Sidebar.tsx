@@ -1,5 +1,5 @@
 import {Box, Button, List} from "@mui/material";
-import {ContactMail, Menu, Person, LibraryBooks, StickyNote2, Photo} from '@mui/icons-material';
+import {ContactMail, LibraryBooks, Menu, Person, Photo, StickyNote2} from '@mui/icons-material';
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 

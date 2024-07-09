@@ -17,14 +17,15 @@ import {
   TextField,
   Typography
 } from "@mui/material";
+import {DateTimePicker} from "@mui/x-date-pickers";
 import HallService from "../services/HallService";
 import RentedItemService from "../services/RentedItemService";
 import EmployeeService from "../services/EmployeeService";
-import {useDispatch} from "react-redux";
-import {AppDispatch} from "../redux/store";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../redux/store";
 import {cartActions} from "../redux/slices/cartSlice";
 import {ServiceType} from "../models/ServiceModel.ts";
-import {format} from "date-fns";
+import dayjs, {Dayjs} from 'dayjs';
 
 const style = {
   position: 'absolute' as const,
@@ -59,9 +60,11 @@ export default function AddServiceModal(props: ServiceModalProps) {
     }
   }
   const dispatch = useDispatch<AppDispatch>();
+  const cart = useSelector((state: RootState) => state.cart);
 
   const [objectTitle] = useState<string>(title());
-  const [dateTime, setDateTime] = useState<string>(format(new Date(new Date().setDate(new Date().getDate())), "dd-MM-yyyyTHH:mm"));
+  // const [dateTime, setDateTime] = useState<string>(format(new Date(new Date().setDate(new Date().getDate())), "dd-MM-yyyyTHH:mm"));
+  const [dateTime, setDateTime] = useState<Dayjs>(dayjs().add(1, "day"));
   const [halls, setHalls] = useState<Hall[]>([])
   const [items, setItems] = useState<RentedItem[]>([])
   const [employees, setEmployees] = useState<Employee[]>([])
@@ -80,14 +83,26 @@ export default function AddServiceModal(props: ServiceModalProps) {
       return;
     }
     if (key) return;
+    if (cart.lastDate) {
+      setDateTime(dayjs(cart.lastDate))
+      setDuration(String(cart.lastDuration))
+    }
     setKey(true);
   }, [props])
+
+  useEffect(() => {
+    if (!dateTime.isValid() || +duration < 60) return;
+    check()
+  }, [dateTime, duration]);
+
+  const handleDateChange = (date: Dayjs | null) => {
+    if (date !== null)
+      setDateTime(date)
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (+event.target.value < 0 || isNaN(+event.target.value)) return;
     setDuration(event.target.value);
-    if (dateTime === undefined || dateTime === '') return;
-    check(+new Date(dateTime as string), +event.target.value)
   };
 
   const handleNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,8 +122,8 @@ export default function AddServiceModal(props: ServiceModalProps) {
     setFullEnabled(true);
     setNumber(event.target.value);
   }
-  const check = (date: number, dur: number) => {
-    if (date < +Date.now() || dur < 60) {
+  const check = () => {
+    if (dateTime.isBefore(dayjs().add(1, "day")) || +duration < 60) {
       setEnabled(false);
       setHalls([])
       setItems([]);
@@ -121,13 +136,12 @@ export default function AddServiceModal(props: ServiceModalProps) {
     if (props.service!.type === 1) {
       setEnabled(true);
     }
-    fillItems(date, dur);
-
+    fillItems(dateTime.toDate(), +duration);
   }
-  const fillItems = (date: number, dur: number) => {
+  const fillItems = (date: Date, dur: number) => {
     switch (props.service!.type) {
       case ServiceType.HallRent:
-        HallService.getFree(new Date(date), dur).then((res) => {
+        HallService.getFree(date, dur).then((res) => {
           if (res.length === 0) return;
           setHalls(res);
           setEnabled(true);
@@ -136,14 +150,14 @@ export default function AddServiceModal(props: ServiceModalProps) {
         })
         break;
       case ServiceType.ItemRent:
-        RentedItemService.getFree(date, dur, 1).then((res) => {
+        RentedItemService.getFree(+date, dur, 1).then((res) => {
           if (res.length === 0) return;
           setItems(res);
           setEnabled(true);
         });
         break;
       default:
-        EmployeeService.getFree(date, dur, props.service!.id).then((res) => {
+        EmployeeService.getFree(+date, dur, props.service!.id).then((res) => {
           if (res.length === 0) return;
           setEmployees(res);
           setEnabled(true);
@@ -209,7 +223,7 @@ export default function AddServiceModal(props: ServiceModalProps) {
     const newService: NewService = {
       id: new Date().getTime() + Math.random(),
       service: props.service!,
-      startDateTime: new Date(dateTime),
+      startDateTime: dateTime.toDate(),
       duration: +duration,
     }
     switch (props.service!.type) {
@@ -265,7 +279,7 @@ export default function AddServiceModal(props: ServiceModalProps) {
           <Stack direction={"row"} spacing={2}>
             <Grid item xs={2}>
               <Stack spacing={2}>
-                <TextField
+                {/*<TextField
                   id="datetime-local"
                   label="Дата и время"
                   type="datetime-local"
@@ -277,8 +291,10 @@ export default function AddServiceModal(props: ServiceModalProps) {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                />
-                <TextField label="Период" color='primary'
+                />*/}
+                <DateTimePicker label={"Дата и время"} ampm={false} value={dateTime} onChange={handleDateChange}
+                                format="DD-MM-YYYY HH:mm" minDateTime={dayjs().add(1, "day")}/>
+                <TextField label="Длительность" color='primary'
                            inputProps={{inputMode: 'numeric', pattern: '[0-9]*'}}
                            size='small' sx={{width: '100%'}}
                            value={duration} onChange={handleChange}/>

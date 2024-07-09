@@ -1,6 +1,7 @@
 import {EmployeeService, Hall, Item, Service, Status} from "@models/*";
 import {
-  Button, Container,
+  Button,
+  Container,
   FormControl,
   IconButton,
   InputLabel,
@@ -55,7 +56,7 @@ function OrderServiceInfo(props: OrderServiceInfoProps) {
 
   const handleStatusChange = () => {
     updateServicesStatus(orderService.id!, selectedStatus.id).then(res => {
-      if (!res.ok){
+      if (!res.ok) {
         console.log(res.val)
       } else {
         onOrderServiceStatusChange()

@@ -1,5 +1,5 @@
 export enum StatusType {
-  Order= 1,
+  Order = 1,
   Service
 }
 

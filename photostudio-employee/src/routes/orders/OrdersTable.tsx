@@ -22,7 +22,9 @@ function OrdersTable(props: OrdersTableProps) {
       </TableHead>
       <TableBody>
         {orders.map(order => (
-          <OrderRow key={order.number} order={order} onOrderSelect={() => {onOrderSelect(order)}}/>
+          <OrderRow key={order.number} order={order} onOrderSelect={() => {
+            onOrderSelect(order)
+          }}/>
         ))}
       </TableBody>
     </Table>

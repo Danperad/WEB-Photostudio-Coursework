@@ -12,20 +12,20 @@ const initState: State = {
 }
 
 const serviceSlice = createSlice({
-    name: 'services',
-    initialState: initState,
-    reducers: {
-        ServicesLoaded: (state, action: PayloadAction<State>) => {
-            action.payload.services.forEach((service) => {
-                state.services.push(service);
-            });
-            state.hasMore = action.payload.hasMore;
-        },
-        ClearService: (state) => {
-            state.services.splice(0, state.services.length);
-            state.hasMore = true;
-        }
+  name: 'services',
+  initialState: initState,
+  reducers: {
+    ServicesLoaded: (state, action: PayloadAction<State>) => {
+      action.payload.services.forEach((service) => {
+        state.services.push(service);
+      });
+      state.hasMore = action.payload.hasMore;
+    },
+    ClearService: (state) => {
+      state.services.splice(0, state.services.length);
+      state.hasMore = true;
     }
+  }
 });
 
 export const serviceReducer = serviceSlice.reducer;

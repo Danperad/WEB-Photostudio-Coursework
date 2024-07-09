@@ -19,7 +19,9 @@ function OrderRow(props: OrderRowProps) {
   }
 
   return (
-    <TableRow sx={{cursor: "pointer"}} onClick={() => {onOrderSelect()}}>
+    <TableRow sx={{cursor: "pointer"}} onClick={() => {
+      onOrderSelect()
+    }}>
       <TableCell>{order.number}</TableCell>
       <TableCell>{getClientFullName()} </TableCell>
       <TableCell>{dayjs(order.dateTime).format(`DD-MM-YYYY HH:mm`)}</TableCell>

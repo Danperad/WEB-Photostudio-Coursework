@@ -87,7 +87,8 @@ function Services() {
 
       <Divider orientation={"vertical"} variant={"middle"} flexItem/>
       <Stack width={"50%"} spacing={1} p={1}>
-        <Typography variant={"h6"}>{selectedService ? `Редактирование услуги: ${selectedService.title}` : `Новая услуга`}</Typography>
+        <Typography
+          variant={"h6"}>{selectedService ? `Редактирование услуги: ${selectedService.title}` : `Новая услуга`}</Typography>
         <FormContainer>
           <Stack direction={"column"} spacing={1} sx={{px: 2}}>
             <TextFieldElement label={"Название"} name={"title"} size={'small'} required/>

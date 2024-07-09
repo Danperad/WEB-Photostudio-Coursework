@@ -4,7 +4,7 @@ import {Button, Stack} from "@mui/material";
 import {DatePicker} from "@mui/x-date-pickers";
 import {getReport} from "../../services/reportService.ts";
 
-function Reports(){
+function Reports() {
   const [startDate, setStartDate] = useState<Dayjs>(dayjs());
   const [endDate, setEndDate] = useState<Dayjs>(dayjs());
 
@@ -21,7 +21,7 @@ function Reports(){
   }
 
   const handleReportDownloadClick = () => {
-    getReport(startDate.toDate(), endDate.toDate())
+    getReport(startDate.toDate(), endDate.toDate()).then()
   };
 
   return (

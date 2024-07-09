@@ -1,6 +1,6 @@
 declare module 'virtual:pwa-register/react' {
-  import type { Dispatch, SetStateAction } from 'react'
-  import type { RegisterSWOptions } from 'vite-plugin-pwa/types'
+  import type {Dispatch, SetStateAction} from 'react'
+  import type {RegisterSWOptions} from 'vite-plugin-pwa/types'
 
   export function useRegisterSW(options?: RegisterSWOptions): {
     needRefresh: [boolean, Dispatch<SetStateAction<boolean>>]

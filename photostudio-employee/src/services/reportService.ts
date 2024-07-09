@@ -2,7 +2,7 @@ import {Err, Ok, Result} from "ts-results";
 import {AxiosError} from "axios";
 import axiosInstant from "../utils/axiosInstant.ts";
 
-export async function getReport(start: Date, end: Date) : Promise<Result<boolean, AxiosError>> {
+export async function getReport(start: Date, end: Date): Promise<Result<boolean, AxiosError>> {
   return axiosInstant.get('reports', {
     params: {
       startDate: start,

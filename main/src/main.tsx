@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {createTheme, ThemeProvider} from "@mui/material";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3';
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from '@mui/x-date-pickers';
 import {Provider} from "react-redux";
 import {store} from './redux/store';
@@ -36,7 +36,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <ThemeProvider theme={dark}>
         <SnackbarProvider maxSnack={3}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
             <BrowserRouter>
               <Header/>
               <Routes>

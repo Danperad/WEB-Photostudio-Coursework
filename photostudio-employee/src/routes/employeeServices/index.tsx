@@ -24,10 +24,9 @@ function EmployeeServices() {
 
   const searchServices = () => {
     getServicesByEmployee(4, isShowClosed).then(res => {
-      if (res.ok){
+      if (res.ok) {
         setServices(res.val)
-      }
-      else {
+      } else {
         console.log(res.val)
       }
     })
@@ -57,17 +56,19 @@ function EmployeeServices() {
                             label="Показывать завершенные"/>
         </FormGroup>
         {services.map(service => (
-          <Paper key={service.id} sx={{p:1, cursor: "pointer"}} elevation={1} onClick={() => {
+          <Paper key={service.id} sx={{p: 1, cursor: "pointer"}} elevation={1} onClick={() => {
             handleServiceSelected(service)
           }}>
-            <Typography>{(service.service as Service).title}, Статус: <em>{(service.status as Status).title}</em></Typography>
+            <Typography>{(service.service as Service).title},
+              Статус: <em>{(service.status as Status).title}</em></Typography>
           </Paper>
         ))}
       </Stack>
       <Divider orientation={"vertical"} variant={"middle"} flexItem/>
       <Stack direction={"column"} width={"50%"}>
         {selectedService && (
-          <OrderServiceInfo orderService={selectedService} onClose={handleServiceInfoClose} onOrderServiceStatusChange={handleStatusChange}/>
+          <OrderServiceInfo orderService={selectedService} onClose={handleServiceInfoClose}
+                            onOrderServiceStatusChange={handleStatusChange}/>
         )}
       </Stack>
     </Stack>
